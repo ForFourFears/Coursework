@@ -612,8 +612,10 @@ GameObject:
   - component: {fileID: 2130661909}
   - component: {fileID: 2130661908}
   - component: {fileID: 2130661912}
+  - component: {fileID: 2130661914}
   - component: {fileID: 2130661911}
   - component: {fileID: 2130661913}
+  - component: {fileID: 2130661916}
   m_Layer: 0
   m_Name: Player
   m_TagString: Untagged
@@ -726,7 +728,7 @@ Transform:
   m_GameObject: {fileID: 2130661907}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -0.28991, y: -2.582, z: 0}
+  m_LocalPosition: {x: -0.28991, y: -2.59, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -803,14 +805,49 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 63c5ed8c93620364f8ce407eb999fd46, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Scripts.CharacterController
-  _rb: {fileID: 0}
+  _rb: {fileID: 2130661912}
+  _speed: 1.4
+  _jumpForce: 5
   _groundCheck: {fileID: 1649720720}
   _groundCheckRadius: 0.05
   _groundLayer:
     serializedVersion: 2
     m_Bits: 8
-  _speed: 1
-  _jumpForce: 5
+--- !u!95 &2130661914
+Animator:
+  serializedVersion: 7
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2130661907}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 15c7b72cf47568d4f925ceab1ada1232, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_AnimatePhysics: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
+--- !u!114 &2130661916
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2130661907}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1209cebfbab38e44d9b364fc4daa2557, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Coursework.Controller.PlayerAnimatorController
+  _characterAnimator: {fileID: 2130661914}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
