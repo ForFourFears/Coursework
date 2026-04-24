@@ -1,6 +1,7 @@
 using System;
 using UnityEngine;
 using Scripts;
+using Coursework.Scripts.Animation;
 using UnityEngine.InputSystem;
 
 
@@ -12,7 +13,6 @@ namespace Coursework.Scripts.LogicController
         #region Public part
         public ActionStateMachine<PlayerActionState> StateMachine { get; private set; } = new ActionStateMachine<PlayerActionState>();
         #endregion
-
         #region Serialize part
         [Header("Movement")]
         [SerializeField] private Rigidbody2D _rb;
@@ -26,6 +26,7 @@ namespace Coursework.Scripts.LogicController
         #endregion
         #region Private part
         private InputSystemActions inputActions;
+        private ObservableSMBsHub observableSMBsHub;
 
         private Vector2 moveInput;
         private Vector2 lastMoveInput = new(1, 0);
