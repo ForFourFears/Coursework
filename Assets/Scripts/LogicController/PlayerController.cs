@@ -1,10 +1,10 @@
-using Coursework.Controller;
 using System;
 using UnityEngine;
+using Scripts;
 using UnityEngine.InputSystem;
 
 
-namespace Scripts
+namespace Coursework.Scripts.LogicController
 {
     public class PlayerController : MonoBehaviour, IStateMachineProvider<PlayerActionState>
     {
@@ -63,11 +63,6 @@ namespace Scripts
             UpdateState();
         }
 
-        //private void Update()
-        //{
-            
-        //}
-
         private void OnMove(InputAction.CallbackContext context)
         {
             moveInput = context.ReadValue<Vector2>();
@@ -90,9 +85,15 @@ namespace Scripts
         }
 
         #region Support methods
+        private bool CheckUpdateDirection()
+        {
+            bool result = moveInput.x != 0 && Math.Sign(moveInput.x) != Math.Sign(lastMoveInput.x);
+            return result;
+        }
+
         private void UpdateDirection()
         {
-            if (moveInput.x != 0 && Math.Sign(moveInput.x) != Math.Sign(lastMoveInput.x))
+            if (CheckUpdateDirection())
             {
                 gameObject.transform.localScale = new Vector3(gameObject.transform.localScale.x * -1, gameObject.transform.localScale.y, gameObject.transform.localScale.z);
                 lastMoveInput = moveInput;
@@ -101,27 +102,38 @@ namespace Scripts
 
         private void UpdateState()
         {
-            if (_rb.linearVelocityY > 0)
+            PlayerActionState targetState;
+            if (GroundCheck())
             {
-                StateMachine.ChangeState(PlayerActionState.Jump);
+                if (_rb.linearVelocityX != 0)
+                {
+                    targetState = PlayerActionState.Run;
+                }
+                else targetState = PlayerActionState.Idle;
             }
-            else if (_rb.linearVelocityY < 0) StateMachine.ChangeState(PlayerActionState.Fall);
             else
             {
-                if (_rb.linearVelocityX != 0) StateMachine.ChangeState(PlayerActionState.Run);
-                else StateMachine.ChangeState(PlayerActionState.Idle);
+                if (_rb.linearVelocityY > 0)
+                {
+                    targetState = PlayerActionState.Jump;
+                }
+                else
+                {
+                        targetState = PlayerActionState.Fall;
+                }
             }
-            
+            StateMachine.ChangeState(targetState);
+
+
         }
-
-
-        #endregion
 
         private bool GroundCheck()
         {
             if (Physics2D.OverlapCircle(_groundCheck.position, _groundCheckRadius, _groundLayer) != null) return true;
             else return false;
         }
+
+        #endregion
 
         private void OnDrawGizmosSelected()
         {

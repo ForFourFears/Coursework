@@ -1,7 +1,8 @@
 using System;
 using UnityEngine;
+using Coursework.Scripts.LogicController;
 
-namespace Coursework.Controller
+namespace Coursework.Scripts.Animation
 {
     public class PlayerAnimatorController : BaseAnimationController<PlayerActionState>
     {
@@ -47,5 +48,7 @@ namespace Coursework.Controller
         {
             _characterAnimator.SetBool("IsFall", false);
         }
+
+        
     }
 }

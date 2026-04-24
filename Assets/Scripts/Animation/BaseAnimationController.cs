@@ -1,9 +1,9 @@
 using System;
 using UnityEngine;
+using Coursework.Scripts.LogicController;
 
 
-
-namespace Coursework.Controller
+namespace Coursework.Scripts.Animation
 {
     public abstract class BaseAnimationController<TState> : MonoBehaviour where TState : Enum
     {

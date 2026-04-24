@@ -1,7 +1,8 @@
 using System;
 
-namespace Coursework.Controller
+namespace Coursework.Scripts.LogicController
 {
+    #region StateMachineEnums
     public enum PlayerActionState
     {
         Idle,
@@ -9,6 +10,7 @@ namespace Coursework.Controller
         Jump,
         Fall
     }
+    #endregion
 
     public interface IStateEvents
     {
