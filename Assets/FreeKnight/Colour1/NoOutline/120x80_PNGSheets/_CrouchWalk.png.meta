@@ -150,12 +150,12 @@ TextureImporter:
       name: _CrouchWalk_0
       rect:
         serializedVersion: 2
-        x: 43
+        x: 44
         y: 0
-        width: 29
-        height: 27
-      alignment: 0
-      pivot: {x: 0, y: 0}
+        width: 27
+        height: 26
+      alignment: 7
+      pivot: {x: 0, y: 0.71153843}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -172,12 +172,12 @@ TextureImporter:
       name: _CrouchWalk_1
       rect:
         serializedVersion: 2
-        x: 163
+        x: 164
         y: 0
-        width: 29
-        height: 27
-      alignment: 0
-      pivot: {x: 0, y: 0}
+        width: 27
+        height: 26
+      alignment: 7
+      pivot: {x: 0, y: 0.71153843}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -194,12 +194,12 @@ TextureImporter:
       name: _CrouchWalk_2
       rect:
         serializedVersion: 2
-        x: 283
+        x: 284
         y: 0
-        width: 29
-        height: 28
-      alignment: 0
-      pivot: {x: 0, y: 0}
+        width: 27
+        height: 27
+      alignment: 7
+      pivot: {x: 0, y: 0.6851852}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -216,12 +216,12 @@ TextureImporter:
       name: _CrouchWalk_3
       rect:
         serializedVersion: 2
-        x: 403
+        x: 404
         y: 0
-        width: 29
-        height: 28
-      alignment: 0
-      pivot: {x: 0, y: 0}
+        width: 27
+        height: 27
+      alignment: 7
+      pivot: {x: 0, y: 0.6851852}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -238,12 +238,12 @@ TextureImporter:
       name: _CrouchWalk_4
       rect:
         serializedVersion: 2
-        x: 523
+        x: 524
         y: 0
-        width: 29
-        height: 27
-      alignment: 0
-      pivot: {x: 0, y: 0}
+        width: 27
+        height: 26
+      alignment: 7
+      pivot: {x: 0, y: 0.71153843}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -260,12 +260,12 @@ TextureImporter:
       name: _CrouchWalk_5
       rect:
         serializedVersion: 2
-        x: 643
+        x: 644
         y: 0
-        width: 29
-        height: 27
-      alignment: 0
-      pivot: {x: 0, y: 0}
+        width: 27
+        height: 26
+      alignment: 7
+      pivot: {x: 0, y: 0.71153843}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -282,12 +282,12 @@ TextureImporter:
       name: _CrouchWalk_6
       rect:
         serializedVersion: 2
-        x: 763
+        x: 764
         y: 0
-        width: 29
-        height: 28
-      alignment: 0
-      pivot: {x: 0, y: 0}
+        width: 27
+        height: 27
+      alignment: 7
+      pivot: {x: 0, y: 0.6851852}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -304,12 +304,12 @@ TextureImporter:
       name: _CrouchWalk_7
       rect:
         serializedVersion: 2
-        x: 883
+        x: 884
         y: 0
-        width: 29
-        height: 28
-      alignment: 0
-      pivot: {x: 0, y: 0}
+        width: 27
+        height: 27
+      alignment: 7
+      pivot: {x: 0, y: 0.6851852}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -326,7 +326,7 @@ TextureImporter:
     customData: 
     physicsShape: []
     bones: []
-    spriteID: 
+    spriteID: b196bec303ebaff489624985638e4348
     internalID: 0
     vertices: []
     indices: 
@@ -334,7 +334,11 @@ TextureImporter:
     weights: []
     secondaryTextures: []
     spriteCustomMetadata:
-      entries: []
+      entries:
+      - key: SpriteEditor.SliceOnImport
+        value: True
+      - key: SpriteEditor.SliceSettings
+        value: '{"sliceOnImport":true,"gridCellCount":{"x":1.0,"y":1.0},"gridSpriteSize":{"x":64.0,"y":64.0},"gridSpriteOffset":{"x":0.0,"y":0.0},"gridSpritePadding":{"x":0.0,"y":0.0},"pivot":{"x":0.5,"y":0.0},"pivotPixels":{"x":0.0,"y":18.5},"autoSlicingMethod":0,"spriteAlignment":7,"pivotUnitMode":1,"slicingType":0,"keepEmptyRects":false,"isAlternate":false}'
     nameFileIdTable:
       _CrouchWalk_0: 6750947459597745425
       _CrouchWalk_1: -6664716939228246922

@@ -132,12 +132,12 @@ TextureImporter:
       name: _JumpFallInbetween_0
       rect:
         serializedVersion: 2
-        x: 41
-        y: 0
-        width: 27
-        height: 38
-      alignment: 0
-      pivot: {x: 0, y: 0}
+        x: 42
+        y: 1
+        width: 25
+        height: 36
+      alignment: 7
+      pivot: {x: 0.38, y: 0.5138889}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -154,12 +154,12 @@ TextureImporter:
       name: _JumpFallInbetween_1
       rect:
         serializedVersion: 2
-        x: 159
-        y: 0
-        width: 29
-        height: 38
-      alignment: 0
-      pivot: {x: 0, y: 0}
+        x: 160
+        y: 1
+        width: 27
+        height: 36
+      alignment: 7
+      pivot: {x: 0.35185185, y: 0.5138889}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -176,7 +176,7 @@ TextureImporter:
     customData: 
     physicsShape: []
     bones: []
-    spriteID: 
+    spriteID: cb464b8df0dde6244bcd2e4174571be3
     internalID: 0
     vertices: []
     indices: 
@@ -184,7 +184,11 @@ TextureImporter:
     weights: []
     secondaryTextures: []
     spriteCustomMetadata:
-      entries: []
+      entries:
+      - key: SpriteEditor.SliceOnImport
+        value: True
+      - key: SpriteEditor.SliceSettings
+        value: '{"sliceOnImport":true,"gridCellCount":{"x":1.0,"y":1.0},"gridSpriteSize":{"x":64.0,"y":64.0},"gridSpriteOffset":{"x":0.0,"y":0.0},"gridSpritePadding":{"x":0.0,"y":0.0},"pivot":{"x":0.5,"y":0.0},"pivotPixels":{"x":9.5,"y":18.5},"autoSlicingMethod":0,"spriteAlignment":7,"pivotUnitMode":1,"slicingType":0,"keepEmptyRects":false,"isAlternate":false}'
     nameFileIdTable:
       _JumpFallInbetween_0: -2490686252133560012
       _JumpFallInbetween_1: 312475786445842499

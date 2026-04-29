@@ -147,12 +147,12 @@ TextureImporter:
       name: _WallClimbNoMovement_0
       rect:
         serializedVersion: 2
-        x: 43
+        x: 44
         y: 0
-        width: 21
-        height: 33
-      alignment: 0
-      pivot: {x: 0, y: 0}
+        width: 19
+        height: 32
+      alignment: 7
+      pivot: {x: 0.5, y: 0.578125}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -169,12 +169,12 @@ TextureImporter:
       name: _WallClimbNoMovement_1
       rect:
         serializedVersion: 2
-        x: 162
-        y: 0
-        width: 23
-        height: 29
-      alignment: 0
-      pivot: {x: 0, y: 0}
+        x: 163
+        y: 1
+        width: 21
+        height: 27
+      alignment: 7
+      pivot: {x: 0.45238096, y: 0.6851852}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -191,12 +191,12 @@ TextureImporter:
       name: _WallClimbNoMovement_2
       rect:
         serializedVersion: 2
-        x: 282
-        y: 1
-        width: 27
-        height: 28
-      alignment: 0
-      pivot: {x: 0, y: 0}
+        x: 283
+        y: 2
+        width: 25
+        height: 26
+      alignment: 7
+      pivot: {x: 0.38, y: 0.71153843}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -213,12 +213,12 @@ TextureImporter:
       name: _WallClimbNoMovement_3
       rect:
         serializedVersion: 2
-        x: 401
-        y: 5
-        width: 31
-        height: 26
-      alignment: 0
-      pivot: {x: 0, y: 0}
+        x: 402
+        y: 6
+        width: 29
+        height: 24
+      alignment: 7
+      pivot: {x: 0.3275862, y: 0.7708333}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -235,12 +235,12 @@ TextureImporter:
       name: _WallClimbNoMovement_4
       rect:
         serializedVersion: 2
-        x: 522
-        y: 4
-        width: 27
-        height: 28
-      alignment: 0
-      pivot: {x: 0, y: 0}
+        x: 523
+        y: 5
+        width: 25
+        height: 26
+      alignment: 7
+      pivot: {x: 0.38, y: 0.71153843}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -257,12 +257,12 @@ TextureImporter:
       name: _WallClimbNoMovement_5
       rect:
         serializedVersion: 2
-        x: 644
-        y: 2
-        width: 22
-        height: 32
-      alignment: 0
-      pivot: {x: 0, y: 0}
+        x: 645
+        y: 3
+        width: 20
+        height: 30
+      alignment: 7
+      pivot: {x: 0.475, y: 0.6166667}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -279,12 +279,12 @@ TextureImporter:
       name: _WallClimbNoMovement_6
       rect:
         serializedVersion: 2
-        x: 763
-        y: 0
-        width: 24
-        height: 36
-      alignment: 0
-      pivot: {x: 0, y: 0}
+        x: 764
+        y: 1
+        width: 22
+        height: 34
+      alignment: 7
+      pivot: {x: 0.4318182, y: 0.5441176}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -301,7 +301,7 @@ TextureImporter:
     customData: 
     physicsShape: []
     bones: []
-    spriteID: 
+    spriteID: faf779eaab3f8a944912c18906efcac5
     internalID: 0
     vertices: []
     indices: 
@@ -309,7 +309,11 @@ TextureImporter:
     weights: []
     secondaryTextures: []
     spriteCustomMetadata:
-      entries: []
+      entries:
+      - key: SpriteEditor.SliceOnImport
+        value: True
+      - key: SpriteEditor.SliceSettings
+        value: '{"sliceOnImport":true,"gridCellCount":{"x":1.0,"y":1.0},"gridSpriteSize":{"x":64.0,"y":64.0},"gridSpriteOffset":{"x":0.0,"y":0.0},"gridSpritePadding":{"x":0.0,"y":0.0},"pivot":{"x":0.5,"y":0.0},"pivotPixels":{"x":9.5,"y":18.5},"autoSlicingMethod":0,"spriteAlignment":7,"pivotUnitMode":1,"slicingType":0,"keepEmptyRects":false,"isAlternate":false}'
     nameFileIdTable:
       _WallClimbNoMovement_0: 3818210440267097003
       _WallClimbNoMovement_1: 87521834145691495

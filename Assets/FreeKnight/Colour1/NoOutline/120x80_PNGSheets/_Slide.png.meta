@@ -132,12 +132,12 @@ TextureImporter:
       name: _Slide_0
       rect:
         serializedVersion: 2
-        x: 45
+        x: 46
         y: 0
-        width: 37
-        height: 18
-      alignment: 0
-      pivot: {x: 0, y: 0}
+        width: 35
+        height: 17
+      alignment: 7
+      pivot: {x: 0.27142859, y: 1.0882353}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -154,12 +154,12 @@ TextureImporter:
       name: _Slide_1
       rect:
         serializedVersion: 2
-        x: 165
+        x: 166
         y: 0
-        width: 37
-        height: 18
-      alignment: 0
-      pivot: {x: 0, y: 0}
+        width: 35
+        height: 17
+      alignment: 7
+      pivot: {x: 0.27142859, y: 1.0882353}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -176,7 +176,7 @@ TextureImporter:
     customData: 
     physicsShape: []
     bones: []
-    spriteID: 
+    spriteID: 9fd74d91a3a5aee48b4d32ea8130a0d5
     internalID: 0
     vertices: []
     indices: 
@@ -184,7 +184,11 @@ TextureImporter:
     weights: []
     secondaryTextures: []
     spriteCustomMetadata:
-      entries: []
+      entries:
+      - key: SpriteEditor.SliceOnImport
+        value: True
+      - key: SpriteEditor.SliceSettings
+        value: '{"sliceOnImport":true,"gridCellCount":{"x":1.0,"y":1.0},"gridSpriteSize":{"x":64.0,"y":64.0},"gridSpriteOffset":{"x":0.0,"y":0.0},"gridSpritePadding":{"x":0.0,"y":0.0},"pivot":{"x":0.5,"y":0.0},"pivotPixels":{"x":9.5,"y":18.5},"autoSlicingMethod":0,"spriteAlignment":7,"pivotUnitMode":1,"slicingType":0,"keepEmptyRects":false,"isAlternate":false}'
     nameFileIdTable:
       _Slide_0: 587105163382055300
       _Slide_1: -5310753030721550334

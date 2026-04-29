@@ -135,12 +135,12 @@ TextureImporter:
       name: _CrouchFull_0
       rect:
         serializedVersion: 2
-        x: 43
+        x: 44
         y: 0
-        width: 29
-        height: 31
-      alignment: 0
-      pivot: {x: 0, y: 0}
+        width: 27
+        height: 30
+      alignment: 7
+      pivot: {x: 0, y: 0.6166667}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -157,12 +157,12 @@ TextureImporter:
       name: _CrouchFull_1
       rect:
         serializedVersion: 2
-        x: 163
+        x: 164
         y: 0
-        width: 29
-        height: 27
-      alignment: 0
-      pivot: {x: 0, y: 0}
+        width: 27
+        height: 26
+      alignment: 7
+      pivot: {x: 0, y: 0.71153843}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -179,12 +179,12 @@ TextureImporter:
       name: _CrouchFull_2
       rect:
         serializedVersion: 2
-        x: 283
+        x: 284
         y: 0
-        width: 29
-        height: 31
-      alignment: 0
-      pivot: {x: 0, y: 0}
+        width: 27
+        height: 30
+      alignment: 7
+      pivot: {x: 0, y: 0.6166667}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -201,7 +201,7 @@ TextureImporter:
     customData: 
     physicsShape: []
     bones: []
-    spriteID: 
+    spriteID: fb03f7b2250e7ed4b9fcdcad97aedec5
     internalID: 0
     vertices: []
     indices: 
@@ -209,7 +209,11 @@ TextureImporter:
     weights: []
     secondaryTextures: []
     spriteCustomMetadata:
-      entries: []
+      entries:
+      - key: SpriteEditor.SliceOnImport
+        value: True
+      - key: SpriteEditor.SliceSettings
+        value: '{"sliceOnImport":true,"gridCellCount":{"x":1.0,"y":1.0},"gridSpriteSize":{"x":64.0,"y":64.0},"gridSpriteOffset":{"x":0.0,"y":0.0},"gridSpritePadding":{"x":0.0,"y":0.0},"pivot":{"x":0.5,"y":0.0},"pivotPixels":{"x":0.0,"y":18.5},"autoSlicingMethod":0,"spriteAlignment":7,"pivotUnitMode":1,"slicingType":0,"keepEmptyRects":false,"isAlternate":false}'
     nameFileIdTable:
       _CrouchFull_0: -5450244114486377363
       _CrouchFull_1: -5247719401152561483

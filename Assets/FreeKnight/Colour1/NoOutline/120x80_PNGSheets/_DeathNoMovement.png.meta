@@ -156,12 +156,12 @@ TextureImporter:
       name: _DeathNoMovement_0
       rect:
         serializedVersion: 2
-        x: 36
+        x: 37
         y: 0
-        width: 30
-        height: 39
-      alignment: 0
-      pivot: {x: 0, y: 0}
+        width: 28
+        height: 38
+      alignment: 7
+      pivot: {x: 0, y: 0.4868421}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -178,12 +178,12 @@ TextureImporter:
       name: _DeathNoMovement_1
       rect:
         serializedVersion: 2
-        x: 156
-        y: 1
-        width: 29
-        height: 39
-      alignment: 0
-      pivot: {x: 0, y: 0}
+        x: 157
+        y: 2
+        width: 27
+        height: 37
+      alignment: 7
+      pivot: {x: 0, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -200,12 +200,12 @@ TextureImporter:
       name: _DeathNoMovement_2
       rect:
         serializedVersion: 2
-        x: 277
-        y: 6
-        width: 33
-        height: 25
-      alignment: 0
-      pivot: {x: 0, y: 0}
+        x: 278
+        y: 7
+        width: 31
+        height: 23
+      alignment: 7
+      pivot: {x: 0, y: 0.8043478}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -222,12 +222,12 @@ TextureImporter:
       name: _DeathNoMovement_3
       rect:
         serializedVersion: 2
-        x: 394
-        y: 7
-        width: 36
-        height: 23
-      alignment: 0
-      pivot: {x: 0, y: 0}
+        x: 395
+        y: 8
+        width: 34
+        height: 21
+      alignment: 7
+      pivot: {x: 0, y: 0.88095236}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -244,12 +244,12 @@ TextureImporter:
       name: _DeathNoMovement_4
       rect:
         serializedVersion: 2
-        x: 510
-        y: 1
-        width: 39
-        height: 24
-      alignment: 0
-      pivot: {x: 0, y: 0}
+        x: 511
+        y: 2
+        width: 37
+        height: 22
+      alignment: 7
+      pivot: {x: 0, y: 0.84090906}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -266,12 +266,12 @@ TextureImporter:
       name: _DeathNoMovement_5
       rect:
         serializedVersion: 2
-        x: 630
+        x: 631
         y: 0
-        width: 38
-        height: 22
-      alignment: 0
-      pivot: {x: 0, y: 0}
+        width: 36
+        height: 21
+      alignment: 7
+      pivot: {x: 0, y: 0.88095236}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -288,12 +288,12 @@ TextureImporter:
       name: _DeathNoMovement_6
       rect:
         serializedVersion: 2
-        x: 750
+        x: 751
         y: 0
-        width: 38
-        height: 23
-      alignment: 0
-      pivot: {x: 0, y: 0}
+        width: 36
+        height: 22
+      alignment: 7
+      pivot: {x: 0, y: 0.84090906}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -310,12 +310,12 @@ TextureImporter:
       name: _DeathNoMovement_7
       rect:
         serializedVersion: 2
-        x: 870
+        x: 871
         y: 0
-        width: 40
-        height: 17
-      alignment: 0
-      pivot: {x: 0, y: 0}
+        width: 38
+        height: 16
+      alignment: 7
+      pivot: {x: 0, y: 1.15625}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -332,12 +332,12 @@ TextureImporter:
       name: _DeathNoMovement_8
       rect:
         serializedVersion: 2
-        x: 990
+        x: 991
         y: 0
-        width: 42
-        height: 13
-      alignment: 0
-      pivot: {x: 0, y: 0}
+        width: 40
+        height: 12
+      alignment: 7
+      pivot: {x: 0, y: 1.5416666}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -354,12 +354,12 @@ TextureImporter:
       name: _DeathNoMovement_9
       rect:
         serializedVersion: 2
-        x: 1110
+        x: 1111
         y: 0
-        width: 42
-        height: 13
-      alignment: 0
-      pivot: {x: 0, y: 0}
+        width: 40
+        height: 12
+      alignment: 7
+      pivot: {x: 0, y: 1.5416666}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -376,7 +376,7 @@ TextureImporter:
     customData: 
     physicsShape: []
     bones: []
-    spriteID: 
+    spriteID: 69cce325cee165747908a9d4db06f292
     internalID: 0
     vertices: []
     indices: 
@@ -384,7 +384,11 @@ TextureImporter:
     weights: []
     secondaryTextures: []
     spriteCustomMetadata:
-      entries: []
+      entries:
+      - key: SpriteEditor.SliceOnImport
+        value: True
+      - key: SpriteEditor.SliceSettings
+        value: '{"sliceOnImport":true,"gridCellCount":{"x":1.0,"y":1.0},"gridSpriteSize":{"x":64.0,"y":64.0},"gridSpriteOffset":{"x":0.0,"y":0.0},"gridSpritePadding":{"x":0.0,"y":0.0},"pivot":{"x":0.5,"y":0.0},"pivotPixels":{"x":0.0,"y":18.5},"autoSlicingMethod":0,"spriteAlignment":7,"pivotUnitMode":1,"slicingType":0,"keepEmptyRects":false,"isAlternate":false}'
     nameFileIdTable:
       _DeathNoMovement_0: 1452178025368261671
       _DeathNoMovement_1: -785879526101056908

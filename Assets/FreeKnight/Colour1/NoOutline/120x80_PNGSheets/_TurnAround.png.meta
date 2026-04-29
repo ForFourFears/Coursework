@@ -135,12 +135,12 @@ TextureImporter:
       name: _TurnAround_0
       rect:
         serializedVersion: 2
-        x: 46
+        x: 47
         y: 0
-        width: 29
-        height: 37
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
+        width: 27
+        height: 34
+      alignment: 7
+      pivot: {x: 0.35185185, y: 0.5441176}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -157,12 +157,12 @@ TextureImporter:
       name: _TurnAround_1
       rect:
         serializedVersion: 2
-        x: 166
+        x: 167
         y: 0
-        width: 27
-        height: 37
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
+        width: 25
+        height: 35
+      alignment: 7
+      pivot: {x: 0.38, y: 0.5285714}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -179,12 +179,12 @@ TextureImporter:
       name: _TurnAround_2
       rect:
         serializedVersion: 2
-        x: 287
+        x: 288
         y: 0
-        width: 25
-        height: 37
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
+        width: 23
+        height: 35
+      alignment: 7
+      pivot: {x: 0.41304347, y: 0.5285714}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -209,7 +209,11 @@ TextureImporter:
     weights: []
     secondaryTextures: []
     spriteCustomMetadata:
-      entries: []
+      entries:
+      - key: SpriteEditor.SliceOnImport
+        value: True
+      - key: SpriteEditor.SliceSettings
+        value: '{"sliceOnImport":true,"gridCellCount":{"x":1.0,"y":1.0},"gridSpriteSize":{"x":64.0,"y":64.0},"gridSpriteOffset":{"x":0.0,"y":0.0},"gridSpritePadding":{"x":0.0,"y":0.0},"pivot":{"x":0.5,"y":0.0},"pivotPixels":{"x":9.5,"y":18.5},"autoSlicingMethod":0,"spriteAlignment":7,"pivotUnitMode":1,"slicingType":0,"keepEmptyRects":false,"isAlternate":false}'
     nameFileIdTable:
       _TurnAround_0: -3816084314835669757
       _TurnAround_1: -5875445016746397521

@@ -138,12 +138,12 @@ TextureImporter:
       name: _SlideFull_0
       rect:
         serializedVersion: 2
-        x: 45
+        x: 46
         y: 0
-        width: 38
-        height: 24
-      alignment: 0
-      pivot: {x: 0, y: 0}
+        width: 36
+        height: 23
+      alignment: 7
+      pivot: {x: 0.2638889, y: 0.8043478}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -160,12 +160,12 @@ TextureImporter:
       name: _SlideFull_1
       rect:
         serializedVersion: 2
-        x: 165
+        x: 166
         y: 0
-        width: 37
-        height: 18
-      alignment: 0
-      pivot: {x: 0, y: 0}
+        width: 35
+        height: 17
+      alignment: 7
+      pivot: {x: 0.27142859, y: 1.0882353}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -182,12 +182,12 @@ TextureImporter:
       name: _SlideFull_2
       rect:
         serializedVersion: 2
-        x: 285
+        x: 286
         y: 0
-        width: 37
-        height: 18
-      alignment: 0
-      pivot: {x: 0, y: 0}
+        width: 35
+        height: 17
+      alignment: 7
+      pivot: {x: 0.27142859, y: 1.0882353}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -204,12 +204,12 @@ TextureImporter:
       name: _SlideFull_3
       rect:
         serializedVersion: 2
-        x: 409
+        x: 410
         y: 0
-        width: 25
-        height: 27
-      alignment: 0
-      pivot: {x: 0, y: 0}
+        width: 23
+        height: 26
+      alignment: 7
+      pivot: {x: 0.41304347, y: 0.71153843}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -226,7 +226,7 @@ TextureImporter:
     customData: 
     physicsShape: []
     bones: []
-    spriteID: 
+    spriteID: 7f7982018ec533946935e64fcd84890f
     internalID: 0
     vertices: []
     indices: 
@@ -234,7 +234,11 @@ TextureImporter:
     weights: []
     secondaryTextures: []
     spriteCustomMetadata:
-      entries: []
+      entries:
+      - key: SpriteEditor.SliceOnImport
+        value: True
+      - key: SpriteEditor.SliceSettings
+        value: '{"sliceOnImport":true,"gridCellCount":{"x":1.0,"y":1.0},"gridSpriteSize":{"x":64.0,"y":64.0},"gridSpriteOffset":{"x":0.0,"y":0.0},"gridSpritePadding":{"x":0.0,"y":0.0},"pivot":{"x":0.5,"y":0.0},"pivotPixels":{"x":9.5,"y":18.5},"autoSlicingMethod":0,"spriteAlignment":7,"pivotUnitMode":1,"slicingType":0,"keepEmptyRects":false,"isAlternate":false}'
     nameFileIdTable:
       _SlideFull_0: 1678032726615458803
       _SlideFull_1: 4953437300860716859

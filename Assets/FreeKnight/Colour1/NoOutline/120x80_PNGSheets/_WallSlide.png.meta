@@ -135,11 +135,11 @@ TextureImporter:
       name: _WallSlide_0
       rect:
         serializedVersion: 2
-        x: 47
-        y: 2
-        width: 23
-        height: 34
-      alignment: 0
+        x: 48
+        y: 3
+        width: 21
+        height: 32
+      alignment: 7
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
@@ -157,11 +157,11 @@ TextureImporter:
       name: _WallSlide_1
       rect:
         serializedVersion: 2
-        x: 167
-        y: 2
-        width: 23
-        height: 34
-      alignment: 0
+        x: 168
+        y: 3
+        width: 21
+        height: 32
+      alignment: 7
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
@@ -179,11 +179,11 @@ TextureImporter:
       name: _WallSlide_2
       rect:
         serializedVersion: 2
-        x: 287
-        y: 2
-        width: 23
-        height: 34
-      alignment: 0
+        x: 288
+        y: 3
+        width: 21
+        height: 32
+      alignment: 7
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
@@ -201,7 +201,7 @@ TextureImporter:
     customData: 
     physicsShape: []
     bones: []
-    spriteID: 
+    spriteID: bfc40b14b783d314f9338200064cddeb
     internalID: 0
     vertices: []
     indices: 
@@ -209,7 +209,11 @@ TextureImporter:
     weights: []
     secondaryTextures: []
     spriteCustomMetadata:
-      entries: []
+      entries:
+      - key: SpriteEditor.SliceOnImport
+        value: True
+      - key: SpriteEditor.SliceSettings
+        value: '{"sliceOnImport":true,"gridCellCount":{"x":1.0,"y":1.0},"gridSpriteSize":{"x":64.0,"y":64.0},"gridSpriteOffset":{"x":0.0,"y":0.0},"gridSpritePadding":{"x":0.0,"y":0.0},"pivot":{"x":0.5,"y":0.0},"pivotPixels":{"x":0.0,"y":0.0},"autoSlicingMethod":0,"spriteAlignment":7,"pivotUnitMode":1,"slicingType":0,"keepEmptyRects":false,"isAlternate":false}'
     nameFileIdTable:
       _WallSlide_0: -8226172128858187006
       _WallSlide_1: 7951352749283311657

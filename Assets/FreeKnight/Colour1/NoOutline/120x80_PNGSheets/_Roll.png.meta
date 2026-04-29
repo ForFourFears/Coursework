@@ -162,12 +162,12 @@ TextureImporter:
       name: _Roll_0
       rect:
         serializedVersion: 2
-        x: 50
-        y: 1
-        width: 24
-        height: 38
-      alignment: 0
-      pivot: {x: 0, y: 0}
+        x: 51
+        y: 2
+        width: 22
+        height: 36
+      alignment: 7
+      pivot: {x: 0.4318182, y: 0.5138889}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -184,12 +184,12 @@ TextureImporter:
       name: _Roll_1
       rect:
         serializedVersion: 2
-        x: 163
-        y: 5
-        width: 37
-        height: 29
-      alignment: 0
-      pivot: {x: 0, y: 0}
+        x: 164
+        y: 6
+        width: 35
+        height: 27
+      alignment: 7
+      pivot: {x: 0.27142859, y: 0.6851852}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -206,12 +206,12 @@ TextureImporter:
       name: _Roll_2
       rect:
         serializedVersion: 2
-        x: 283
-        y: 8
-        width: 41
-        height: 24
-      alignment: 0
-      pivot: {x: 0, y: 0}
+        x: 284
+        y: 9
+        width: 39
+        height: 22
+      alignment: 7
+      pivot: {x: 0.24358974, y: 0.84090906}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -228,12 +228,12 @@ TextureImporter:
       name: _Roll_3
       rect:
         serializedVersion: 2
-        x: 402
-        y: 12
-        width: 43
-        height: 19
-      alignment: 0
-      pivot: {x: 0, y: 0}
+        x: 403
+        y: 13
+        width: 41
+        height: 17
+      alignment: 7
+      pivot: {x: 0.23170732, y: 1.0882353}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -250,12 +250,12 @@ TextureImporter:
       name: _Roll_4
       rect:
         serializedVersion: 2
-        x: 522
-        y: 12
-        width: 42
-        height: 19
-      alignment: 0
-      pivot: {x: 0, y: 0}
+        x: 523
+        y: 13
+        width: 40
+        height: 17
+      alignment: 7
+      pivot: {x: 0.2375, y: 1.0882353}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -272,12 +272,12 @@ TextureImporter:
       name: _Roll_5
       rect:
         serializedVersion: 2
-        x: 641
-        y: 7
-        width: 44
-        height: 23
-      alignment: 0
-      pivot: {x: 0, y: 0}
+        x: 642
+        y: 8
+        width: 42
+        height: 21
+      alignment: 7
+      pivot: {x: 0.22619048, y: 0.88095236}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -294,12 +294,12 @@ TextureImporter:
       name: _Roll_6
       rect:
         serializedVersion: 2
-        x: 767
+        x: 768
         y: 0
-        width: 28
-        height: 32
-      alignment: 0
-      pivot: {x: 0, y: 0}
+        width: 26
+        height: 31
+      alignment: 7
+      pivot: {x: 0.3653846, y: 0.5967742}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -316,12 +316,12 @@ TextureImporter:
       name: _Roll_7
       rect:
         serializedVersion: 2
-        x: 893
+        x: 894
         y: 0
-        width: 23
-        height: 27
-      alignment: 0
-      pivot: {x: 0, y: 0}
+        width: 21
+        height: 26
+      alignment: 7
+      pivot: {x: 0.45238096, y: 0.71153843}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -338,12 +338,12 @@ TextureImporter:
       name: _Roll_8
       rect:
         serializedVersion: 2
-        x: 1015
+        x: 1016
         y: 0
-        width: 25
-        height: 22
-      alignment: 0
-      pivot: {x: 0, y: 0}
+        width: 23
+        height: 21
+      alignment: 7
+      pivot: {x: 0.41304347, y: 0.88095236}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -360,12 +360,12 @@ TextureImporter:
       name: _Roll_9
       rect:
         serializedVersion: 2
-        x: 1129
+        x: 1130
         y: 0
-        width: 26
-        height: 20
-      alignment: 0
-      pivot: {x: 0, y: 0}
+        width: 24
+        height: 19
+      alignment: 7
+      pivot: {x: 0.39583334, y: 0.9736842}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -382,12 +382,12 @@ TextureImporter:
       name: _Roll_10
       rect:
         serializedVersion: 2
-        x: 1249
+        x: 1250
         y: 0
-        width: 22
-        height: 28
-      alignment: 0
-      pivot: {x: 0, y: 0}
+        width: 20
+        height: 27
+      alignment: 7
+      pivot: {x: 0.475, y: 0.6851852}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -404,12 +404,12 @@ TextureImporter:
       name: _Roll_11
       rect:
         serializedVersion: 2
-        x: 1365
+        x: 1366
         y: 0
-        width: 27
-        height: 33
-      alignment: 0
-      pivot: {x: 0, y: 0}
+        width: 25
+        height: 32
+      alignment: 7
+      pivot: {x: 0.38, y: 0.578125}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -426,7 +426,7 @@ TextureImporter:
     customData: 
     physicsShape: []
     bones: []
-    spriteID: 
+    spriteID: 02f262b6f29fdf340bebab93c95070c5
     internalID: 0
     vertices: []
     indices: 
@@ -434,7 +434,11 @@ TextureImporter:
     weights: []
     secondaryTextures: []
     spriteCustomMetadata:
-      entries: []
+      entries:
+      - key: SpriteEditor.SliceOnImport
+        value: True
+      - key: SpriteEditor.SliceSettings
+        value: '{"sliceOnImport":true,"gridCellCount":{"x":1.0,"y":1.0},"gridSpriteSize":{"x":64.0,"y":64.0},"gridSpriteOffset":{"x":0.0,"y":0.0},"gridSpritePadding":{"x":0.0,"y":0.0},"pivot":{"x":0.5,"y":0.0},"pivotPixels":{"x":9.5,"y":18.5},"autoSlicingMethod":0,"spriteAlignment":7,"pivotUnitMode":1,"slicingType":0,"keepEmptyRects":false,"isAlternate":false}'
     nameFileIdTable:
       _Roll_0: 1991978013701120253
       _Roll_1: -202818605549072326

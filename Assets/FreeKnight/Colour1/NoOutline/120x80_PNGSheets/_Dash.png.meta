@@ -132,12 +132,12 @@ TextureImporter:
       name: _Dash_0
       rect:
         serializedVersion: 2
-        x: 40
-        y: 0
-        width: 34
-        height: 35
-      alignment: 0
-      pivot: {x: 0, y: 0}
+        x: 41
+        y: 1
+        width: 32
+        height: 33
+      alignment: 7
+      pivot: {x: 0, y: 0.56060606}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -154,12 +154,12 @@ TextureImporter:
       name: _Dash_1
       rect:
         serializedVersion: 2
-        x: 160
-        y: 0
-        width: 34
-        height: 35
-      alignment: 0
-      pivot: {x: 0, y: 0}
+        x: 161
+        y: 1
+        width: 32
+        height: 33
+      alignment: 7
+      pivot: {x: 0, y: 0.56060606}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -176,7 +176,7 @@ TextureImporter:
     customData: 
     physicsShape: []
     bones: []
-    spriteID: 
+    spriteID: 6273db66169086841bbeb656b2b54bfe
     internalID: 0
     vertices: []
     indices: 
@@ -184,7 +184,11 @@ TextureImporter:
     weights: []
     secondaryTextures: []
     spriteCustomMetadata:
-      entries: []
+      entries:
+      - key: SpriteEditor.SliceOnImport
+        value: True
+      - key: SpriteEditor.SliceSettings
+        value: '{"sliceOnImport":true,"gridCellCount":{"x":1.0,"y":1.0},"gridSpriteSize":{"x":64.0,"y":64.0},"gridSpriteOffset":{"x":0.0,"y":0.0},"gridSpritePadding":{"x":0.0,"y":0.0},"pivot":{"x":0.5,"y":0.0},"pivotPixels":{"x":0.0,"y":18.5},"autoSlicingMethod":0,"spriteAlignment":7,"pivotUnitMode":1,"slicingType":0,"keepEmptyRects":false,"isAlternate":false}'
     nameFileIdTable:
       _Dash_0: -6774723202295623862
       _Dash_1: -1114226136772084229

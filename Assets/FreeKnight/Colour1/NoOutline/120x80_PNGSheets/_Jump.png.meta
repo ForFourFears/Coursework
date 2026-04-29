@@ -135,12 +135,12 @@ TextureImporter:
       name: _Jump_0
       rect:
         serializedVersion: 2
-        x: 44
+        x: 45
         y: 0
-        width: 25
-        height: 38
-      alignment: 0
-      pivot: {x: 0, y: 0}
+        width: 23
+        height: 37
+      alignment: 7
+      pivot: {x: 0.41304347, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -157,12 +157,12 @@ TextureImporter:
       name: _Jump_1
       rect:
         serializedVersion: 2
-        x: 164
+        x: 165
         y: 0
-        width: 25
-        height: 38
-      alignment: 0
-      pivot: {x: 0, y: 0}
+        width: 23
+        height: 37
+      alignment: 7
+      pivot: {x: 0.41304347, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -179,12 +179,12 @@ TextureImporter:
       name: _Jump_2
       rect:
         serializedVersion: 2
-        x: 284
+        x: 285
         y: 0
-        width: 25
-        height: 38
-      alignment: 0
-      pivot: {x: 0, y: 0}
+        width: 23
+        height: 37
+      alignment: 7
+      pivot: {x: 0.41304347, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -201,7 +201,7 @@ TextureImporter:
     customData: 
     physicsShape: []
     bones: []
-    spriteID: 
+    spriteID: 57837cf7979ac644bbc1fcfea858fad4
     internalID: 0
     vertices: []
     indices: 
@@ -209,7 +209,11 @@ TextureImporter:
     weights: []
     secondaryTextures: []
     spriteCustomMetadata:
-      entries: []
+      entries:
+      - key: SpriteEditor.SliceOnImport
+        value: True
+      - key: SpriteEditor.SliceSettings
+        value: '{"sliceOnImport":true,"gridCellCount":{"x":1.0,"y":1.0},"gridSpriteSize":{"x":64.0,"y":64.0},"gridSpriteOffset":{"x":0.0,"y":0.0},"gridSpritePadding":{"x":0.0,"y":0.0},"pivot":{"x":0.5,"y":0.0},"pivotPixels":{"x":9.5,"y":18.5},"autoSlicingMethod":0,"spriteAlignment":7,"pivotUnitMode":1,"slicingType":0,"keepEmptyRects":false,"isAlternate":false}'
     nameFileIdTable:
       _Jump_0: -3042636792007762463
       _Jump_1: 833755990622159847
