@@ -1,148 +1,173 @@
-using System;
-using UnityEngine;
-using Scripts;
-using Coursework.Scripts.Animation;
-using UnityEngine.InputSystem;
+    using Coursework.Scripts.Animation;
+    using Coursework.Scripts.LogicController.ActionStateMachine;
+    using Coursework.Scripts.LogicController.ActionTriggerHub;
+    using Scripts;
+    using System;
+    using UnityEngine;
+    using UnityEngine.InputSystem;
 
 
-namespace Coursework.Scripts.LogicController
-{
-    public class PlayerController : MonoBehaviour, IStateMachineProvider<PlayerActionState>
+    namespace Coursework.Scripts.LogicController
     {
-
-        #region Public part
-        public ActionStateMachine<PlayerActionState> StateMachine { get; private set; } = new ActionStateMachine<PlayerActionState>();
-        #endregion
-        #region Serialize part
-        [Header("Movement")]
-        [SerializeField] private Rigidbody2D _rb;
-        [SerializeField] private float _speed;
-        [SerializeField] private float _jumpForce;
-
-        [Header("Ground Check")]
-        [SerializeField] private Transform _groundCheck;
-        [SerializeField] private float _groundCheckRadius = 0.1f;
-        [SerializeField] private LayerMask _groundLayer;
-        #endregion
-        #region Private part
-        private InputSystemActions inputActions;
-        private ObservableSMBsHub observableSMBsHub;
-
-        private Vector2 moveInput;
-        private Vector2 lastMoveInput = new(1, 0);
-        #endregion
-
-        private void Awake()
+        public class PlayerController : MonoBehaviour, IActionSystemProvider<PlayerActionState, PlayerActionTrigger>
         {
-            inputActions = new InputSystemActions();
-            _rb = _rb != null ? _rb : GetComponent<Rigidbody2D>();
-        }
 
-        private void OnEnable()
-        {
-            inputActions.Enable();
+            #region Public part
+            public IActionStateMachine<PlayerActionState> StateMachine => stateMachine;
+            public IActionTriggerHub<PlayerActionTrigger> TriggerHub => triggerHub;
 
-            inputActions.Player.Move.performed += OnMove;
-            inputActions.Player.Move.canceled += OnMove;
+            #endregion
 
-            inputActions.Player.Jump.performed += OnJumpPerformed;
-        }
+            #region Serialize part
+            [Header("Movement")]
+            [SerializeField] private Rigidbody2D _rb;
+            [SerializeField] private float _moveSpeed = 1.4f;
+            [SerializeField] private float _speedInTurn = 0f;
+            [SerializeField] private float _jumpForce;
 
-        private void OnDisable()
-        {
-            inputActions.Player.Move.performed -= OnMove;
-            inputActions.Player.Move.canceled -= OnMove;
+            [Header("Ground Check")]
+            [SerializeField] private Transform _groundCheck;
+            [SerializeField] private float _groundCheckRadius = 0.1f;
+            [SerializeField] private LayerMask _groundLayer;
+            #endregion
 
-            inputActions.Player.Jump.performed -= OnJumpPerformed;
+            #region Private part
+            private InputSystemActions inputActions;
 
-            inputActions.Disable();
-        }
+            private readonly ActionStateMachine<PlayerActionState> stateMachine = new();
+            private readonly ActionTriggerHub<PlayerActionTrigger> triggerHub = new();
+            private ObservableSMBsHub observableSMBsHub;
 
-        private void FixedUpdate()
-        {
-            Move();
-            UpdateState();
-        }
+            private float currentSpeed;
+            private Vector2 moveInput;
+            private Vector2 lastMoveInput = new(1, 0);
 
-        private void OnMove(InputAction.CallbackContext context)
-        {
-            moveInput = context.ReadValue<Vector2>();
-            UpdateDirection();
-        }
+            private bool IsGrounded => Physics2D.OverlapCircle(_groundCheck.position, _groundCheckRadius, _groundLayer) != null;
+            private bool IsCheckUpdateDirection => moveInput.x != 0 && Math.Sign(moveInput.x) != Math.Sign(lastMoveInput.x);
+            private bool isBlockedUpdateStateMachine;
+            private float intendedScaleX;
+            #endregion
 
-        private void Move()
-        {
-            _rb.linearVelocity = new Vector2(moveInput.x * _speed, _rb.linearVelocity.y);
+            private void Awake()
+            {
+                inputActions = new InputSystemActions();
+                _rb = _rb != null ? _rb : GetComponent<Rigidbody2D>();
+                observableSMBsHub = observableSMBsHub != null ? observableSMBsHub : GetComponent<ObservableSMBsHub>();
+
+                currentSpeed = _moveSpeed;
+            }
+
+            private void OnEnable()
+            {
+                inputActions.Enable();
+
+                inputActions.Player.Move.performed += OnMove;
+                inputActions.Player.Move.canceled += OnMove;
+
+                inputActions.Player.Jump.performed += OnJumpPerformed;
+
+                stateMachine[PlayerActionState.TurnAround].Entered += OnEnterTurn;
+                observableSMBsHub["TurnAround"].ExitState += OnExitTurn;
+            }
+
+            private void OnDisable()
+            {
+                inputActions.Player.Move.performed -= OnMove;
+                inputActions.Player.Move.canceled -= OnMove;
+
+                inputActions.Player.Jump.performed -= OnJumpPerformed;
+
+                stateMachine[PlayerActionState.TurnAround].Entered -= OnEnterTurn;
+                observableSMBsHub["TurnAround"].ExitState -= OnExitTurn;
+
+                inputActions.Disable();
+            }
+
+            private void FixedUpdate()
+            {
+                Move();
             
-        }
-
-        private void OnJumpPerformed(InputAction.CallbackContext context)
-        {
-            if (GroundCheck())
-            {
-                _rb.AddForce(new Vector2(0, _jumpForce), ForceMode2D.Impulse);
+                UpdateState();
             }
-                
-        }
 
-        #region Support methods
-        private bool CheckUpdateDirection()
-        {
-            bool result = moveInput.x != 0 && Math.Sign(moveInput.x) != Math.Sign(lastMoveInput.x);
-            return result;
-        }
-
-        private void UpdateDirection()
-        {
-            if (CheckUpdateDirection())
+            #region On events
+            private void OnMove(InputAction.CallbackContext context)
             {
-                gameObject.transform.localScale = new Vector3(gameObject.transform.localScale.x * -1, gameObject.transform.localScale.y, gameObject.transform.localScale.z);
-                lastMoveInput = moveInput;
+                moveInput = context.ReadValue<Vector2>();
             }
-        }
-
-        private void UpdateState()
-        {
-            PlayerActionState targetState;
-            if (GroundCheck())
+            private void OnJumpPerformed(InputAction.CallbackContext context)
             {
-                if (_rb.linearVelocityX != 0)
+                if (IsGrounded)
                 {
-                    targetState = PlayerActionState.Run;
+                    _rb.AddForce(new Vector2(0, _jumpForce), ForceMode2D.Impulse);
                 }
-                else targetState = PlayerActionState.Idle;
+
             }
-            else
+            private void OnEnterTurn()
             {
-                if (_rb.linearVelocityY > 0)
+                currentSpeed = _speedInTurn;
+                isBlockedUpdateStateMachine = true;
+            }
+
+            private void OnExitTurn()
+            {
+                UpdateDirection();
+                currentSpeed = _moveSpeed;
+                isBlockedUpdateStateMachine = false;
+            }
+            #endregion
+
+            private void UpdateState()
+            {
+                if (isBlockedUpdateStateMachine == true) return;
+                PlayerActionState targetState;
+                if (IsGrounded)
                 {
-                    targetState = PlayerActionState.Jump;
+                    if (IsCheckUpdateDirection)
+                    {
+                        intendedScaleX = Mathf.Sign(moveInput.x);
+                        lastMoveInput = new Vector2(intendedScaleX, 0);
+                        stateMachine.ChangeState(PlayerActionState.TurnAround);
+                        return;
+                    }
+                    else
+                    {
+                        targetState = (_rb.linearVelocityX != 0) ? PlayerActionState.Run : PlayerActionState.Idle;
+                    }
                 }
                 else
                 {
-                        targetState = PlayerActionState.Fall;
+                    if (IsCheckUpdateDirection)
+                    {
+                        intendedScaleX = Mathf.Sign(moveInput.x);
+                    
+                        UpdateDirection();                    
+                    }
+                    targetState = (_rb.linearVelocityY > 0) ? PlayerActionState.Jump : PlayerActionState.Fall;
                 }
+                stateMachine.ChangeState(targetState);
             }
-            StateMachine.ChangeState(targetState);
 
+            private void Move()
+            {
+                _rb.linearVelocity = new Vector2(moveInput.x * currentSpeed, _rb.linearVelocity.y);
+            
+            }
 
+            private void UpdateDirection()
+            {
+                float localScaleX = MathF.Abs(transform.localScale.x);
+                gameObject.transform.localScale = new Vector3(localScaleX * Mathf.Sign(intendedScaleX), gameObject.transform.localScale.y, gameObject.transform.localScale.z);
+                lastMoveInput = new Vector2(intendedScaleX, 0);
+            }
+
+            private void OnDrawGizmosSelected()
+            {
+                if (_groundCheck == null) return;
+
+                Gizmos.color = Color.red;
+                Gizmos.DrawWireSphere(_groundCheck.position, _groundCheckRadius);
+            }
         }
 
-        private bool GroundCheck()
-        {
-            if (Physics2D.OverlapCircle(_groundCheck.position, _groundCheckRadius, _groundLayer) != null) return true;
-            else return false;
-        }
-
-        #endregion
-
-        private void OnDrawGizmosSelected()
-        {
-            if (_groundCheck == null) return;
-
-            Gizmos.color = Color.red;
-            Gizmos.DrawWireSphere(_groundCheck.position, _groundCheckRadius);
-        }
     }
-
-}

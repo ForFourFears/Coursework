@@ -807,8 +807,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Scripts.CharacterController
   _rb: {fileID: 2130661912}
-  _moveSpeed: 1.4
-  _speedInTurn: 0.75
+  _speed: 1.4
   _jumpForce: 5
   _groundCheck: {fileID: 1649720720}
   _groundCheckRadius: 0.05

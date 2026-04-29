@@ -31,6 +31,7 @@ namespace Coursework.Scripts.Animation
             var behaviours = animator.GetBehaviours<ObservableSMB>();
             foreach (var behaviour in behaviours)
             {
+                Debug.Log($"Собрал {behaviour.StateName}");
                 var stateHash = Animator.StringToHash(behaviour.StateName);
                 AnimationStates.Add(stateHash, behaviour);
             }

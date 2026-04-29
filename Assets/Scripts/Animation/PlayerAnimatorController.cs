@@ -1,10 +1,11 @@
 using System;
 using UnityEngine;
-using Coursework.Scripts.LogicController;
+using Coursework.Scripts.LogicController.ActionStateMachine;
+using Coursework.Scripts.LogicController.ActionTriggerHub;
 
 namespace Coursework.Scripts.Animation
 {
-    public class PlayerAnimatorController : BaseAnimationController<PlayerActionState>
+    public class PlayerAnimatorController : BaseAnimationController<PlayerActionState, PlayerActionTrigger>
     {
         private void OnEnable()
         {
@@ -13,6 +14,7 @@ namespace Coursework.Scripts.Animation
             stateMachine[PlayerActionState.Jump].Entered += OnJump;
             stateMachine[PlayerActionState.Fall].Entered += OnFall;
             stateMachine[PlayerActionState.Fall].Exit += OnFallEnd;
+            stateMachine[PlayerActionState.TurnAround].Entered += OnTurnAround;
         }
 
         private void OnDisable()
@@ -22,6 +24,7 @@ namespace Coursework.Scripts.Animation
             stateMachine[PlayerActionState.Jump].Entered -= OnJump;
             stateMachine[PlayerActionState.Fall].Entered -= OnFall;
             stateMachine[PlayerActionState.Fall].Exit -= OnFallEnd;
+            stateMachine[PlayerActionState.TurnAround].Entered -= OnTurnAround;
         }
 
         private void OnIdle()
@@ -47,6 +50,11 @@ namespace Coursework.Scripts.Animation
         private void OnFallEnd()
         {
             _characterAnimator.SetBool("IsFall", false);
+        }
+
+        private void OnTurnAround()
+        {
+            _characterAnimator.SetTrigger("IsTurnAround");
         }
 
         

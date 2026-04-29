@@ -7,15 +7,24 @@ namespace Coursework.Scripts.Animation
     {
         [Tooltip("Точное имя состояния в Animator")]
         [field: SerializeField] public string StateName { get; private set; }
-        public int StateHash { get; private set; }
+        //public int StateHash { get; private set; }
 
         public event Action EnterState;
         public event Action ExitState;
 
-        private void Awake()
+        public override void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
         {
-            StateHash = Animator.StringToHash(StateName);
+            EnterState?.Invoke();
         }
+
+        public override void OnStateExit(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
+        {
+            ExitState?.Invoke();
+        }
+        //private void Awake()
+        //{
+        //    StateHash = Animator.StringToHash(StateName);
+        //}
     }
 }
 
