@@ -16,6 +16,7 @@ namespace Coursework.Scripts.Animation
         protected IActionSystemProvider<TState, TAction> actionSystemProvider;
         protected IActionStateMachine<TState> stateMachine;
         protected IActionTriggerHub<TAction> triggerHub;
+        protected ObservableSMBsHub animationEventHub;
         protected Rigidbody2D rb;
         protected int currentAnimationHash;
 

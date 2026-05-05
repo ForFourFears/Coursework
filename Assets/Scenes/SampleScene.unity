@@ -807,7 +807,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Scripts.CharacterController
   <Rigidbody>k__BackingField: {fileID: 0}
-  _moveSpeedModifier: 1.4
+  _runSpeedModifier: 1.4
   _jumpForceModifier: 5
   _groundCheck: {fileID: 1649720720}
   _groundCheckRadius: 0.05
@@ -849,6 +849,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Coursework.Controller.PlayerAnimatorController
   _characterAnimator: {fileID: 2130661914}
+  _airStateThreshold: 0.8
 --- !u!114 &2130661917
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -7,6 +7,7 @@ namespace Coursework.Scripts.Animation
 {
     public class KnightAnimatorController : BaseAnimationController<PlayerActionState, PlayerActionTrigger>
     {
+        #region Animator Hashes
         private static readonly int IdleHash = Animator.StringToHash("Idle");
         private static readonly int RunHash = Animator.StringToHash("Run");
 
@@ -38,8 +39,9 @@ namespace Coursework.Scripts.Animation
         private static readonly int SlideHash = Animator.StringToHash("Slide");
         private static readonly int SlideTransitionEndHash = Animator.StringToHash("SlideTransitionEnd");
         private static readonly int SlideFullHash = Animator.StringToHash("SlideFull");
+        #endregion
 
-
+        [SerializeField] private float _airStateThreshold = 1f;
 
         //private void OnEnable()
         //{
@@ -75,8 +77,8 @@ namespace Coursework.Scripts.Animation
         {
             int targetAnimationHash = rb.linearVelocityY switch
             {
-                > 1.5f => JumpHash,
-                < -1.5f => FallHash,
+                var y when y > _airStateThreshold => JumpHash,
+                var y when y < -_airStateThreshold => FallHash,
                 _ => JumpFallInBetweenHash,
             };
             ChangeAnimation(targetAnimationHash, 0);

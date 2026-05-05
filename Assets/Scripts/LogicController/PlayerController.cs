@@ -13,6 +13,7 @@ namespace Coursework.Scripts.LogicController
         #region Public part
         public IActionStateMachine<PlayerActionState> StateMachine => stateMachine;
         public IActionTriggerHub<PlayerActionTrigger> TriggerHub => triggerHub;
+        public ObservableSMBsHub AnimationEventHub { get; private set; }
         public bool IsGrounded => Physics2D.OverlapCircle(_groundCheck.position, _groundCheckRadius, _groundLayer) != null;
         
         #endregion
@@ -20,7 +21,8 @@ namespace Coursework.Scripts.LogicController
         #region Serialize part
         [Header("Movement")]
         [field: SerializeField] public Rigidbody2D Rigidbody {  get; private set; }
-        [SerializeField] private float _moveSpeedModifier = 1.4f;
+        [SerializeField] private float _runSpeedModifier = 1.4f;
+        [SerializeField] private float _crouchSpeedModifier = 1f;
         [SerializeField] private float _jumpForceModifier = 5f;
 
         [Header("Ground Check")]
@@ -45,8 +47,9 @@ namespace Coursework.Scripts.LogicController
         {
             inputActions = new InputSystemActions();
             Rigidbody = Rigidbody != null ? Rigidbody : GetComponent<Rigidbody2D>();
+            AnimationEventHub = AnimationEventHub != null ? AnimationEventHub : GetComponent<ObservableSMBsHub>();
 
-            currentSpeedModifier = _moveSpeedModifier;
+            currentSpeedModifier = _runSpeedModifier;
         }
 
         private void OnEnable()
@@ -75,7 +78,7 @@ namespace Coursework.Scripts.LogicController
             UpdateState();
         }
 
-        #region On events
+        #region On input events
         private void OnMove(InputAction.CallbackContext context)
         {
             moveInput = context.ReadValue<Vector2>();
@@ -97,8 +100,14 @@ namespace Coursework.Scripts.LogicController
 
             if (IsGrounded)
             {
-
-                targetState = PlayerActionState.Locomotion;
+                if (moveInput.y < 0)
+                {
+                    targetState = PlayerActionState.Crouch;
+                }
+                else
+                {
+                    targetState = PlayerActionState.Locomotion;
+                }
             }
             else
             {
