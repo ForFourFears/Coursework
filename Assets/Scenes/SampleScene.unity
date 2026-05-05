@@ -454,7 +454,7 @@ Camera:
   far clip plane: 1000
   field of view: 34
   orthographic: 1
-  orthographic size: 1
+  orthographic size: 1.46
   m_Depth: -1
   m_CullingMask:
     serializedVersion: 2
@@ -806,10 +806,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 63c5ed8c93620364f8ce407eb999fd46, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Scripts.CharacterController
-  _rb: {fileID: 2130661912}
-  _moveSpeed: 1.4
-  _speedInTurn: 0.75
-  _jumpForce: 5
+  <Rigidbody>k__BackingField: {fileID: 0}
+  _moveSpeedModifier: 1.4
+  _jumpForceModifier: 5
   _groundCheck: {fileID: 1649720720}
   _groundCheckRadius: 0.05
   _groundLayer:

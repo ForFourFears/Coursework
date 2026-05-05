@@ -1,6 +1,7 @@
 using System;
 using Coursework.Scripts.LogicController.ActionTriggerHub;
 using Coursework.Scripts.LogicController.ActionStateMachine;
+using UnityEngine;
 
 namespace Coursework.Scripts.LogicController
 {
@@ -9,5 +10,7 @@ namespace Coursework.Scripts.LogicController
         ITriggerHubProvider<TAction>
         where TState : Enum
         where TAction : Enum
-    { }
+    { 
+        public Rigidbody2D Rigidbody { get; }
+    }
 }

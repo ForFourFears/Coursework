@@ -5,11 +5,17 @@ namespace Coursework.Scripts.LogicController.ActionStateMachine
     #region StateMachineEnums
     public enum PlayerActionState
     {
-        Idle,
-        Run,
-        Jump,
-        Fall,
-        TurnAround
+        Locomotion,
+        Air,
+        Crouch,
+        WallInteraction,
+        TurnAround,
+        Attack,
+        Roll,
+        Dash,
+        Slide,
+        Death,
+        Hit 
     }
     #endregion
 

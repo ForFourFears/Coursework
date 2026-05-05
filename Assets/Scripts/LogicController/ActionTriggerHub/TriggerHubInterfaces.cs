@@ -5,8 +5,7 @@ namespace Coursework.Scripts.LogicController.ActionTriggerHub
     #region StateMachineEnums
     public enum PlayerActionTrigger
     {
-        FallStarted,
-        TurnAround
+        Jump
     }
     #endregion
 
