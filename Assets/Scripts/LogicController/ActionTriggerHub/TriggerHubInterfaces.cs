@@ -1,6 +1,6 @@
 using System;
 
-namespace Coursework.Scripts.LogicController.ActionTriggerHub
+namespace Assets.Scripts.LogicController.ActionTriggerHub
 {
     #region StateMachineEnums
     public enum PlayerActionTrigger

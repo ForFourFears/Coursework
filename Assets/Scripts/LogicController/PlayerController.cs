@@ -1,12 +1,13 @@
-using Coursework.Scripts.Animation;
-using Coursework.Scripts.LogicController.ActionStateMachine;
-using Coursework.Scripts.LogicController.ActionTriggerHub;
+using Assets.Scripts.Animation;
+using Assets.Scripts.LogicController;
+using Assets.Scripts.LogicController.ActionStateMachine;
+using Assets.Scripts.LogicController.ActionTriggerHub;
 using Scripts;
 using System;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-namespace Coursework.Scripts.LogicController
+namespace Assets.Scripts.LogicController
 {
     public class PlayerController : MonoBehaviour, IActionSystemProvider<PlayerActionState, PlayerActionTrigger>
     {
@@ -42,7 +43,7 @@ namespace Coursework.Scripts.LogicController
 
         
         #endregion
-
+        
         private void Awake()
         {
             inputActions = new InputSystemActions();

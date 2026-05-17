@@ -1,10 +1,10 @@
 using System;
-using Coursework.Scripts.LogicController.ActionTriggerHub;
-using Coursework.Scripts.LogicController.ActionStateMachine;
+using Assets.Scripts.LogicController.ActionTriggerHub;
+using Assets.Scripts.LogicController.ActionStateMachine;
 using UnityEngine;
-using Coursework.Scripts.Animation;
+using Assets.Scripts.Animation;
 
-namespace Coursework.Scripts.LogicController
+namespace Assets.Scripts.LogicController
 {
     public interface IActionSystemProvider<TState, TAction> :
         IStateMachineProvider<TState>,

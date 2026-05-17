@@ -1,12 +1,13 @@
 using System;
 using UnityEngine;
-using Coursework.Scripts.LogicController;
-using Coursework.Scripts.LogicController.ActionStateMachine;
-using Coursework.Scripts.LogicController.ActionTriggerHub;
+using Assets.Scripts.LogicController;
+using Assets.Scripts.LogicController.ActionStateMachine;
+using Assets.Scripts.LogicController.ActionTriggerHub;
+using Assets.Scripts.Animation;
 
-
-namespace Coursework.Scripts.Animation
+namespace Assets.Scripts.Animation
 {
+    [RequireComponent(typeof(Animator))]
     public abstract class BaseAnimationController<TState, TAction> : MonoBehaviour 
         where TState : Enum
         where TAction : Enum
@@ -34,6 +35,7 @@ namespace Coursework.Scripts.Animation
                 stateMachine = actionSystemProvider.StateMachine;
                 triggerHub = actionSystemProvider.TriggerHub;
                 rb = actionSystemProvider.Rigidbody;
+                animationEventHub = actionSystemProvider.AnimationEventHub;
             }
         }
 

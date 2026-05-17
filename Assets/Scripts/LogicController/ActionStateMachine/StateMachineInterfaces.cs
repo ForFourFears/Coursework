@@ -1,6 +1,6 @@
 using System;
 
-namespace Coursework.Scripts.LogicController.ActionStateMachine
+namespace Assets.Scripts.LogicController.ActionStateMachine
 {
     #region StateMachineEnums
     public enum PlayerActionState

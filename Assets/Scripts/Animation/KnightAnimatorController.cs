@@ -1,9 +1,10 @@
 using System;
 using UnityEngine;
-using Coursework.Scripts.LogicController.ActionStateMachine;
-using Coursework.Scripts.LogicController.ActionTriggerHub;
+using Assets.Scripts.LogicController.ActionStateMachine;
+using Assets.Scripts.LogicController.ActionTriggerHub;
+using Assets.Scripts.Animation;
 
-namespace Coursework.Scripts.Animation
+namespace Assets.Scripts.Animation
 {
     public class KnightAnimatorController : BaseAnimationController<PlayerActionState, PlayerActionTrigger>
     {
@@ -43,25 +44,52 @@ namespace Coursework.Scripts.Animation
 
         [SerializeField] private float _airStateThreshold = 1f;
 
-        //private void OnEnable()
-        //{
+        private bool isBlockedUpdate;
 
-        //}
+        private void OnEnable()
+        {
+            stateMachine[PlayerActionState.Crouch].Entered += OnEnteredCrounchState;
+            stateMachine[PlayerActionState.Crouch].Exit += OnExitCrounchState;
+            animationEventHub[CrouchTransitionHash].ExitState += OnCrouchTransitionEnd;
+        }
 
-        //private void OnDisable()
-        //{
-
-        //}
+        private void OnDisable()
+        {
+            stateMachine[PlayerActionState.Crouch].Entered -= OnEnteredCrounchState;
+            stateMachine[PlayerActionState.Crouch].Exit -= OnExitCrounchState;
+            animationEventHub[CrouchTransitionHash].ExitState -= OnCrouchTransitionEnd;
+        }
 
         private void Update()
         {
+            if (isBlockedUpdate) return;
             switch (stateMachine.CurrentState)
             {
                 case PlayerActionState.Locomotion: OnLocomotion(); break;
                 case PlayerActionState.Air: OnAir(); break;
+                case PlayerActionState.Crouch: OnCrouch(); break;
+                default: Debug.LogError($"[KnightAnimatorController]: unidentified State: {stateMachine.CurrentState}"); break;
             }
         }
 
+        private void OnEnteredCrounchState()
+        {
+            isBlockedUpdate = true;
+            ChangeAnimation(CrouchTransitionHash, 0);
+        }
+
+        private void OnExitCrounchState()
+        {
+            isBlockedUpdate = true;
+            ChangeAnimation(CrouchTransitionHash, 0);
+        }
+
+        private void OnCrouchTransitionEnd()
+        {
+            isBlockedUpdate = false;
+        }
+
+        #region On Player Action State
         private void OnLocomotion()
         {
             int targetAnimationHash = Mathf.Abs(rb.linearVelocityX) switch
@@ -86,7 +114,12 @@ namespace Coursework.Scripts.Animation
 
         private void OnCrouch()
         {
-
+            int targetAnimationHash = Mathf.Abs(rb.linearVelocityX) switch
+            {
+                > 0.1f => CrouchWalkHash,
+                _ => CrouchHash,
+            };
+            ChangeAnimation(targetAnimationHash, 0);
         }
 
         private void OnWallInteraction()
@@ -96,7 +129,7 @@ namespace Coursework.Scripts.Animation
 
         private void OnTurnAround()
         {
-            _characterAnimator.SetTrigger("IsTurnAround");
+            
         }
 
         private void OnAttack()
@@ -128,6 +161,6 @@ namespace Coursework.Scripts.Animation
         {
 
         }
-
+        #endregion
     }
 }

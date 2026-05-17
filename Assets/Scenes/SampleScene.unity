@@ -454,7 +454,7 @@ Camera:
   far clip plane: 1000
   field of view: 34
   orthographic: 1
-  orthographic size: 1.46
+  orthographic size: 1.98
   m_Depth: -1
   m_CullingMask:
     serializedVersion: 2
@@ -479,11 +479,11 @@ Transform:
   m_GameObject: {fileID: 519420028}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0.030000001, y: 0.385, z: -10}
+  m_LocalPosition: {x: -0.64, y: -1.6, z: -10}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 2130661910}
+  m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &619394800
 GameObject:
@@ -729,12 +729,11 @@ Transform:
   m_GameObject: {fileID: 2130661907}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -0.28991, y: -2.78, z: 0}
+  m_LocalPosition: {x: -0.67, y: -2.78, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 1649720720}
-  - {fileID: 519420032}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &2130661911
@@ -808,6 +807,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Scripts.CharacterController
   <Rigidbody>k__BackingField: {fileID: 0}
   _runSpeedModifier: 1.4
+  _crouchSpeedModifier: 1
   _jumpForceModifier: 5
   _groundCheck: {fileID: 1649720720}
   _groundCheckRadius: 0.05
@@ -867,6 +867,7 @@ SceneRoots:
   m_ObjectHideFlags: 0
   m_Roots:
   - {fileID: 619394802}
+  - {fileID: 519420032}
   - {fileID: 44181618}
   - {fileID: 2130661910}
   - {fileID: 450426905}

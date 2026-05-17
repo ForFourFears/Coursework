@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 
-namespace Coursework.Scripts.Animation
+namespace Assets.Scripts.Animation
 {
     public class ObservableSMBsHub : MonoBehaviour
     {
@@ -14,6 +14,14 @@ namespace Coursework.Scripts.Animation
             {
                 if (AnimationStates == null) Initialize();
                 var stateHash = Animator.StringToHash(stateName);
+                return AnimationStates[stateHash];
+            }
+        }
+        public ObservableSMB this[int stateHash]
+        {
+            get
+            {
+                if (AnimationStates == null) Initialize();
                 return AnimationStates[stateHash];
             }
         }
