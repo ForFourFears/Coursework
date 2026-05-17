@@ -1,7 +1,8 @@
 ﻿using Scripts;
 using UnityEngine;
+using Coursework.LogicControllers.ActionBuffers;
 
-namespace Assets.Scripts.LogicController
+namespace Coursework.LogicControllers
 {
 	interface IEntityContext
 	{

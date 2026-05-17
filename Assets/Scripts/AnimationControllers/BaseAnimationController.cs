@@ -1,11 +1,10 @@
 using System;
 using UnityEngine;
-using Assets.Scripts.LogicController;
-using Assets.Scripts.LogicController.ActionStateMachine;
-using Assets.Scripts.LogicController.ActionTriggerHub;
-using Assets.Scripts.Animation;
+using Coursework.LogicControllers;
+using Coursework.LogicControllers.ActionTriggerHubs;
+using Coursework.LogicControllers.ActionStateMachines;
 
-namespace Assets.Scripts.Animation
+namespace Coursework.AnimationControllers
 {
     [RequireComponent(typeof(Animator))]
     public abstract class BaseAnimationController<TState, TAction> : MonoBehaviour 
@@ -33,7 +32,6 @@ namespace Assets.Scripts.Animation
             else
             {
                 stateMachine = actionSystemProvider.StateMachine;
-                triggerHub = actionSystemProvider.TriggerHub;
                 rb = actionSystemProvider.Rigidbody;
                 animationEventHub = actionSystemProvider.AnimationEventHub;
             }

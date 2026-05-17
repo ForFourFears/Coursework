@@ -1,13 +1,11 @@
-using Assets.Scripts.Animation;
-using Assets.Scripts.LogicController;
-using Assets.Scripts.LogicController.ActionStateMachine;
-using Assets.Scripts.LogicController.ActionTriggerHub;
-using Scripts;
 using System;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using Coursework.AnimationControllers;
+using Coursework.LogicControllers.ActionStateMachines;
+using Coursework.LogicControllers.ActionTriggerHubs;
 
-namespace Assets.Scripts.LogicController
+namespace Coursework.LogicControllers
 {
     public class PlayerController : MonoBehaviour, IActionSystemProvider<PlayerActionState, PlayerActionTrigger>
     {

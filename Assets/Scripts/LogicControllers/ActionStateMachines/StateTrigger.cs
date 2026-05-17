@@ -1,6 +1,6 @@
 using System;
 
-namespace Assets.Scripts.LogicController.ActionStateMachine
+namespace Coursework.LogicControllers.ActionStateMachines
 {
     public class StateTrigger : IStateTrigger
     {

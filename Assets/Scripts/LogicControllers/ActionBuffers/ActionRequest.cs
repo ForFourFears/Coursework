@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Drawing;
 
-namespace Assets.Scripts.LogicController.ActionBuffer
+namespace Coursework.LogicControllers.ActionBuffers
 {
     public enum PlayerActions
     {

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 
-namespace Assets.Scripts.Animation
+namespace Coursework.AnimationControllers
 {
     public class ObservableSMBsHub : MonoBehaviour
     {

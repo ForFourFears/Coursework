@@ -1,8 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
 
-namespace Assets.Scripts.LogicController.ActionBuffer
+namespace Coursework.LogicControllers.ActionBuffers
 {
     class ActionBuffer
     {

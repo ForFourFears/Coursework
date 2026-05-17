@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace Assets.Scripts.LogicController.ActionTriggerHub
+namespace Coursework.LogicControllers.ActionTriggerHubs
 {
     public class ActionTriggerHub<TAction> : IActionTriggerHub<TAction> where TAction : Enum
     {

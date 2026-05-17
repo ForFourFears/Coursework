@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace Assets.Scripts.LogicController.ActionStateMachine
+namespace Coursework.LogicControllers.ActionStateMachines
 {
     public class ActionStateMachine<TState> : IActionStateMachine<TState> where TState : Enum
     {

@@ -1,6 +1,6 @@
 using System;
 
-namespace Assets.Scripts.LogicController.ActionTriggerHub
+namespace Coursework.LogicControllers.ActionTriggerHubs
 {
     public class ActionTrigger : IActionTrigger
     {

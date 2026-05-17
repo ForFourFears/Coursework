@@ -1,10 +1,9 @@
 using System;
 using UnityEngine;
-using Assets.Scripts.LogicController.ActionStateMachine;
-using Assets.Scripts.LogicController.ActionTriggerHub;
-using Assets.Scripts.Animation;
+using Coursework.LogicControllers.ActionTriggerHubs;
+using Coursework.LogicControllers.ActionStateMachines;
 
-namespace Assets.Scripts.Animation
+namespace Coursework.AnimationControllers
 {
     public class KnightAnimatorController : BaseAnimationController<PlayerActionState, PlayerActionTrigger>
     {
