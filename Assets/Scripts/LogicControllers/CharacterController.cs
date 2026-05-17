@@ -1,5 +1,6 @@
 ﻿using Scripts;
 using UnityEngine;
+using UnityEngine.InputSystem;
 using Coursework.LogicControllers.ActionBuffers;
 
 namespace Coursework.LogicControllers
@@ -71,21 +72,25 @@ namespace Coursework.LogicControllers
         private void OnEnable()
         {
             inputSystemActions.Enable();
+
             inputSystemActions.Player.Move.performed += OnMove;
             inputSystemActions.Player.Move.canceled += OnMove;
+            inputSystemActions.Player.Jump.performed += OnJump;
         }
 
         private void OnDisable()
         {
             inputSystemActions.Player.Move.performed -= OnMove;
             inputSystemActions.Player.Move.canceled -= OnMove;
+            inputSystemActions.Player.Jump.performed -= OnJump;
+
             inputSystemActions.Disable();
         }
 
         private void Update()
         {
             IsCrouchIntentHeld = CheckCrouchIntent();
-
+            actionBuffer.Update(Time.deltaTime);
             actionStateMachine.Update();
         }
 
@@ -94,14 +99,26 @@ namespace Coursework.LogicControllers
             IsGrounded = CheckGrounded();
             IsCeilingAbove = CheckCeiling();
 
+            ActionRequest action = actionBuffer.GetNewestActionRequest();
+            if(action.Action != PlayerActions.None && actionStateMachine.TryExecuteAction(action))
+            {
+                actionBuffer.RemoveAction(action);
+            }
+
             movementSystem.FixedUpdate();
             actionExecutionSystem.FixedUpdate();
         }
 
         #region On Event Callbacks
-        private void OnMove(UnityEngine.InputSystem.InputAction.CallbackContext context)
+        private void OnMove(InputAction.CallbackContext context)
         {
             MoveInput = context.ReadValue<Vector2>();
+        }
+
+        private void OnJump(InputAction.CallbackContext context)
+        {
+            PlayerActions action = PlayerActions.Jump;
+            actionBuffer.AddAction(action);
         }
         #endregion
 

@@ -1,6 +1,6 @@
 using System;
 
-namespace Coursework.LogicControllers.ActionStateMachines
+namespace Coursework.LogicControllers.ModifierSystems
 {
     public enum ModifierType
     {

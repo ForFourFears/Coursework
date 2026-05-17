@@ -4,6 +4,7 @@ using UnityEngine.InputSystem;
 using Coursework.AnimationControllers;
 using Coursework.LogicControllers.ActionStateMachines;
 using Coursework.LogicControllers.ActionTriggerHubs;
+using Scripts;
 
 namespace Coursework.LogicControllers
 {

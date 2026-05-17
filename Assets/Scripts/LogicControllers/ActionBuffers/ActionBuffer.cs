@@ -12,7 +12,9 @@ namespace Coursework.LogicControllers.ActionBuffers
             int index = FindActionRequestIndex(action);
             if (index != -1)
             {
-                ActionRequests[index] = ActionRequests[index].Overwrite(lifeTime);
+                ActionRequest actionRequest = ActionRequests[index].Overwrite(lifeTime);
+                ActionRequests.RemoveAt(index);
+                ActionRequests.Add(actionRequest);
             }
             else
             {
@@ -42,6 +44,15 @@ namespace Coursework.LogicControllers.ActionBuffers
         public ActionRequest GetOldestActionRequest()
         {
             if (ActionRequests.Count != 0) return ActionRequests[0];
+            else
+            {
+                return new ActionRequest(PlayerActions.None, 0);
+            }
+        }
+
+        public ActionRequest GetNewestActionRequest()
+        {
+            if (ActionRequests.Count != 0) return ActionRequests[^1];
             else
             {
                 return new ActionRequest(PlayerActions.None, 0);
