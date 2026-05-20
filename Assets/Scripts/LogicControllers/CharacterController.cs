@@ -2,17 +2,18 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
 using Coursework.LogicControllers.ActionBuffers;
+using Coursework.LogicControllers.ModifierSystems;
 
 namespace Coursework.LogicControllers
 {
-	interface IEntityContext
+	public interface IEntityContext
 	{
         public bool IsGrounded { get; }
         public bool IsCrouchIntentHeld { get; }
 		public bool IsCeilingAbove { get; }
     }
 
-    interface IMovementContext
+    public interface IMovementContext
     {
         public Vector2 MoveInput { get; }
 
@@ -122,6 +123,15 @@ namespace Coursework.LogicControllers
         }
         #endregion
 
+        private void UpdateFacingDirection()
+        {
+            if (MoveInput.x != 0)
+            {
+                float direction = Mathf.Sign(MoveInput.x);
+                Vector3 scale = transform.localScale;
+                transform.localScale = new Vector3(Mathf.Abs(scale.x) * direction, scale.y, scale.z);
+            }
+        }
         private bool CheckGrounded()
         {
             return Physics2D.OverlapCircle(_groundCheck.position, _groundCheckRadius, _groundLayer) != null;

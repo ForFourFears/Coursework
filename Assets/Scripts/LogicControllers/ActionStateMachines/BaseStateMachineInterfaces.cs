@@ -1,11 +1,11 @@
 using System;
-using UnityEngine.AdaptivePerformance;
 
 namespace Coursework.LogicControllers.ActionStateMachines
 {
     #region StateMachineEnums
     public enum PlayerActionState
     {
+        None = 0,
         Locomotion,
         Air,
         Crouch,

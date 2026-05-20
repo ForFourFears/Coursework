@@ -4,37 +4,47 @@ using UnityEngine;
 
 namespace Coursework.LogicControllers.ActionStateMachines
 {
-    public class ActionStateMachine<TState> : IActionStateMachine<TState> where TState : Enum
+    public abstract class BaseActionStateMachine<TState> : IActionStateMachine<TState> where TState : Enum
     {
-        private readonly Dictionary<TState, StateTrigger> stateTriggers = new();
-        public TState CurrentState { get; private set; }
-        public IStateTrigger this[TState state]
+        protected readonly Dictionary<TState, StateActions> stateActions = new();
+        public TState CurrentState { get; protected set; }
+        protected StateActions currentAction;
+        public IStateActions this[TState state]
         {
             get
             {
-                if (!stateTriggers.TryGetValue(state, out var stateTrigger))
+                if (!stateActions.TryGetValue(state, out var stateTrigger))
                 {
-                    stateTrigger = new StateTrigger();
-                    stateTriggers.Add(state, stateTrigger);
+                    stateTrigger = new StateActions();
+                    stateActions.Add(state, stateTrigger);
                 }
                 return stateTrigger;
             }
         }
-        public void ChangeState(TState newState)
+
+        public void Update()
+        {
+            currentAction?.UpdateInvoke();
+        }
+        protected void ChangeState(TState newState)
         {
             if (Equals(CurrentState, newState)) return;
 
-            if (stateTriggers.TryGetValue(CurrentState, out var currentStateEvent))
+            if (stateActions.TryGetValue(CurrentState, out var currentStateEvent))
             {
                 currentStateEvent.ExitInvoke();
             }
             CurrentState = newState;
-
-            if (stateTriggers.TryGetValue(CurrentState, out var newStateEvent))
+            
+            if (stateActions.TryGetValue(CurrentState, out var newStateEvent))
             {
                 newStateEvent.EnteredInvoke();
             }
+
+            currentAction = newStateEvent;
         }
+
+        public abstract void TryExecuteAction(Action action);
     }
 }
 
