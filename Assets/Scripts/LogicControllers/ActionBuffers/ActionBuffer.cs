@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using Coursework.EnumsCreatures.Knight;
 
 namespace Coursework.LogicControllers.ActionBuffers
 {
@@ -7,7 +8,7 @@ namespace Coursework.LogicControllers.ActionBuffers
     {
         public List<ActionRequest> ActionRequests { get; private set; } = new(5);
 
-        public void AddAction(PlayerActions action, float lifeTime = 0.2f)
+        public void AddAction(KnightActions action, float lifeTime = 0.2f)
         {
             int index = FindActionRequestIndex(action);
             if (index != -1)
@@ -28,7 +29,7 @@ namespace Coursework.LogicControllers.ActionBuffers
             if (ActionRequests.Count == 0) return;
             for (int i = ActionRequests.Count - 1; i >= 0; i--)
             {
-                if (ActionRequests[i].Action == PlayerActions.None) continue;
+                if (ActionRequests[i].Action == KnightActions.None) continue;
                 ActionRequest actionRequest = ActionRequests[i].UpdateLifeTime(deltaTime);
                 if (actionRequest.IsTimedOut)
                 {
@@ -46,7 +47,7 @@ namespace Coursework.LogicControllers.ActionBuffers
             if (ActionRequests.Count != 0) return ActionRequests[0];
             else
             {
-                return new ActionRequest(PlayerActions.None, 0);
+                return new ActionRequest(KnightActions.None, 0);
             }
         }
 
@@ -55,7 +56,7 @@ namespace Coursework.LogicControllers.ActionBuffers
             if (ActionRequests.Count != 0) return ActionRequests[^1];
             else
             {
-                return new ActionRequest(PlayerActions.None, 0);
+                return new ActionRequest(KnightActions.None, 0);
             }
         }
 
@@ -68,7 +69,7 @@ namespace Coursework.LogicControllers.ActionBuffers
             }
         }
 
-        private int FindActionRequestIndex(PlayerActions action)
+        private int FindActionRequestIndex(KnightActions action)
         {
             int index = -1;
             if (ActionRequests.Count == 0) return index;

@@ -1,11 +1,11 @@
 using System;
-using UnityEngine.AdaptivePerformance;
 
 namespace Coursework.LogicControllers.ActionStateMachines
 {
     #region StateMachineEnums
-    public enum PlayerActionState
+    public enum KnightActionState
     {
+        None = 0,
         Locomotion,
         Air,
         Crouch,
@@ -20,7 +20,7 @@ namespace Coursework.LogicControllers.ActionStateMachines
     }
     #endregion
 
-    public interface IStateActions
+    public interface IStateEvents
     {
         event Action Entered;
         event Action Update;
@@ -30,7 +30,7 @@ namespace Coursework.LogicControllers.ActionStateMachines
     public interface IActionStateMachine<TState> where TState : Enum
     {
         TState CurrentState { get; }
-        IStateActions this[TState state] { get; }
+        IStateEvents this[TState state] { get; }
     }
 
     public interface IStateMachineProvider<TState> where TState : Enum

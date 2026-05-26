@@ -1,6 +1,7 @@
 ﻿using Scripts;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using Coursework.EnumsCreatures.Knight;
 using Coursework.LogicControllers.ActionBuffers;
 using Coursework.LogicControllers.ModifierSystems;
 
@@ -66,7 +67,7 @@ namespace Coursework.LogicControllers
             actionBuffer = new();
             modifierSystem = new();
             movementSystem = new(this, modifierSystem);
-            actionStateMachine = new(modifierSystem);
+            actionStateMachine = new(this, modifierSystem);
             actionExecutionSystem = new(actionStateMachine);
         }
 
@@ -101,7 +102,7 @@ namespace Coursework.LogicControllers
             IsCeilingAbove = CheckCeiling();
 
             ActionRequest action = actionBuffer.GetNewestActionRequest();
-            if(action.Action != PlayerActions.None && actionStateMachine.TryExecuteAction(action))
+            if(action.Action != KnightActions.None && actionStateMachine.TryExecuteAction(action))
             {
                 actionBuffer.RemoveAction(action);
             }
@@ -118,7 +119,7 @@ namespace Coursework.LogicControllers
 
         private void OnJump(InputAction.CallbackContext context)
         {
-            PlayerActions action = PlayerActions.Jump;
+                KnightActions action = KnightActions.Jump;
             actionBuffer.AddAction(action);
         }
         #endregion

@@ -1,8 +1,9 @@
 using System;
+using UnityEngine.InputSystem.LowLevel;
 
 namespace Coursework.LogicControllers.ActionStateMachines
 {
-    public class StateActions : IStateActions
+    public class StateEvents : IStateEvents
     {
         public event Action Entered;
         public event Action Update;

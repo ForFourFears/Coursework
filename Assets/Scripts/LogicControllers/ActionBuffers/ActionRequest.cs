@@ -1,31 +1,20 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Drawing;
+﻿using Coursework.EnumsCreatures.Knight;
 
 namespace Coursework.LogicControllers.ActionBuffers
 {
-    public enum PlayerActions
-    {
-        None,
-        Jump,
-        Crouch,
-        Attack,
-        Roll,
-        Dash,
-        Slide
-    }
+
 
     public readonly struct ActionRequest
     {
-        public readonly PlayerActions Action;
+        public readonly KnightActions Action;
         public readonly float LifeTime;
         public readonly bool IsTimedOut;
 
-        public ActionRequest(PlayerActions action, float lifeTime) : this(action, lifeTime, lifeTime <= 0) { }
+        public ActionRequest(KnightActions action, float lifeTime) : this(action, lifeTime, lifeTime <= 0) { }
 
-        private ActionRequest(PlayerActions action, float lifeTime, bool isTimedOut)
+        private ActionRequest(KnightActions action, float lifeTime, bool isTimedOut)
         {
-            Action = isTimedOut ? PlayerActions.None : action;
+            Action = isTimedOut ? KnightActions.None : action;
             LifeTime = lifeTime;
             IsTimedOut = isTimedOut;
         }
