@@ -1,14 +1,19 @@
 ﻿using Coursework.EnumsCreatures.Knight;
 using Coursework.LogicControllers.ModifierSystems;
+using UnityEngine;
 
 namespace Coursework.LogicControllers.ActionStateMachines
 {
-    public class KnightActionStateMachine : BaseActionStateMachine<KnightActionState, KnightActions>
+    public class KnightActionStateMachine : BaseActionStateMachine<KnightActionStates, KnightActions>
     {
         private readonly IEntityContext entityContext;
-        public KnightActionStateMachine(IEntityContext entityContext, ModifierSystem modifierSystems)
+        private readonly Rigidbody2D rigidbody2D;
+        private readonly ModifierSystem modifierSystem;
+        public KnightActionStateMachine(IEntityContext entityContext, IMovementContext movementContext, ModifierSystem modifierSystem)
         {
             this.entityContext = entityContext;
+            rigidbody2D = movementContext.Rigidbody;
+            this.modifierSystem = modifierSystem;
         }
 
         public override void Update()
@@ -22,20 +27,20 @@ namespace Coursework.LogicControllers.ActionStateMachines
         {
             return CurrentState switch
             {
-                KnightActionState.Locomotion => action switch
+                KnightActionStates.Locomotion => action switch
                 {
-                    KnightActions.Jump => TryChangeState(KnightActionState.Air),
-                    KnightActions.Crouch => TryChangeState(KnightActionState.Crouch),
-                    _ => false 
-                },
-                KnightActionState.Air => action switch
-                { 
-                    KnightActions.Jump => TryChangeState(KnightActionState.Air),
+                    KnightActions.Jump => TryChangeState(KnightActionStates.Air, action),
+                    KnightActions.Crouch => TryChangeState(KnightActionStates.Crouch, action),
                     _ => false
                 },
-                KnightActionState.Crouch => action switch
+                KnightActionStates.Air => action switch
                 {
-                    KnightActions.Jump => TryChangeState(KnightActionState.Air),
+                    KnightActions.Jump => TryChangeState(KnightActionStates.Air, action),
+                    _ => false
+                },
+                KnightActionStates.Crouch => action switch
+                {
+                    KnightActions.Jump => TryChangeState(KnightActionStates.Air, action),
                     _ => false
                 },
                 _ => false
@@ -46,20 +51,19 @@ namespace Coursework.LogicControllers.ActionStateMachines
         {
             if (!entityContext.IsGrounded)
             {
-                ChangeState(KnightActionState.Air);
+                ChangeState(KnightActionStates.Air);
             }
-            else
+            else if (rigidbody2D.linearVelocityY <= 0)
             {
                 if (entityContext.IsCrouchIntentHeld || entityContext.IsCeilingAbove)
                 {
-                    ChangeState(KnightActionState.Crouch);
+                    ChangeState(KnightActionStates.Crouch);
                 }
                 else
                 {
-                    ChangeState(KnightActionState.Locomotion);
+                    ChangeState(KnightActionStates.Locomotion);
                 }
             }
-
         }
     }
 }

@@ -1,9 +1,11 @@
-﻿using Scripts;
+﻿using Coursework.EnumsCreatures.Knight;
+using Coursework.LogicControllers.ActionBuffers;
+using Coursework.LogicControllers.ActionExecutionSystems;
+using Coursework.LogicControllers.ActionStateMachines;
+using Coursework.LogicControllers.ModifierSystems;
+using Scripts;
 using UnityEngine;
 using UnityEngine.InputSystem;
-using Coursework.EnumsCreatures.Knight;
-using Coursework.LogicControllers.ActionBuffers;
-using Coursework.LogicControllers.ModifierSystems;
 
 namespace Coursework.LogicControllers
 {
@@ -33,9 +35,6 @@ namespace Coursework.LogicControllers
         #region Serialize part
         [Header("Movement")]
         [field: SerializeField] public Rigidbody2D Rigidbody { get; private set; }
-        [SerializeField] private float _runSpeedModifier = 1.4f;
-        [SerializeField] private float _crouchSpeedModifier = 1f;
-        [SerializeField] private float _jumpForceModifier = 5f;
 
         [Header("Grounded Check")]
         [SerializeField] private Transform _groundCheck;
@@ -51,8 +50,8 @@ namespace Coursework.LogicControllers
         #region Private part
         private InputSystemActions inputSystemActions;
         private ActionBuffer actionBuffer;
-        private ActionStateMachine actionStateMachine;
-        private ActionExecutionSystem actionExecutionSystem;
+        private KnightActionStateMachine actionStateMachine;
+        private KnightActionExecutionSystem actionExecutionSystem;
         private MovementSystem movementSystem;
         private ModifierSystem modifierSystem;
 
@@ -67,8 +66,8 @@ namespace Coursework.LogicControllers
             actionBuffer = new();
             modifierSystem = new();
             movementSystem = new(this, modifierSystem);
-            actionStateMachine = new(this, modifierSystem);
-            actionExecutionSystem = new(actionStateMachine);
+            actionStateMachine = new(this, this, modifierSystem);
+            actionExecutionSystem = new(this, actionStateMachine);
         }
 
         private void OnEnable()
@@ -78,10 +77,15 @@ namespace Coursework.LogicControllers
             inputSystemActions.Player.Move.performed += OnMove;
             inputSystemActions.Player.Move.canceled += OnMove;
             inputSystemActions.Player.Jump.performed += OnJump;
+
+            actionExecutionSystem.Subscribe();
+
         }
 
         private void OnDisable()
         {
+            actionExecutionSystem.Unsubscribe();
+
             inputSystemActions.Player.Move.performed -= OnMove;
             inputSystemActions.Player.Move.canceled -= OnMove;
             inputSystemActions.Player.Jump.performed -= OnJump;
@@ -91,24 +95,26 @@ namespace Coursework.LogicControllers
 
         private void Update()
         {
-            IsCrouchIntentHeld = CheckCrouchIntent();
             actionBuffer.Update(Time.deltaTime);
-            actionStateMachine.Update();
+            UpdateFacingDirection();
         }
 
         private void FixedUpdate()
         {
+            IsCrouchIntentHeld = CheckCrouchIntent();
             IsGrounded = CheckGrounded();
             IsCeilingAbove = CheckCeiling();
 
+            actionStateMachine.Update();
+
             ActionRequest action = actionBuffer.GetNewestActionRequest();
-            if(action.Action != KnightActions.None && actionStateMachine.TryExecuteAction(action))
+            if(action.Action != KnightActions.None && actionStateMachine.TryExecuteAction(action.Action))
             {
                 actionBuffer.RemoveAction(action);
             }
 
             movementSystem.FixedUpdate();
-            actionExecutionSystem.FixedUpdate();
+            actionExecutionSystem.Update();
         }
 
         #region On Event Callbacks
@@ -119,7 +125,7 @@ namespace Coursework.LogicControllers
 
         private void OnJump(InputAction.CallbackContext context)
         {
-                KnightActions action = KnightActions.Jump;
+            KnightActions action = KnightActions.Jump;
             actionBuffer.AddAction(action);
         }
         #endregion

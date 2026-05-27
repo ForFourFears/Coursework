@@ -1,26 +1,41 @@
+using Coursework.EnumsCreatures.Knight;
 using System;
 using System.Collections.Generic;
 using UnityEngine;
 
 namespace Coursework.LogicControllers.ActionStateMachines
 {
-    public abstract class BaseActionStateMachine<TState, TAction> : IActionStateMachine<TState>
+    public abstract class BaseActionStateMachine<TState, TAction> : IActionStateMachine<TState, TAction>
         where TState : Enum
         where TAction : Enum
     {
-        protected readonly Dictionary<TState, StateEvents> stateActions = new();
+        protected readonly Dictionary<TState, StateEvents> stateEvents = new();
+        protected readonly Dictionary<TAction, ActionEvent> actionEvents = new();
         public TState CurrentState { get; protected set; }
         protected StateEvents currentStateEvents;
         public IStateEvents this[TState state]
         {
             get
             {
-                if (!stateActions.TryGetValue(state, out var stateAction))
+                if (!stateEvents.TryGetValue(state, out var _stateEvents))
                 {
-                    stateAction = new StateEvents();
-                    stateActions.Add(state, stateAction);
+                    _stateEvents = new StateEvents();
+                    stateEvents.Add(state, _stateEvents);
                 }
-                return stateAction;
+                return _stateEvents;
+            }
+        }
+
+        public IActionEvent this[TAction action]
+        {
+            get
+            {
+                if (!actionEvents.TryGetValue(action, out var actionEvent))
+                {
+                    actionEvent = new ActionEvent();
+                    actionEvents.Add(action, actionEvent);
+                }
+                return actionEvent;
             }
         }
 
@@ -36,21 +51,26 @@ namespace Coursework.LogicControllers.ActionStateMachines
 
             CurrentState = newState;
             
-            if (stateActions.TryGetValue(CurrentState, out var newStateEvent))
+            if (stateEvents.TryGetValue(CurrentState, out var newStateEvent))
             {
                 newStateEvent.EnteredInvoke();
             }
 
             currentStateEvents = newStateEvent;
         }
+        public abstract bool TryExecuteAction(TAction action);
 
-        protected bool TryChangeState(TState newState)
+        protected bool TryChangeState(TState newState, TAction action)
         {
             ChangeState(newState);
+
+            if (actionEvents.TryGetValue(action, out var actionEvent))
+            {
+                actionEvent.ActionInvoke();
+            }
+
             return true;
         }
-
-        public abstract bool TryExecuteAction(TAction action);
     }
 }
 

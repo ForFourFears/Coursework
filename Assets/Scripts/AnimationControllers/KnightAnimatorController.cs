@@ -1,11 +1,11 @@
 using System;
 using UnityEngine;
-using Coursework.LogicControllers.ActionTriggerHubs;
+using Coursework.EnumsCreatures.Knight;
 using Coursework.LogicControllers.ActionStateMachines;
 
 namespace Coursework.AnimationControllers
 {
-    public class KnightAnimatorController : BaseAnimationController<PlayerActionState, PlayerActionTrigger>
+    public class KnightAnimatorController : BaseAnimationController<KnightActionStates, KnightActions>
     {
         #region Animator Hashes
         private static readonly int IdleHash = Animator.StringToHash("Idle");
@@ -45,31 +45,20 @@ namespace Coursework.AnimationControllers
 
         private bool isBlockedUpdate;
 
-        private void OnEnable()
-        {
-            stateMachine[PlayerActionState.Crouch].Entered += OnEnteredCrounchState;
-            stateMachine[PlayerActionState.Crouch].Exit += OnExitCrounchState;
-            animationEventHub[CrouchTransitionHash].ExitState += OnCrouchTransitionEnd;
-        }
+        //private void OnEnable()
+        //{
 
-        private void OnDisable()
-        {
-            stateMachine[PlayerActionState.Crouch].Entered -= OnEnteredCrounchState;
-            stateMachine[PlayerActionState.Crouch].Exit -= OnExitCrounchState;
-            animationEventHub[CrouchTransitionHash].ExitState -= OnCrouchTransitionEnd;
-        }
+        //}
 
-        private void Update()
-        {
-            if (isBlockedUpdate) return;
-            switch (stateMachine.CurrentState)
-            {
-                case PlayerActionState.Locomotion: OnLocomotion(); break;
-                case PlayerActionState.Air: OnAir(); break;
-                case PlayerActionState.Crouch: OnCrouch(); break;
-                default: Debug.LogError($"[KnightAnimatorController]: unidentified State: {stateMachine.CurrentState}"); break;
-            }
-        }
+        //private void OnDisable()
+        //{
+
+        //}
+
+        //private void Update()
+        //{
+
+        //}
 
         private void OnEnteredCrounchState()
         {
