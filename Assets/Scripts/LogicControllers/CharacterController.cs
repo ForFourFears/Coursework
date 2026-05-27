@@ -153,5 +153,19 @@ namespace Coursework.LogicControllers
         {
             return Physics2D.OverlapCircle(_ceilingCheck.position, _ceilingCheckRadius, _ceilingLayer) != null;
         }
+
+        private void OnDrawGizmos()
+        {
+            if (_groundCheck != null)
+            {
+                Gizmos.color = Color.red;
+                Gizmos.DrawWireSphere(_groundCheck.position, _groundCheckRadius);
+            }
+            if (_ceilingCheck != null)
+            {
+                Gizmos.color = Color.red;
+                Gizmos.DrawWireSphere(_ceilingCheck.position, _ceilingCheckRadius);
+            }
+        }
     }
 }

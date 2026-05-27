@@ -13,7 +13,7 @@ namespace Coursework.AnimationControllers
 
         [SerializeField] protected Animator _characterAnimator;
 
-        protected IActionStateMachine<TState> stateMachine;
+        //protected IActionStateMachine<TState> stateMachine;
         protected ObservableSMBsHub animationEventHub;
         protected Rigidbody2D rb;
         protected int currentAnimationHash;

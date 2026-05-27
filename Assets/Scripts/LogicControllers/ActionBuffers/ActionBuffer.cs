@@ -8,7 +8,7 @@ namespace Coursework.LogicControllers.ActionBuffers
     {
         public List<ActionRequest> ActionRequests { get; private set; } = new(5);
 
-        public void AddAction(KnightActions action, float lifeTime = 0.2f)
+        public void AddAction(KnightActions action, float lifeTime = 1f)
         {
             int index = FindActionRequestIndex(action);
             if (index != -1)

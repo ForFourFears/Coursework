@@ -29,24 +29,32 @@ namespace Coursework.LogicControllers.ActionStateMachines
             {
                 KnightActionStates.Locomotion => action switch
                 {
-                    KnightActions.Jump => TryChangeState(KnightActionStates.Air, action),
+                    KnightActions.Jump => CanJump(KnightActionStates.Air, action),
                     KnightActions.Crouch => TryChangeState(KnightActionStates.Crouch, action),
                     _ => false
                 },
                 KnightActionStates.Air => action switch
                 {
-                    KnightActions.Jump => TryChangeState(KnightActionStates.Air, action),
+                    KnightActions.Jump => CanJump(KnightActionStates.Air, action),
                     _ => false
                 },
                 KnightActionStates.Crouch => action switch
                 {
-                    KnightActions.Jump => TryChangeState(KnightActionStates.Air, action),
+                    KnightActions.Jump => CanJump(KnightActionStates.Air, action),
                     _ => false
                 },
                 _ => false
             };
         }
 
+        private bool CanJump(KnightActionStates state, KnightActions action)
+        {
+            if (entityContext.IsGrounded)
+            {
+                return TryChangeState(KnightActionStates.Air, action);
+            }
+            else return false;
+        }
         private void CheckTransitions()
         {
             if (!entityContext.IsGrounded)
