@@ -63,13 +63,12 @@ namespace Coursework.LogicControllers.ActionStateMachines
         protected bool TryChangeState(TState newState, TAction action)
         {
             ChangeState(newState);
-
             if (actionEvents.TryGetValue(action, out var actionEvent))
             {
                 actionEvent.ActionInvoke();
+                return true;
             }
-
-            return true;
+            return false;            
         }
     }
 }

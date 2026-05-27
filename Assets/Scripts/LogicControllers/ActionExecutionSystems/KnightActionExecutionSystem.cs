@@ -30,6 +30,10 @@ namespace Coursework.LogicControllers.ActionExecutionSystems
 
         private void OnJump()
         {
+            if (movementContext.Rigidbody.linearVelocityY < 0)
+            {
+                movementContext.Rigidbody.linearVelocityY = 0;
+            }
             movementContext.Rigidbody.AddForceY(5f, ForceMode2D.Impulse);
         }
     }

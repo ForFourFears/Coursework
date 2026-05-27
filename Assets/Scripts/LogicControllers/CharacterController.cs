@@ -108,6 +108,7 @@ namespace Coursework.LogicControllers
             actionStateMachine.Update();
 
             ActionRequest action = actionBuffer.GetNewestActionRequest();
+            
             if(action.Action != KnightActions.None && actionStateMachine.TryExecuteAction(action.Action))
             {
                 actionBuffer.RemoveAction(action);
