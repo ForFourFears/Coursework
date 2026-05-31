@@ -594,7 +594,7 @@ Transform:
   m_GameObject: {fileID: 996124644}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0.295, z: 0}
+  m_LocalPosition: {x: 0.005, y: 0.282, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -645,9 +645,9 @@ GameObject:
   - component: {fileID: 2130661912}
   - component: {fileID: 2130661914}
   - component: {fileID: 2130661911}
+  - component: {fileID: 2130661918}
   - component: {fileID: 2130661916}
   - component: {fileID: 2130661917}
-  - component: {fileID: 2130661918}
   m_Layer: 0
   m_Name: Player
   m_TagString: Untagged
@@ -892,10 +892,11 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 8
   _ceilingCheck: {fileID: 996124645}
-  _ceilingCheckRadius: 0.05
+  _ceilingCheckRadius: 0.095
   _ceilingLayer:
     serializedVersion: 2
     m_Bits: 8
+  _knightConfig: {fileID: 11400000, guid: bf2bc565bc6d6a64c8ea9640b06ab0d8, type: 2}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0

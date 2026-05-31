@@ -1,11 +1,13 @@
-﻿using Coursework.EnumsCreatures.Knight;
+﻿using Scripts;
+using UnityEngine;
+using UnityEngine.InputSystem;
+using Coursework.ScriptableObjects;
+using Coursework.EnumsCreatures.Knight;
 using Coursework.LogicControllers.ActionBuffers;
 using Coursework.LogicControllers.ActionExecutionSystems;
 using Coursework.LogicControllers.ActionStateMachines;
 using Coursework.LogicControllers.ModifierSystems;
-using Scripts;
-using UnityEngine;
-using UnityEngine.InputSystem;
+
 
 namespace Coursework.LogicControllers
 {
@@ -24,7 +26,7 @@ namespace Coursework.LogicControllers
     }
 
     [RequireComponent(typeof(Rigidbody2D))]
-    public class CharacterController : MonoBehaviour, IEntityContext, IMovementContext
+    public class PlayerController : MonoBehaviour, IEntityContext, IMovementContext
     {
         #region Public part
         public bool IsGrounded { get; private set; }
@@ -45,6 +47,9 @@ namespace Coursework.LogicControllers
         [SerializeField] private Transform _ceilingCheck;
         [SerializeField] private float _ceilingCheckRadius = 0.1f;
         [SerializeField] private LayerMask _ceilingLayer;
+
+        [Header("Configs")]
+        [SerializeField] private KnightConfig _knightConfig;
         #endregion
 
         #region Private part
@@ -66,8 +71,8 @@ namespace Coursework.LogicControllers
             actionBuffer = new();
             modifierSystem = new();
             movementSystem = new(this, modifierSystem);
-            actionStateMachine = new(this, this, modifierSystem);
-            actionExecutionSystem = new(this, actionStateMachine);
+            actionStateMachine = new(this, this, modifierSystem, _knightConfig);
+            actionExecutionSystem = new(this, actionStateMachine, _knightConfig);
         }
 
         private void OnEnable()

@@ -1,6 +1,7 @@
-﻿using UnityEngine;
-using Coursework.EnumsCreatures.Knight;
+﻿using Coursework.EnumsCreatures.Knight;
 using Coursework.LogicControllers.ActionStateMachines;
+using Coursework.ScriptableObjects;
+using UnityEngine;
 
 namespace Coursework.LogicControllers.ActionExecutionSystems
 {
@@ -8,10 +9,12 @@ namespace Coursework.LogicControllers.ActionExecutionSystems
     {
         private readonly IActionStateMachine<KnightActionStates, KnightActions> actionStateMachine;
         private readonly IMovementContext movementContext;
-        public KnightActionExecutionSystem(IMovementContext movementContext, IActionStateMachine<KnightActionStates, KnightActions> actionStateMachine)
+        private readonly IActionsMofigiersHandler<KnightActions> actionMofigiersHandler;
+        public KnightActionExecutionSystem(IMovementContext movementContext, IActionStateMachine<KnightActionStates, KnightActions> actionStateMachine, IActionsMofigiersHandler<KnightActions> actionMofigiersHandler)
         {
-            this.actionStateMachine = actionStateMachine;
             this.movementContext = movementContext;
+            this.actionStateMachine = actionStateMachine;
+            this.actionMofigiersHandler = actionMofigiersHandler;
         }
 
         public override void Subscribe()
@@ -34,7 +37,11 @@ namespace Coursework.LogicControllers.ActionExecutionSystems
             {
                 movementContext.Rigidbody.linearVelocityY = 0;
             }
-            movementContext.Rigidbody.AddForceY(5f, ForceMode2D.Impulse);
+            if (!actionMofigiersHandler.ActionsModifiers.TryGetValue(KnightActions.Jump, out float mod))
+            {
+                mod = 2;
+            }
+            movementContext.Rigidbody.AddForceY(mod, ForceMode2D.Impulse);
         }
     }
 }

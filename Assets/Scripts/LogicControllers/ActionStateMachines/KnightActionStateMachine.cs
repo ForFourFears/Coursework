@@ -1,5 +1,6 @@
 ﻿using Coursework.EnumsCreatures.Knight;
 using Coursework.LogicControllers.ModifierSystems;
+using Coursework.ScriptableObjects;
 using UnityEngine;
 
 namespace Coursework.LogicControllers.ActionStateMachines
@@ -7,13 +8,15 @@ namespace Coursework.LogicControllers.ActionStateMachines
     public class KnightActionStateMachine : BaseActionStateMachine<KnightActionStates, KnightActions>
     {
         private readonly IEntityContext entityContext;
-        private readonly Rigidbody2D rigidbody2D;
+        private readonly Rigidbody2D rigidbody;
         private readonly ModifierSystem modifierSystem;
-        public KnightActionStateMachine(IEntityContext entityContext, IMovementContext movementContext, ModifierSystem modifierSystem)
+        private readonly IStatesModifiersHandler<KnightActionStates> statesModifiersHandler;
+        public KnightActionStateMachine(IEntityContext entityContext, IMovementContext movementContext, ModifierSystem modifierSystem, IStatesModifiersHandler<KnightActionStates> stateModifiersHandler)
         {
             this.entityContext = entityContext;
-            rigidbody2D = movementContext.Rigidbody;
+            rigidbody = movementContext.Rigidbody;
             this.modifierSystem = modifierSystem;
+            this.statesModifiersHandler = stateModifiersHandler;
         }
 
         public override void Update()
@@ -23,31 +26,43 @@ namespace Coursework.LogicControllers.ActionStateMachines
 
         }
 
+        protected override void OnStateChanged(KnightActionStates currentState)
+        {
+            if (statesModifiersHandler.StatesModifiers.TryGetValue(currentState, out float mod))
+            {
+                modifierSystem.StateModifier = mod;
+            }
+            else
+            {
+                modifierSystem.StateModifier = 0;
+            }
+        }
+
         public override bool TryExecuteAction(KnightActions action)
         {
             return CurrentState switch
             {
                 KnightActionStates.Locomotion => action switch
                 {
-                    KnightActions.Jump => CanJump(KnightActionStates.Air, action),
+                    KnightActions.Jump => CanJump(action),
                     KnightActions.Crouch => TryChangeState(KnightActionStates.Crouch, action),
                     _ => false
                 },
                 KnightActionStates.Air => action switch
                 {
-                    KnightActions.Jump => CanJump(KnightActionStates.Air, action),
+                    KnightActions.Jump => CanJump(action),
                     _ => false
                 },
                 KnightActionStates.Crouch => action switch
                 {
-                    KnightActions.Jump => CanJump(KnightActionStates.Air, action),
+                    KnightActions.Jump => CanJump(action),
                     _ => false
                 },
                 _ => false
             };
         }
 
-        private bool CanJump(KnightActionStates state, KnightActions action)
+        private bool CanJump(KnightActions action)
         {
             if (entityContext.IsGrounded)
             {
@@ -61,7 +76,7 @@ namespace Coursework.LogicControllers.ActionStateMachines
             {
                 ChangeState(KnightActionStates.Air);
             }
-            else if (rigidbody2D.linearVelocityY <= 0)
+            else if (rigidbody.linearVelocityY <= 0)
             {
                 if (entityContext.IsCrouchIntentHeld || entityContext.IsCeilingAbove)
                 {

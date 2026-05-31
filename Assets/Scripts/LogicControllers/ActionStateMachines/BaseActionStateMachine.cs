@@ -49,7 +49,9 @@ namespace Coursework.LogicControllers.ActionStateMachines
             currentStateEvents?.ExitInvoke();
 
             CurrentState = newState;
-            
+
+            OnStateChanged(CurrentState);
+
             if (stateEvents.TryGetValue(CurrentState, out var newStateEvent))
             {
                 newStateEvent.EnteredInvoke();
@@ -57,6 +59,9 @@ namespace Coursework.LogicControllers.ActionStateMachines
 
             currentStateEvents = newStateEvent;
         }
+
+        protected virtual void OnStateChanged(TState currentState) { }
+
         public abstract bool TryExecuteAction(TAction action);
 
         protected bool TryChangeState(TState newState, TAction action)

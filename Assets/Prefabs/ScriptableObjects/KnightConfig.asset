@@ -1,0 +1,43 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cc5e8edc5d469624cbff4a716f36a7a3, type: 3}
+  m_Name: KnightConfig
+  m_EditorClassIdentifier: Assembly-CSharp::Coursework.ScriptableObjects.KnightConfig
+  <Health>k__BackingField: 100
+  _knightStatesModifiers:
+  - State: 0
+    Modifier: 1
+  - State: 1
+    Modifier: 2
+  - State: 2
+    Modifier: 2.1
+  - State: 3
+    Modifier: 1
+  - State: 4
+    Modifier: 1
+  - State: 5
+    Modifier: 1
+  - State: 6
+    Modifier: 1
+  - State: 7
+    Modifier: 1
+  - State: 8
+    Modifier: 1
+  - State: 9
+    Modifier: 1
+  - State: 10
+    Modifier: 1
+  - State: 11
+    Modifier: 1
+  _knightActionsModifiers:
+  - Action: 1
+    Modifier: 4

@@ -4,9 +4,14 @@ using System;
 
 namespace Coursework.ScriptableObjects
 {
-    public interface IStateModifiersHandler<TState> where TState : Enum
+    public interface IStatesModifiersHandler<TState> where TState : Enum
     {
         public IReadOnlyDictionary<TState, float> StatesModifiers { get; }
+    }
+
+    public interface IActionsMofigiersHandler<TAction> where TAction : Enum
+    {
+        public IReadOnlyDictionary<TAction, float> ActionsModifiers { get; }
     }
 
     public abstract class CharacterConfig : ScriptableObject
