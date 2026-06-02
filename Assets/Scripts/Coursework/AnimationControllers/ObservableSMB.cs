@@ -10,16 +10,32 @@ namespace Coursework.AnimationControllers
         //public int StateHash { get; private set; }
 
         public event Action EnterState;
+        public event Action UpdateState;
         public event Action ExitState;
+        public event Action AnimCycleEnd;
+
+        private int countCycles;
 
         public override void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
         {
             EnterState?.Invoke();
+            countCycles = 1;
+        }
+
+        public override void OnStateUpdate(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
+        {
+            UpdateState?.Invoke();
+            if (stateInfo.normalizedTime >= countCycles)
+            {
+                AnimCycleEnd?.Invoke();
+                countCycles++;
+            }
         }
 
         public override void OnStateExit(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
         {
             ExitState?.Invoke();
+            countCycles = 1;
         }
         //private void Awake()
         //{
