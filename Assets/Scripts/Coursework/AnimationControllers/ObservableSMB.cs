@@ -37,6 +37,7 @@ namespace Coursework.AnimationControllers
             ExitState?.Invoke();
             countCycles = 1;
         }
+
         //private void Awake()
         //{
         //    StateHash = Animator.StringToHash(StateName);

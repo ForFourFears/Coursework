@@ -9,7 +9,7 @@ namespace Coursework.ScriptableObjects
         public IReadOnlyDictionary<TState, float> StatesModifiers { get; }
     }
 
-    public interface IActionsMofigiersHandler<TAction> where TAction : Enum
+    public interface IActionsModifiersHandler<TAction> where TAction : Enum
     {
         public IReadOnlyDictionary<TAction, float> ActionsModifiers { get; }
     }

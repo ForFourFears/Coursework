@@ -7,6 +7,7 @@ using Coursework.LogicControllers.ActionBuffers;
 using Coursework.LogicControllers.ActionExecutionSystems;
 using Coursework.LogicControllers.ActionStateMachines;
 using Coursework.LogicControllers.ModifierSystems;
+using Coursework.AnimationControllers;
 
 
 namespace Coursework.LogicControllers
@@ -26,12 +27,14 @@ namespace Coursework.LogicControllers
     }
 
     [RequireComponent(typeof(Rigidbody2D))]
-    public class PlayerController : MonoBehaviour, IEntityContext, IMovementContext
+    public class PlayerController : MonoBehaviour, IEntityContext, IMovementContext/*, IActionStateMachineProvider<KnightActionStates,  KnightActions>*/
     {
         #region Public part
         public bool IsGrounded { get; private set; }
         public bool IsCrouchIntentHeld { get; private set; }
         public bool IsCeilingAbove { get; private set; }
+
+        public IActionStateMachine<KnightActionStates, KnightActions> ActionStateMachine { get => actionStateMachine; }
         #endregion
 
         #region Serialize part
@@ -48,6 +51,9 @@ namespace Coursework.LogicControllers
         [SerializeField] private float _ceilingCheckRadius = 0.1f;
         [SerializeField] private LayerMask _ceilingLayer;
 
+        [Header("Animator Controller")]
+        [SerializeField] private Animator _animator;
+
         [Header("Configs")]
         [SerializeField] private KnightConfig _knightConfig;
         #endregion
@@ -59,6 +65,7 @@ namespace Coursework.LogicControllers
         private KnightActionExecutionSystem actionExecutionSystem;
         private MovementSystem movementSystem;
         private ModifierSystem modifierSystem;
+        private KnightAnimatorController animatorController;
 
         public Vector2 MoveInput { get; private set; }
         #endregion
@@ -72,7 +79,11 @@ namespace Coursework.LogicControllers
             modifierSystem = new();
             movementSystem = new(this, modifierSystem);
             actionStateMachine = new(this, this, modifierSystem, _knightConfig);
-            actionExecutionSystem = new(this, actionStateMachine, _knightConfig);
+            actionExecutionSystem = new(this, ActionStateMachine, _knightConfig);
+
+            _animator = _animator != null ? _animator : GetComponent<Animator>();
+            animatorController = new (_animator, Rigidbody, ActionStateMachine);
+
         }
 
         private void OnEnable()
@@ -84,6 +95,7 @@ namespace Coursework.LogicControllers
             inputSystemActions.Player.Jump.performed += OnJump;
 
             actionExecutionSystem.Subscribe();
+            animatorController.Subscribe();
 
         }
 
@@ -96,12 +108,14 @@ namespace Coursework.LogicControllers
             inputSystemActions.Player.Jump.performed -= OnJump;
 
             inputSystemActions.Disable();
+            animatorController.Unsubscribe();
         }
 
         private void Update()
         {
             actionBuffer.Update(Time.deltaTime);
             UpdateFacingDirection();
+            animatorController.Update();
         }
 
         private void FixedUpdate()

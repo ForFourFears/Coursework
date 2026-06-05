@@ -7,148 +7,80 @@ namespace Coursework.AnimationControllers
 {
     public class KnightAnimatorController : BaseAnimationController<KnightActionStates, KnightActions>
     {
-        #region Animator Hashes
-        private static readonly int IdleHash = Animator.StringToHash("Idle");
-        private static readonly int RunHash = Animator.StringToHash("Run");
+        #region Animation Data
+        #region States (Layer 0)
+        private static readonly AnimationData idle = new(Animator.StringToHash("Idle"), 0);
+        private static readonly AnimationData run = new(Animator.StringToHash("Run"), 0);
+        private static readonly AnimationData jump = new(Animator.StringToHash("Jump"), 0);
+        private static readonly AnimationData fall = new(Animator.StringToHash("Fall"), 0);
+        private static readonly AnimationData death = new(Animator.StringToHash("Death"), 0);
+        private static readonly AnimationData wallHang = new(Animator.StringToHash("WallHang"), 0);
+        private static readonly AnimationData wallClimb = new(Animator.StringToHash("WallClimb"), 0);
+        private static readonly AnimationData wallSlide = new(Animator.StringToHash("WallSlide"), 0);
+        private static readonly AnimationData crouch = new(Animator.StringToHash("Crouch"), 0);
+        private static readonly AnimationData crouchWalk = new(Animator.StringToHash("CrouchWalk"), 0);
+        private static readonly AnimationData crouchFull = new(Animator.StringToHash("CrouchFull"), 0); //???
+        private static readonly AnimationData roll = new(Animator.StringToHash("Roll"), 0);
+        private static readonly AnimationData slide = new(Animator.StringToHash("Slide"), 0);
+        private static readonly AnimationData slideFull = new(Animator.StringToHash("SlideFull"), 0); //???
 
-        private static readonly int DeathHash = Animator.StringToHash("Death");
-        private static readonly int HitHash = Animator.StringToHash("Hit");
-
-        private static readonly int JumpHash = Animator.StringToHash("Jump");
-        private static readonly int JumpFallInBetweenHash = Animator.StringToHash("JumpFallInBetween");
-        private static readonly int FallHash = Animator.StringToHash("Fall");
-
-        private static readonly int AttackHash = Animator.StringToHash("Attack");
-        private static readonly int Attack2Hash = Animator.StringToHash("Attack2");
-        private static readonly int AttackComboHash = Animator.StringToHash("AttackCombo");
-
-        private static readonly int WallHangHash = Animator.StringToHash("WallHang");
-        private static readonly int WallClimbHash = Animator.StringToHash("WallClimb");
-        private static readonly int WallSlideHash = Animator.StringToHash("WallSlide");
-
-        private static readonly int CrouchHash = Animator.StringToHash("Crouch");
-        private static readonly int CrouchAttackHash = Animator.StringToHash("CrouchAttack");
-        private static readonly int CrouchTransitionHash = Animator.StringToHash("CrouchTransition");
-        private static readonly int CrouchWalkHash = Animator.StringToHash("CrouchWalk");
-        private static readonly int CrouchFullHash = Animator.StringToHash("CrouchFull");
-
-        private static readonly int DashHash = Animator.StringToHash("Dash");
-        private static readonly int RollHash = Animator.StringToHash("Roll");
-
-        private static readonly int SlideTransitionStartHash = Animator.StringToHash("SlideTransitionStart");
-        private static readonly int SlideHash = Animator.StringToHash("Slide");
-        private static readonly int SlideTransitionEndHash = Animator.StringToHash("SlideTransitionEnd");
-        private static readonly int SlideFullHash = Animator.StringToHash("SlideFull");
+        #endregion
+        #region Actions & Transitions (Layer 1)
+        private static readonly AnimationData hit = new(Animator.StringToHash("Hit"), 1);
+        private static readonly AnimationData attack = new(Animator.StringToHash("Attack"), 1);
+        private static readonly AnimationData attack2 = new(Animator.StringToHash("Attack2"), 1);
+        private static readonly AnimationData attackCombo = new(Animator.StringToHash("AttackCombo"), 1); //???
+        private static readonly AnimationData crouchAttack = new(Animator.StringToHash("CrouchAttack"), 1);
+        private static readonly AnimationData jumpFallInBetween = new(Animator.StringToHash("JumpFallInBetween"), 1);
+        private static readonly AnimationData crouchTransition = new(Animator.StringToHash("CrouchTransition"), 1);
+        private static readonly AnimationData dash = new(Animator.StringToHash("Dash"), 1);
+        private static readonly AnimationData slideTransitionStart = new(Animator.StringToHash("SlideTransitionStart"), 1);
+        private static readonly AnimationData slideTransitionEnd = new(Animator.StringToHash("SlideTransitionEnd"), 1);
+        #endregion
         #endregion
 
-        [SerializeField] private float _airStateThreshold = 1f;
+        //[SerializeField] private float _airStateThreshold = 1f;
 
-        private bool isBlockedUpdate;
+        public KnightAnimatorController (Animator animator, Rigidbody2D rigidbody, IActionStateMachine<KnightActionStates, KnightActions> actionStateMachine) 
+            : base (animator, rigidbody, actionStateMachine) { }
 
-        //private void OnEnable()
-        //{
-
-        //}
-
-        //private void OnDisable()
-        //{
-
-        //}
-
-        //private void Update()
-        //{
-
-        //}
-
-        private void OnEnteredCrounchState()
+        public override void Subscribe()
         {
-            isBlockedUpdate = true;
-            ChangeAnimation(CrouchTransitionHash, 0);
+            actionStateMachine[KnightActionStates.Crouch].Entered += OnCrouchStateTransition;
+            actionStateMachine[KnightActionStates.Crouch].Exit += OnCrouchStateTransition;
         }
 
-        private void OnExitCrounchState()
+        public override void Unsubscribe()
         {
-            isBlockedUpdate = true;
-            ChangeAnimation(CrouchTransitionHash, 0);
+            actionStateMachine[KnightActionStates.Crouch].Entered -= OnCrouchStateTransition;
+            actionStateMachine[KnightActionStates.Crouch].Exit -= OnCrouchStateTransition;
         }
 
-        private void OnCrouchTransitionEnd()
+        public void Update()
         {
-            isBlockedUpdate = false;
-        }
-
-        #region On Player Action State
-        private void OnLocomotion()
-        {
-            int targetAnimationHash = Mathf.Abs(rb.linearVelocityX) switch
+            AnimationData targetAnim;
+            switch (actionStateMachine.CurrentState)
             {
-                > 0.1f => RunHash,
-                _ => IdleHash,
-            };
-            ChangeAnimation(targetAnimationHash, 0);
+                case KnightActionStates.Locomotion:
+                    targetAnim = Mathf.Abs(rb.linearVelocityX) > 0.1 ? run : idle;
+                    break;
+                case KnightActionStates.Air:
+                    if (rb.linearVelocityY < 0 && currentLayerHashes[0] == jump.Hash) PlaySequence(jumpFallInBetween);
+                    targetAnim = rb.linearVelocityY >= 0 ? jump : fall;
+                    break;
+                case KnightActionStates.Crouch:
+                    targetAnim = Mathf.Abs(rb.linearVelocityX) > 0.1 ? crouchWalk : crouch;
+                    break;
+                default :
+                    targetAnim = idle;
+                    break;
+            }
+            ChangeAnimation(targetAnim);
         }
 
-
-        private void OnAir()
+        private void OnCrouchStateTransition()
         {
-            int targetAnimationHash = rb.linearVelocityY switch
-            {
-                var y when y > _airStateThreshold => JumpHash,
-                var y when y < -_airStateThreshold => FallHash,
-                _ => JumpFallInBetweenHash,
-            };
-            ChangeAnimation(targetAnimationHash, 0);
-        }
-
-        private void OnCrouch()
-        {
-            int targetAnimationHash = Mathf.Abs(rb.linearVelocityX) switch
-            {
-                > 0.1f => CrouchWalkHash,
-                _ => CrouchHash,
-            };
-            ChangeAnimation(targetAnimationHash, 0);
-        }
-
-        private void OnWallInteraction()
-        {
-
-        }
-
-        private void OnTurnAround()
-        {
-            
-        }
-
-        private void OnAttack()
-        {
-
-        }
-
-        private void OnRoll()
-        {
-
-        }
-
-        private void OnDash()
-        {
-
-        }
-
-        private void OnSlide()
-        {
-
-        }
-
-        private void OnDeath()
-        {
-
-        }
-
-        private void OnHit()
-        {
-
-        }
-        #endregion
+            PlaySequence(crouchTransition);
+        }        
     }
 }

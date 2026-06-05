@@ -45,7 +45,6 @@ namespace Coursework.LogicControllers.ActionStateMachines
                 KnightActionStates.Locomotion => action switch
                 {
                     KnightActions.Jump => CanJump(action),
-                    KnightActions.Crouch => TryChangeState(KnightActionStates.Crouch, action),
                     _ => false
                 },
                 KnightActionStates.Air => action switch
@@ -78,11 +77,11 @@ namespace Coursework.LogicControllers.ActionStateMachines
             }
             else if (rigidbody.linearVelocityY <= 0)
             {
-                if (entityContext.IsCrouchIntentHeld || entityContext.IsCeilingAbove)
+                if (entityContext.IsCrouchIntentHeld /*|| entityContext.IsCeilingAbove*/)
                 {
                     ChangeState(KnightActionStates.Crouch);
                 }
-                else
+                else if (!(entityContext.IsCrouchIntentHeld || entityContext.IsCeilingAbove))
                 {
                     ChangeState(KnightActionStates.Locomotion);
                 }

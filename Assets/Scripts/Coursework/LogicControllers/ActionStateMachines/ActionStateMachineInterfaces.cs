@@ -13,8 +13,10 @@ namespace Coursework.LogicControllers.ActionStateMachines
         IActionEvent this[TAction action] { get; }
     }
 
-    //public interface IStateMachineProvider<TState> where TState : Enum
-    //{
-    //    public IActionStateMachine<TState> StateMachine { get; }
-    //}
+    public interface IActionStateMachineProvider<TState, TAction>
+        where TState : Enum
+        where TAction : Enum
+    {
+        public IActionStateMachine<TState, TAction> ActionStateMachine { get; }
+    }
 }

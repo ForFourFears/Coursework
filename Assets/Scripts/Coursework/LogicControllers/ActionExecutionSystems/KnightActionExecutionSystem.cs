@@ -9,12 +9,12 @@ namespace Coursework.LogicControllers.ActionExecutionSystems
     {
         private readonly IActionStateMachine<KnightActionStates, KnightActions> actionStateMachine;
         private readonly IMovementContext movementContext;
-        private readonly IActionsMofigiersHandler<KnightActions> actionMofigiersHandler;
-        public KnightActionExecutionSystem(IMovementContext movementContext, IActionStateMachine<KnightActionStates, KnightActions> actionStateMachine, IActionsMofigiersHandler<KnightActions> actionMofigiersHandler)
+        private readonly IActionsModifiersHandler<KnightActions> actionModifiersHandler;
+        public KnightActionExecutionSystem(IMovementContext movementContext, IActionStateMachine<KnightActionStates, KnightActions> actionStateMachine, IActionsModifiersHandler<KnightActions> actionModifiersHandler)
         {
             this.movementContext = movementContext;
             this.actionStateMachine = actionStateMachine;
-            this.actionMofigiersHandler = actionMofigiersHandler;
+            this.actionModifiersHandler = actionModifiersHandler;
         }
 
         public override void Subscribe()
@@ -37,7 +37,7 @@ namespace Coursework.LogicControllers.ActionExecutionSystems
             {
                 movementContext.Rigidbody.linearVelocityY = 0;
             }
-            if (!actionMofigiersHandler.ActionsModifiers.TryGetValue(KnightActions.Jump, out float mod))
+            if (!actionModifiersHandler.ActionsModifiers.TryGetValue(KnightActions.Jump, out float mod))
             {
                 mod = 2;
             }

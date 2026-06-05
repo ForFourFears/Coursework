@@ -6,7 +6,7 @@ using System.Linq;
 namespace Coursework.ScriptableObjects
 {
     [CreateAssetMenu(fileName = "KnightConfig", menuName = "Scriptable Objects/CharacterConfigs/KnightConfig")]
-    public class KnightConfig : CharacterConfig, IStatesModifiersHandler<KnightActionStates>, IActionsMofigiersHandler<KnightActions>
+    public class KnightConfig : CharacterConfig, IStatesModifiersHandler<KnightActionStates>, IActionsModifiersHandler<KnightActions>
     {
         [SerializeField] private KnightStateModifier[] _knightStatesModifiers;
 
