@@ -9,7 +9,7 @@ namespace Coursework.LogicControllers.ActionStateMachines
         where TAction : Enum
     {
         TState CurrentState { get; }
-        IStateEvents this[TState state] { get; }
+        IStateEvents<TState> this[TState state] { get; }
         IActionEvent this[TAction action] { get; }
     }
 

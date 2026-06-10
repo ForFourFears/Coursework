@@ -1,10 +1,19 @@
 fileFormatVersion: 2
-guid: ad792109be5e8864e8a66dca56daed9d
+guid: 92ce65e8a02f5024384c74a4efc4c088
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: -4759129592202017317
-    second: __CrouchTransition_0
+      213: -5589327875898107882
+    second: _CrouchAttack_0
+  - first:
+      213: -4079485388738996815
+    second: _CrouchAttack_1
+  - first:
+      213: -4272872418886566087
+    second: _CrouchAttack_2
+  - first:
+      213: -3847299042336022702
+    second: _CrouchAttack_3
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -126,23 +135,89 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: __CrouchTransition_0
+      name: _CrouchAttack_0
       rect:
         serializedVersion: 2
-        x: 43
+        x: 32
         y: 0
-        width: 29
-        height: 31
-      alignment: 0
-      pivot: {x: 0, y: 0}
+        width: 34
+        height: 28
+      alignment: 9
+      pivot: {x: 0.64705884, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: bd5cfb0d9dc24fdb0800000000000000
-      internalID: -4759129592202017317
+      spriteID: 61897ef09e7be62b0800000000000000
+      internalID: -5589327875898107882
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: _CrouchAttack_1
+      rect:
+        serializedVersion: 2
+        x: 140
+        y: 0
+        width: 79
+        height: 26
+      alignment: 9
+      pivot: {x: 0.43037975, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 1b5d0d927a1c267c0800000000000000
+      internalID: -4079485388738996815
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: _CrouchAttack_2
+      rect:
+        serializedVersion: 2
+        x: 261
+        y: 0
+        width: 51
+        height: 26
+      alignment: 9
+      pivot: {x: 0.64705884, y: -0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 93fb3b57c25b3b4c0800000000000000
+      internalID: -4272872418886566087
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: _CrouchAttack_3
+      rect:
+        serializedVersion: 2
+        x: 381
+        y: 0
+        width: 48
+        height: 26
+      alignment: 9
+      pivot: {x: 0.6875, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 25f5cd4a7e5ab9ac0800000000000000
+      internalID: -3847299042336022702
       vertices: []
       indices: 
       edges: []
@@ -151,7 +226,7 @@ TextureImporter:
     customData: 
     physicsShape: []
     bones: []
-    spriteID: 
+    spriteID: 38f8238eb26e71446a951d51c826d018
     internalID: 0
     vertices: []
     indices: 
@@ -159,9 +234,16 @@ TextureImporter:
     weights: []
     secondaryTextures: []
     spriteCustomMetadata:
-      entries: []
+      entries:
+      - key: SpriteEditor.SliceOnImport
+        value: True
+      - key: SpriteEditor.SliceSettings
+        value: '{"sliceOnImport":true,"gridCellCount":{"x":1.0,"y":1.0},"gridSpriteSize":{"x":64.0,"y":64.0},"gridSpriteOffset":{"x":0.0,"y":0.0},"gridSpritePadding":{"x":0.0,"y":0.0},"pivot":{"x":0.5,"y":0.0},"pivotPixels":{"x":0.0,"y":18.5},"autoSlicingMethod":0,"spriteAlignment":7,"pivotUnitMode":1,"slicingType":0,"keepEmptyRects":false,"isAlternate":false}'
     nameFileIdTable:
-      __CrouchTransition_0: -4759129592202017317
+      _CrouchAttack_0: -5589327875898107882
+      _CrouchAttack_1: -4079485388738996815
+      _CrouchAttack_2: -4272872418886566087
+      _CrouchAttack_3: -3847299042336022702
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

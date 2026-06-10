@@ -8,7 +8,8 @@
         Attack,
         Roll,
         Dash,
-        Slide
+        Slide,
+        Hit
     }
     public enum KnightActionStates
     {
@@ -19,11 +20,11 @@
         WallInteraction,
         TurnAround,
         Attack,
+        CrouchAttack,
         Roll,
         Dash,
         Slide,
-        Death,
-        Hit
+        Death
     }
 
 }

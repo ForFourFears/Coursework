@@ -10,7 +10,10 @@ namespace Coursework.LogicControllers.ActionExecutionSystems
         private readonly IActionStateMachine<KnightActionStates, KnightActions> actionStateMachine;
         private readonly IMovementContext movementContext;
         private readonly IActionsModifiersHandler<KnightActions> actionModifiersHandler;
-        public KnightActionExecutionSystem(IMovementContext movementContext, IActionStateMachine<KnightActionStates, KnightActions> actionStateMachine, IActionsModifiersHandler<KnightActions> actionModifiersHandler)
+        public KnightActionExecutionSystem(
+            IMovementContext movementContext, 
+            IActionStateMachine<KnightActionStates, KnightActions> actionStateMachine, 
+            IActionsModifiersHandler<KnightActions> actionModifiersHandler)
         {
             this.movementContext = movementContext;
             this.actionStateMachine = actionStateMachine;

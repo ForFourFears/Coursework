@@ -5,7 +5,13 @@ using UnityEngine;
 
 namespace Coursework.AnimationControllers
 {
-    public class ObservableSMBsHandler 
+    public interface IObservableSMBsHandler
+    {
+        public ObservableSMB this[string stateName] { get; }
+
+        public ObservableSMB this[int stateHash] { get; }
+    }
+    public class ObservableSMBsHandler : IObservableSMBsHandler
     {
         private Dictionary<int, ObservableSMB> animationStates;
         private readonly Animator animator;

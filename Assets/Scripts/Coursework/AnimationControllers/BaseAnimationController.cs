@@ -18,17 +18,17 @@ namespace Coursework.AnimationControllers
         protected IActionStateMachine<TState, TAction> actionStateMachine;
         protected Rigidbody2D rb;
 
-        protected ObservableSMBsHandler animationEventsHandler;
+        protected IObservableSMBsHandler animationEventsHandler;
         protected int[] currentLayerHashes;
         protected readonly HashSet<ObservableSMB> ActiveOSMBs = new();
 
-        public BaseAnimationController(Animator animator, Rigidbody2D rigidbody, IActionStateMachine<TState, TAction> actionStateMachine)
+        public BaseAnimationController(Rigidbody2D rigidbody, Animator animator, IActionStateMachine<TState, TAction> actionStateMachine, IObservableSMBsHandler animationEventsHandler)
         {
             rb = rigidbody;
             this.actionStateMachine = actionStateMachine;
             this.animator = animator;
             currentLayerHashes = new int[animator.layerCount];
-            animationEventsHandler = new(animator);
+            this.animationEventsHandler = animationEventsHandler;
             //Subscribe();
         }
         protected void ChangeAnimation(AnimationData newAnim, float crossFadeDuration = 0)

@@ -1,6 +1,9 @@
-﻿using Coursework.EnumsCreatures.Knight;
+﻿using Coursework.AnimationControllers;
+using Coursework.EnumsCreatures.Knight;
 using Coursework.LogicControllers.ModifierSystems;
 using Coursework.ScriptableObjects;
+using Unity.VisualScripting;
+using UnityEditor;
 using UnityEngine;
 
 namespace Coursework.LogicControllers.ActionStateMachines
@@ -11,18 +14,39 @@ namespace Coursework.LogicControllers.ActionStateMachines
         private readonly Rigidbody2D rigidbody;
         private readonly ModifierSystem modifierSystem;
         private readonly IStatesModifiersHandler<KnightActionStates> statesModifiersHandler;
-        public KnightActionStateMachine(IEntityContext entityContext, IMovementContext movementContext, ModifierSystem modifierSystem, IStatesModifiersHandler<KnightActionStates> stateModifiersHandler)
+        public KnightActionStateMachine(
+            IEntityContext entityContext,
+            IMovementContext movementContext,
+            ModifierSystem modifierSystem,
+            IStatesModifiersHandler<KnightActionStates> statesModifiersHandler,
+            IObservableSMBsHandler observableSMBsHandler)
+            : base(observableSMBsHandler)
         {
             this.entityContext = entityContext;
             rigidbody = movementContext.Rigidbody;
             this.modifierSystem = modifierSystem;
-            this.statesModifiersHandler = stateModifiersHandler;
+            this.statesModifiersHandler = statesModifiersHandler;
+        }
+
+        public void Subscribe()
+        {
+            observableSMBsHandler["Attack"].ExitState += CheckTransitions;
+            observableSMBsHandler["Attack2"].ExitState += CheckTransitions;
+            observableSMBsHandler["CrouchAttack"].ExitState += OnStateCrouchAttackEnd;
+        }
+
+        public void Unsubscribe()
+        {
+            observableSMBsHandler["Attack"].ExitState -= CheckTransitions;
+            observableSMBsHandler["Attack2"].ExitState -= CheckTransitions;
+            observableSMBsHandler["CrouchAttack"].ExitState -= CheckTransitions;
         }
 
         public override void Update()
         {
             base.Update();
-            CheckTransitions();
+            if (CurrentState != KnightActionStates.Attack && 
+                CurrentState != KnightActionStates.CrouchAttack) CheckTransitions();
 
         }
 
@@ -38,6 +62,7 @@ namespace Coursework.LogicControllers.ActionStateMachines
             }
         }
 
+        //Проверяю, возможно ли в текущем состоянии это действие.
         public override bool TryExecuteAction(KnightActions action)
         {
             return CurrentState switch
@@ -45,14 +70,27 @@ namespace Coursework.LogicControllers.ActionStateMachines
                 KnightActionStates.Locomotion => action switch
                 {
                     KnightActions.Jump => CanJump(action),
+                    KnightActions.Attack => TryChangeState(KnightActionStates.Attack, action),
                     _ => false
                 },
                 KnightActionStates.Air => action switch
                 {
                     KnightActions.Jump => CanJump(action),
+                    KnightActions.Attack => TryChangeState(KnightActionStates.Attack, action),
                     _ => false
                 },
                 KnightActionStates.Crouch => action switch
+                {
+                    KnightActions.Jump => CanJump(action),
+                    KnightActions.Attack => TryChangeState(KnightActionStates.CrouchAttack, action),
+                    _ => false
+                },
+                KnightActionStates.Attack => action switch 
+                { 
+                    KnightActions.Jump => CanJump(action),
+                    _ => false
+                },
+                KnightActionStates.CrouchAttack => action switch
                 {
                     KnightActions.Jump => CanJump(action),
                     _ => false
@@ -63,29 +101,40 @@ namespace Coursework.LogicControllers.ActionStateMachines
 
         private bool CanJump(KnightActions action)
         {
-            if (entityContext.IsGrounded)
+            if (entityContext.IsGrounded && !entityContext.IsCeilingAbove)
             {
                 return TryChangeState(KnightActionStates.Air, action);
             }
             else return false;
         }
+
+        //private bool CanAttack(KnightActions action)
+        //{
+        //    if 
+        //}
+
         private void CheckTransitions()
         {
             if (!entityContext.IsGrounded)
             {
                 ChangeState(KnightActionStates.Air);
             }
-            else if (rigidbody.linearVelocityY <= 0)
+            else /*if (rigidbody.linearVelocityY <= 0)*/
             {
-                if (entityContext.IsCrouchIntentHeld /*|| entityContext.IsCeilingAbove*/)
+                if (entityContext.IsCrouched /*|| entityContext.IsCeilingAbove*/)
                 {
                     ChangeState(KnightActionStates.Crouch);
                 }
-                else if (!(entityContext.IsCrouchIntentHeld || entityContext.IsCeilingAbove))
+                else if (!(entityContext.IsCrouched || entityContext.IsCeilingAbove))
                 {
                     ChangeState(KnightActionStates.Locomotion);
                 }
             }
+        }
+
+        private void OnStateCrouchAttackEnd()
+        {
+            ChangeState(KnightActionStates.Crouch);
         }
     }
 }

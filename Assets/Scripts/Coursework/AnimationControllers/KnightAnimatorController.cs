@@ -1,7 +1,9 @@
-using System;
-using UnityEngine;
 using Coursework.EnumsCreatures.Knight;
+using Coursework.LogicControllers;
 using Coursework.LogicControllers.ActionStateMachines;
+using System;
+using Unity.VisualScripting;
+using UnityEngine;
 
 namespace Coursework.AnimationControllers
 {
@@ -40,20 +42,37 @@ namespace Coursework.AnimationControllers
         #endregion
 
         //[SerializeField] private float _airStateThreshold = 1f;
+        private readonly IEntityContext entityContext;
 
-        public KnightAnimatorController (Animator animator, Rigidbody2D rigidbody, IActionStateMachine<KnightActionStates, KnightActions> actionStateMachine) 
-            : base (animator, rigidbody, actionStateMachine) { }
+        public KnightAnimatorController (
+            IEntityContext entityContext,
+            Rigidbody2D rigidbody,
+            Animator animator,  
+            IActionStateMachine<KnightActionStates, KnightActions> actionStateMachine, 
+            IObservableSMBsHandler animationEventsHandle) 
+            : base (rigidbody, animator, actionStateMachine, animationEventsHandle) 
+        { 
+            this.entityContext = entityContext;
+        }
 
         public override void Subscribe()
         {
-            actionStateMachine[KnightActionStates.Crouch].Entered += OnCrouchStateTransition;
-            actionStateMachine[KnightActionStates.Crouch].Exit += OnCrouchStateTransition;
+            actionStateMachine[KnightActionStates.Crouch].Entered += OnCrouchStateEntered;
+            actionStateMachine[KnightActionStates.Crouch].Exit += OnCrouchStateExited;
+
+            actionStateMachine[KnightActions.Attack].Action += OnActionAttack;
+            actionStateMachine[KnightActionStates.Attack].Exit += OnActionInterrupted;
+            actionStateMachine[KnightActionStates.CrouchAttack].Exit += OnActionInterrupted;
         }
 
         public override void Unsubscribe()
         {
-            actionStateMachine[KnightActionStates.Crouch].Entered -= OnCrouchStateTransition;
-            actionStateMachine[KnightActionStates.Crouch].Exit -= OnCrouchStateTransition;
+            actionStateMachine[KnightActionStates.Crouch].Entered -= OnCrouchStateEntered;
+            actionStateMachine[KnightActionStates.Crouch].Exit -= OnCrouchStateExited;
+
+            actionStateMachine[KnightActions.Attack].Action -= OnActionAttack;
+            actionStateMachine[KnightActionStates.Attack].Exit -= OnActionInterrupted;
+            actionStateMachine[KnightActionStates.CrouchAttack].Exit -= OnActionInterrupted;
         }
 
         public void Update()
@@ -61,26 +80,44 @@ namespace Coursework.AnimationControllers
             AnimationData targetAnim;
             switch (actionStateMachine.CurrentState)
             {
-                case KnightActionStates.Locomotion:
+                case KnightActionStates.Locomotion or KnightActionStates.Attack:
                     targetAnim = Mathf.Abs(rb.linearVelocityX) > 0.1 ? run : idle;
                     break;
                 case KnightActionStates.Air:
                     if (rb.linearVelocityY < 0 && currentLayerHashes[0] == jump.Hash) PlaySequence(jumpFallInBetween);
                     targetAnim = rb.linearVelocityY >= 0 ? jump : fall;
                     break;
-                case KnightActionStates.Crouch:
+                case KnightActionStates.Crouch or KnightActionStates.CrouchAttack:
                     targetAnim = Mathf.Abs(rb.linearVelocityX) > 0.1 ? crouchWalk : crouch;
                     break;
-                default :
+                default:
                     targetAnim = idle;
                     break;
             }
             ChangeAnimation(targetAnim);
         }
 
-        private void OnCrouchStateTransition()
+        private void OnCrouchStateEntered(KnightActionStates previousState)
         {
+            if (previousState == KnightActionStates.CrouchAttack) return;
             PlaySequence(crouchTransition);
-        }        
+        }
+
+        private void OnCrouchStateExited(KnightActionStates nextState)
+        {
+            if (nextState == KnightActionStates.CrouchAttack) return;
+            PlaySequence(crouchTransition);
+        }
+
+        private void OnActionInterrupted(KnightActionStates context)
+        {
+            ChangeAnimation(entryL1);
+        }
+        
+        private void OnActionAttack()
+        {
+            if (!entityContext.IsCrouched && !entityContext.IsCeilingAbove) PlaySequence(attack);
+            else PlaySequence(crouchAttack);
+        }
     }
 }

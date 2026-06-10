@@ -1,19 +1,13 @@
 fileFormatVersion: 2
-guid: 92ce65e8a02f5024384c74a4efc4c088
+guid: 65a322ff229139440a66ec384d9ccb1f
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: -5589327875898107882
-    second: _CrouchAttack_0
+      213: -1258347047380482743
+    second: background4a_0
   - first:
-      213: -4079485388738996815
-    second: _CrouchAttack_1
-  - first:
-      213: -4272872418886566087
-    second: _CrouchAttack_2
-  - first:
-      213: -3847299042336022702
-    second: _CrouchAttack_3
+      213: -2027149549664907509
+    second: background4a_1
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -46,7 +40,7 @@ TextureImporter:
   maxTextureSize: 2048
   textureSettings:
     serializedVersion: 2
-    filterMode: 0
+    filterMode: 1
     aniso: 1
     mipBias: 0
     wrapU: 1
@@ -135,89 +129,45 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: _CrouchAttack_0
+      name: background4a_0
       rect:
         serializedVersion: 2
-        x: 32
-        y: 0
-        width: 34
-        height: 28
-      alignment: 7
-      pivot: {x: 0, y: 0.66071427}
+        x: 0
+        y: 284
+        width: 960
+        height: 196
+      alignment: 0
+      pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 61897ef09e7be62b0800000000000000
-      internalID: -5589327875898107882
+      spriteID: 94589b40704798ee0800000000000000
+      internalID: -1258347047380482743
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: _CrouchAttack_1
+      name: background4a_1
       rect:
         serializedVersion: 2
-        x: 140
+        x: 0
         y: 0
-        width: 79
-        height: 26
-      alignment: 7
-      pivot: {x: 0, y: 0.71153843}
+        width: 960
+        height: 219
+      alignment: 0
+      pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 1b5d0d927a1c267c0800000000000000
-      internalID: -4079485388738996815
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: _CrouchAttack_2
-      rect:
-        serializedVersion: 2
-        x: 261
-        y: 0
-        width: 51
-        height: 26
-      alignment: 7
-      pivot: {x: 0, y: 0.71153843}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: 93fb3b57c25b3b4c0800000000000000
-      internalID: -4272872418886566087
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: _CrouchAttack_3
-      rect:
-        serializedVersion: 2
-        x: 381
-        y: 0
-        width: 48
-        height: 26
-      alignment: 7
-      pivot: {x: 0, y: 0.71153843}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: 25f5cd4a7e5ab9ac0800000000000000
-      internalID: -3847299042336022702
+      spriteID: b0f41a1993e1ed3e0800000000000000
+      internalID: -2027149549664907509
       vertices: []
       indices: 
       edges: []
@@ -226,7 +176,7 @@ TextureImporter:
     customData: 
     physicsShape: []
     bones: []
-    spriteID: 38f8238eb26e71446a951d51c826d018
+    spriteID: 
     internalID: 0
     vertices: []
     indices: 
@@ -234,16 +184,10 @@ TextureImporter:
     weights: []
     secondaryTextures: []
     spriteCustomMetadata:
-      entries:
-      - key: SpriteEditor.SliceOnImport
-        value: True
-      - key: SpriteEditor.SliceSettings
-        value: '{"sliceOnImport":true,"gridCellCount":{"x":1.0,"y":1.0},"gridSpriteSize":{"x":64.0,"y":64.0},"gridSpriteOffset":{"x":0.0,"y":0.0},"gridSpritePadding":{"x":0.0,"y":0.0},"pivot":{"x":0.5,"y":0.0},"pivotPixels":{"x":0.0,"y":18.5},"autoSlicingMethod":0,"spriteAlignment":7,"pivotUnitMode":1,"slicingType":0,"keepEmptyRects":false,"isAlternate":false}'
+      entries: []
     nameFileIdTable:
-      _CrouchAttack_0: -5589327875898107882
-      _CrouchAttack_1: -4079485388738996815
-      _CrouchAttack_2: -4272872418886566087
-      _CrouchAttack_3: -3847299042336022702
+      background4a_0: -1258347047380482743
+      background4a_1: -2027149549664907509
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
