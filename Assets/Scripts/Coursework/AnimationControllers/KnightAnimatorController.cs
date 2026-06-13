@@ -81,17 +81,17 @@ namespace Coursework.AnimationControllers
             switch (actionStateMachine.CurrentState)
             {
                 case KnightActionStates.Locomotion or KnightActionStates.Attack:
-                    targetAnim = Mathf.Abs(rb.linearVelocityX) > 0.1 ? run : idle;
+                    targetAnim = Mathf.Abs(rb.linearVelocityX) > 0.5 ? run : idle;
                     break;
                 case KnightActionStates.Air:
                     if (rb.linearVelocityY < 0 && currentLayerHashes[0] == jump.Hash) PlaySequence(jumpFallInBetween);
                     targetAnim = rb.linearVelocityY >= 0 ? jump : fall;
                     break;
                 case KnightActionStates.Crouch or KnightActionStates.CrouchAttack:
-                    targetAnim = Mathf.Abs(rb.linearVelocityX) > 0.1 ? crouchWalk : crouch;
+                    targetAnim = Mathf.Abs(rb.linearVelocityX) > 0.5 ? crouchWalk : crouch;
                     break;
                 default:
-                    targetAnim = idle;
+                    targetAnim = Mathf.Abs(rb.linearVelocityX) > 0.5 ? run : idle;
                     break;
             }
             ChangeAnimation(targetAnim);

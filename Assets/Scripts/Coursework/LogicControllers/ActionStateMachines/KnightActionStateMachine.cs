@@ -39,7 +39,7 @@ namespace Coursework.LogicControllers.ActionStateMachines
         {
             observableSMBsHandler["Attack"].ExitState -= CheckTransitions;
             observableSMBsHandler["Attack2"].ExitState -= CheckTransitions;
-            observableSMBsHandler["CrouchAttack"].ExitState -= CheckTransitions;
+            observableSMBsHandler["CrouchAttack"].ExitState -= OnStateCrouchAttackEnd;
         }
 
         public override void Update()
@@ -47,6 +47,7 @@ namespace Coursework.LogicControllers.ActionStateMachines
             base.Update();
             if (CurrentState != KnightActionStates.Attack && 
                 CurrentState != KnightActionStates.CrouchAttack) CheckTransitions();
+
 
         }
 

@@ -17,18 +17,18 @@ MonoBehaviour:
   - State: 0
     Modifier: 1
   - State: 1
-    Modifier: 2
+    Modifier: 10
   - State: 2
-    Modifier: 2.1
+    Modifier: 11
+  - State: 6
+    Modifier: 5
   - State: 3
-    Modifier: 1
+    Modifier: 5
+  - State: 7
+    Modifier: 2.5
   - State: 4
     Modifier: 1
   - State: 5
-    Modifier: 1
-  - State: 6
-    Modifier: 1
-  - State: 7
     Modifier: 1
   - State: 8
     Modifier: 1
@@ -37,7 +37,9 @@ MonoBehaviour:
   - State: 10
     Modifier: 1
   - State: 11
-    Modifier: 1
+    Modifier: 0
   _knightActionsModifiers:
   - Action: 1
-    Modifier: 4
+    Modifier: 50
+  - Action: 3
+    Modifier: 35

@@ -1,4 +1,5 @@
-﻿using Scripts;
+﻿using System;
+using Scripts;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using Coursework.ScriptableObjects;
@@ -8,6 +9,9 @@ using Coursework.LogicControllers.ActionExecutionSystems;
 using Coursework.LogicControllers.ActionStateMachines;
 using Coursework.LogicControllers.ModifierSystems;
 using Coursework.AnimationControllers;
+using Coursework.LogicControllers.AttackSystems;
+using UnityEngine.Splines;
+
 #if UNITY_EDITOR
 using UnityEditor;
 #endif
@@ -28,12 +32,18 @@ namespace Coursework.LogicControllers
     public interface IMovementContext
     {
         public Vector2 MoveInput { get; }
-
+        public Vector2 SlopeDirection { get; }
         public Rigidbody2D Rigidbody { get; }
     }
+
+    public interface IDamageable
+    {
+        public void TakeDamage(float damage);
+    }
+
     [RequireComponent(typeof(Rigidbody2D))]
     [RequireComponent(typeof(Animator))]
-    public class PlayerController : MonoBehaviour, IEntityContext, IMovementContext/*, IActionStateMachineProvider<KnightActionStates,  KnightActions>*/
+    public class PlayerController : MonoBehaviour, IEntityContext, IMovementContext, IAttacker, IDamageable/*, IActionStateMachineProvider<KnightActionStates,  KnightActions>*/
     {
         #region Public part
         public bool IsGrounded { get; private set; }
@@ -43,12 +53,20 @@ namespace Coursework.LogicControllers
         public bool IsRolling { get; private set; }
         public bool IsDashing { get; private set; }
 
+        public Vector2 MoveInput { get; private set; }
+        public Vector2 SlopeDirection { get; private set; }
+
         public IActionStateMachine<KnightActionStates, KnightActions> ActionStateMachine { get => actionStateMachine; }
         #endregion
 
         #region Serialize part
         [Header("Movement")]
         [field: SerializeField] public Rigidbody2D Rigidbody { get; private set; }
+        [field: SerializeField] public PhysicsMaterial2D Fricrion0 { get; private set; }
+        [field: SerializeField] public PhysicsMaterial2D Fricrion1 { get; private set; }
+
+        [SerializeField] private float maxSlopeAngle;
+
 
         [Header("Grounded Check")]
         [SerializeField] private Transform _groundCheck;
@@ -65,6 +83,10 @@ namespace Coursework.LogicControllers
 
         [Header("Configs")]
         [SerializeField] private KnightConfig _knightConfig;
+
+        [Header("Debug")]
+        [SerializeField] private Transform infoPosition;
+        [SerializeField] private Transform SlopeDirectionPosition;
         #endregion
 
         #region Private part
@@ -76,8 +98,9 @@ namespace Coursework.LogicControllers
         private MovementSystem movementSystem;
         private ModifierSystem modifierSystem;
         private KnightAnimatorController animatorController;
+        private HealthSystem healthSystem;
 
-        public Vector2 MoveInput { get; private set; }
+        
         #endregion
 
         private void Awake()
@@ -87,7 +110,7 @@ namespace Coursework.LogicControllers
             inputSystemActions = new();
             actionBuffer = new();
             modifierSystem = new();
-            movementSystem = new(this, modifierSystem);
+            movementSystem = new(this, this, modifierSystem);
 
             _animator = _animator != null ? _animator : GetComponent<Animator>();
 
@@ -96,6 +119,8 @@ namespace Coursework.LogicControllers
             actionExecutionSystem = new(this, ActionStateMachine, _knightConfig);
 
             animatorController = new (this, Rigidbody, _animator, ActionStateMachine, observableSMBsHandler);
+
+            healthSystem = new(_knightConfig.Health, _knightConfig.Health);
 
         }
 
@@ -146,6 +171,7 @@ namespace Coursework.LogicControllers
             IsGrounded = CheckGrounded();
             IsCeilingAbove = CheckCeiling();
 
+            UpdateFriction();
             actionStateMachine.Update();
 
             if (IsAttacking)
@@ -209,14 +235,54 @@ namespace Coursework.LogicControllers
                 transform.localScale = new Vector3(Mathf.Abs(scale.x) * direction, scale.y, scale.z);
             }
         }
-        private bool CheckGrounded()
+
+        private void UpdateFriction()
         {
-            return Physics2D.OverlapCircle(_groundCheck.position, _groundCheckRadius, _groundLayer) != null;
+            if (IsGrounded && MoveInput.x == 0)
+            {
+                Rigidbody.sharedMaterial = Fricrion1;
+            }
+            else
+            {
+                Rigidbody.sharedMaterial = Fricrion0;
+            }
         }
 
-        private bool CheckCrouchIntent()
+        public void OnHit(Collider2D target, AttackInfo attackInfo)
         {
-            return MoveInput.y < -0.1;
+            actionExecutionSystem.OnHit(target, attackInfo);
+        }
+
+        public void TakeDamage(float damage)
+        {
+            healthSystem.Health -= damage;
+        }
+
+        private bool CheckGrounded()
+        {
+            RaycastHit2D hit = Physics2D.CircleCast(_groundCheck.position, _groundCheckRadius, Vector2.down, 0.05f, _groundLayer);
+
+            bool isGround = hit.collider != null;
+
+            if (isGround)
+            {
+                float slopeAngle = Vector2.Angle(Vector2.up, hit.normal);
+
+                if (slopeAngle > maxSlopeAngle)
+                {
+                    SlopeDirection = new Vector2(1, 0);
+                }
+                else
+                {
+                    SlopeDirection = new Vector2(hit.normal.y, -hit.normal.x);
+                }
+            }
+            else
+            {
+                SlopeDirection = new Vector2(1, 0);
+            }
+
+            return isGround;
         }
 
         private bool CheckCeiling()
@@ -225,13 +291,41 @@ namespace Coursework.LogicControllers
         }
 
         #if UNITY_EDITOR
+
         private void OnDrawGizmos()
         {
             if (actionStateMachine != null && modifierSystem != null)
             {
-                Vector3 textPosition = transform.position + Vector3.up * 0.5f;
+                GUIStyle labelStyle = new()
+                {
+                    fontSize = 32 // Увеличиваем размер шрифта (по умолчанию там около 12)
+                };
+                labelStyle.normal.textColor = Color.white; // Можно задать любой цвет, чтобы текст лучше читался
+                labelStyle.alignment = TextAnchor.MiddleCenter; // Центрируем текст относительно точки каста
 
-                Handles.Label(textPosition, $"{actionStateMachine.CurrentState}, {modifierSystem.StateModifier}, IsAttacking: {IsAttacking}");
+                // Передаем созданный стиль третьим аргументом
+                Handles.Label(infoPosition.position, $"{actionStateMachine.CurrentState}, {modifierSystem.StateModifier},\n" +
+                    $" SlopeDirection: {SlopeDirection}\n" +
+                    $"IsGrounded: {IsGrounded}", labelStyle);
+            }
+            if(SlopeDirection != Vector2.zero)
+            {
+                // 1. Точка старта — пусть выходит из центра персонажа (или из точки GroundCheck)
+                Vector3 startPoint = SlopeDirectionPosition.position;
+
+                // 2. Точка финиша — смещаем старт на величину нашего вектора
+                // Можно умножить на коэффициент (например, * 2f), чтобы короткий нормализованный вектор был длиннее и заметнее
+                Vector3 endPoint = startPoint + (Vector3)SlopeDirection * 1f;
+
+                // 3. Настраиваем цвет линии в редакторе
+                Handles.color = Color.green;
+
+                // 4. Рисуем сглаженную линию (толщина 4 пикселя)
+                Handles.DrawLine(startPoint, endPoint, 4f);
+
+                // Дополнительно: можно нарисовать маленькую сферу на конце вектора, чтобы видеть направление
+                Gizmos.color = Color.green;
+                Gizmos.DrawWireSphere(endPoint, 0.1f);
             }
 
             if (_groundCheck != null)
@@ -245,7 +339,6 @@ namespace Coursework.LogicControllers
                 Gizmos.DrawWireSphere(_ceilingCheck.position, _ceilingCheckRadius);
             }
         }
-        #endif
-
+#endif
     }
 }

@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 
 namespace Coursework.ScriptableObjects
+    //Гонвно какое-то, переделать бы...
 {
     [CreateAssetMenu(fileName = "KnightConfig", menuName = "Scriptable Objects/CharacterConfigs/KnightConfig")]
     public class KnightConfig : CharacterConfig, IStatesModifiersHandler<KnightActionStates>, IActionsModifiersHandler<KnightActions>
