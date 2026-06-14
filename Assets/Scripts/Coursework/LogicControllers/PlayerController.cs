@@ -64,11 +64,13 @@ namespace Coursework.LogicControllers
         #region Serialize part
         [Header("Movement")]
         [field: SerializeField] public Rigidbody2D Rigidbody { get; private set; }
-        [field: SerializeField] public PhysicsMaterial2D Fricrion0 { get; private set; }
-        [field: SerializeField] public PhysicsMaterial2D Fricrion1 { get; private set; }
+        [SerializeField] private PhysicsMaterial2D _fricrion0;
+        [SerializeField] private PhysicsMaterial2D _fricrion1;
 
-        [SerializeField] private float maxSlopeAngle;
-
+        [Header("Slope Detection")]
+        [SerializeField] private float _maxSlopeAngle;
+        [SerializeField] private Transform _normalOrigin;
+        [SerializeField] private float _normalVectorLength = 0.3f;
 
         [Header("Grounded Check")]
         [SerializeField] private Transform _groundCheck;
@@ -248,11 +250,11 @@ namespace Coursework.LogicControllers
         {
             if (IsGrounded && MoveInput.x == 0)
             {
-                Rigidbody.sharedMaterial = Fricrion1;
+                Rigidbody.sharedMaterial = _fricrion1;
             }
             else
             {
-                Rigidbody.sharedMaterial = Fricrion0;
+                Rigidbody.sharedMaterial = _fricrion0;
             }
         }
 
@@ -268,29 +270,34 @@ namespace Coursework.LogicControllers
 
         private bool CheckGrounded()
         {
-            RaycastHit2D hit = Physics2D.CircleCast(_groundCheck.position, _groundCheckRadius, Vector2.down, 0.05f, _groundLayer);
 
-            bool isGround = hit.collider != null;
+            bool isGround = Physics2D.OverlapCircle(_groundCheck.position, _groundCheckRadius, _groundLayer);
 
-            if (isGround)
-            {
-                float slopeAngle = Vector2.Angle(Vector2.up, hit.normal);
-
-                if (slopeAngle > maxSlopeAngle)
-                {
-                    SlopeDirection = new Vector2(1, 0);
-                }
-                else
-                {
-                    SlopeDirection = new Vector2(hit.normal.y, -hit.normal.x);
-                }
-            }
-            else
-            {
-                SlopeDirection = new Vector2(1, 0);
-            }
+            СalculateSlopeDirection(new Vector2(1, 0));
 
             return isGround;
+        }
+
+        private void СalculateSlopeDirection(Vector2 deafult)
+        {
+            RaycastHit2D hit = Physics2D.Raycast(_normalOrigin.position, Vector2.down, _normalVectorLength, _groundLayer);
+
+            if (hit.normal == Vector2.zero)
+            {
+                SlopeDirection = deafult;
+                return;
+            }
+
+            float slopeAngle = Vector2.Angle(Vector2.up, hit.normal);
+
+            if (slopeAngle <= _maxSlopeAngle)
+            {
+                SlopeDirection = new Vector2(hit.normal.y, -hit.normal.x);
+                return;
+            }
+
+            SlopeDirection = deafult;
+            return;
         }
 
         private bool CheckCeiling()
@@ -306,32 +313,24 @@ namespace Coursework.LogicControllers
             {
                 GUIStyle labelStyle = new()
                 {
-                    fontSize = 32 // Увеличиваем размер шрифта (по умолчанию там около 12)
+                    fontSize = 32
                 };
-                labelStyle.normal.textColor = Color.white; // Можно задать любой цвет, чтобы текст лучше читался
-                labelStyle.alignment = TextAnchor.MiddleCenter; // Центрируем текст относительно точки каста
+                labelStyle.normal.textColor = Color.white; 
+                labelStyle.alignment = TextAnchor.MiddleCenter; 
 
-                // Передаем созданный стиль третьим аргументом
-                Handles.Label(infoPosition.position, $"{actionStateMachine.CurrentState}, {modifierSystem.StateModifier},\n" +
+
+                Handles.Label(infoPosition.position, 
+                    $"{actionStateMachine.CurrentState}, {modifierSystem.StateModifier},\n" +
                     $" SlopeDirection: {SlopeDirection}\n" +
                     $"IsGrounded: {IsGrounded}", labelStyle);
             }
-            if(SlopeDirection != Vector2.zero)
+
+            if (SlopeDirection != Vector2.zero)
             {
-                // 1. Точка старта — пусть выходит из центра персонажа (или из точки GroundCheck)
                 Vector3 startPoint = SlopeDirectionPosition.position;
-
-                // 2. Точка финиша — смещаем старт на величину нашего вектора
-                // Можно умножить на коэффициент (например, * 2f), чтобы короткий нормализованный вектор был длиннее и заметнее
                 Vector3 endPoint = startPoint + (Vector3)SlopeDirection * 1f;
-
-                // 3. Настраиваем цвет линии в редакторе
                 Handles.color = Color.green;
-
-                // 4. Рисуем сглаженную линию (толщина 4 пикселя)
                 Handles.DrawLine(startPoint, endPoint, 4f);
-
-                // Дополнительно: можно нарисовать маленькую сферу на конце вектора, чтобы видеть направление
                 Gizmos.color = Color.green;
                 Gizmos.DrawWireSphere(endPoint, 0.1f);
             }
@@ -342,9 +341,19 @@ namespace Coursework.LogicControllers
                 else Gizmos.color = Color.red;
                 Gizmos.DrawWireSphere(_groundCheck.position, _groundCheckRadius);
             }
+
+            if (_normalOrigin != null)
+            {
+                Vector3 startPoint = _normalOrigin.position;
+                Vector3 endPoint = startPoint + Vector3.down * _normalVectorLength;
+                Handles.color = Color.green;
+                Handles.DrawLine(startPoint, endPoint, 6f);
+            }
+
             if (_ceilingCheck != null)
             {
-                Gizmos.color = Color.red;
+                if (IsCeilingAbove) Gizmos.color = Color.green;
+                else Gizmos.color = Color.red;
                 Gizmos.DrawWireSphere(_ceilingCheck.position, _ceilingCheckRadius);
             }
         }
