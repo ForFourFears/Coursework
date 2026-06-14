@@ -151,11 +151,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: Unity.Cinemachine::Unity.Cinemachine.CinemachineFollow
   TrackerSettings:
     BindingMode: 4
-    PositionDamping: {x: 1, y: 1.5, z: 1}
+    PositionDamping: {x: 1, y: 1, z: 1}
     AngularDampingMode: 0
     RotationDamping: {x: 1, y: 1, z: 1}
     QuaternionDamping: 1
-  FollowOffset: {x: 0, y: 1.5, z: -10}
+  FollowOffset: {x: 0, y: 0.5, z: -10}
 --- !u!114 &11560406
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -181,7 +181,7 @@ MonoBehaviour:
     CustomLookAtTarget: 0
   Lens:
     FieldOfView: 34
-    OrthographicSize: 4.5
+    OrthographicSize: 6.5
     NearClipPlane: 0.3
     FarClipPlane: 1000
     Dutch: 0
@@ -208,7 +208,7 @@ Transform:
   m_GameObject: {fileID: 11560404}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 21.47, y: 10.55, z: -10}
+  m_LocalPosition: {x: 21.47, y: 9.55, z: -10}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 1
   m_Children: []
@@ -240,7 +240,7 @@ Transform:
   m_GameObject: {fileID: 100197183}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0.037, y: 0, z: 0}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -280,7 +280,7 @@ CapsuleCollider2D:
   m_UsedByEffector: 0
   m_CompositeOperation: 0
   m_CompositeOrder: 0
-  m_Offset: {x: -0.019144058, y: 0.8253336}
+  m_Offset: {x: 0.0188942, y: 0.8253336}
   m_Size: {x: 1.026752, y: 1.6332722}
   m_Direction: 0
 --- !u!1 &146159783
@@ -367,7 +367,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!114 &462505128
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -598,7 +598,7 @@ Camera:
   far clip plane: 1000
   field of view: 34
   orthographic: 1
-  orthographic size: 4.5
+  orthographic size: 6.5
   m_Depth: -1
   m_CullingMask:
     serializedVersion: 2
@@ -623,7 +623,7 @@ Transform:
   m_GameObject: {fileID: 519420028}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 21.47, y: 10.55, z: -10}
+  m_LocalPosition: {x: 21.47, y: 9.55, z: -10}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 1
   m_Children: []
@@ -3820,6 +3820,7 @@ MonoBehaviour:
   _ceilingLayer:
     serializedVersion: 2
     m_Bits: 8
+  _coyoteTimeDuration: 0.15
   _animator: {fileID: 2130661914}
   _knightConfig: {fileID: 11400000, guid: bf2bc565bc6d6a64c8ea9640b06ab0d8, type: 2}
   infoPosition: {fileID: 519709409}

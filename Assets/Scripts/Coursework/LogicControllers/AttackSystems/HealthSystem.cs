@@ -10,8 +10,7 @@ namespace Coursework.LogicControllers.AttackSystems
         public float MaxHealth { get; }
         public float Health { get; }
 
-        public event Action<float> OnHealthDecreased; //Передаю значение урона.
-        public event Action<float> OnHealthIncreased; //Передаю значение лечения.
+        public event Action<float, float> HealthChanged;
     }
 
     public class HealthSystem : IHealth
@@ -28,30 +27,20 @@ namespace Coursework.LogicControllers.AttackSystems
 
             set
             {
-                value = Mathf.Clamp(value, 0, MaxHealth);
-                if (value > health)
-                {
-                    float heal = value - health;
-                    health = value;
-                    OnHealthIncreased?.Invoke(heal);
-                }
-                else if (value < health)
-                {
-                    float damage = health - value;
-                    Debug.Log($"Получен урон: {damage}");
-                    health = value;
-                    OnHealthDecreased?.Invoke(damage);
-                }
+                float clamped = Mathf.Clamp(value, 0, MaxHealth);
+                if (health == clamped) return;
+
+                health = clamped;
+                HealthChanged?.Invoke(health, MaxHealth);
             }
         }
 
-        public event Action<float> OnHealthDecreased;
-        public event Action<float> OnHealthIncreased;
+        public event Action<float, float> HealthChanged;
 
-        public HealthSystem(float maxHealth, float health)
+        public HealthSystem(float health, float maxHealth)
         {
-            MaxHealth = maxHealth;
             this.health = health;
+            MaxHealth = maxHealth;
         }
     }
 }

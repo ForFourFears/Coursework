@@ -22,6 +22,7 @@ namespace Coursework.LogicControllers
 	public interface IEntityContext
 	{
         public bool IsGrounded { get; }
+        public bool CanCoyoteJump { get; }
         public bool IsCrouched { get; }
 		public bool IsCeilingAbove { get; }
         public bool IsAttacking { get; }
@@ -47,6 +48,7 @@ namespace Coursework.LogicControllers
     {
         #region Public part
         public bool IsGrounded { get; private set; }
+        public bool CanCoyoteJump { get => coyoteTimeCounter > 0; }
         public bool IsCrouched { get; private set; }
         public bool IsCeilingAbove { get; private set; }
         public bool IsAttacking { get; private set; }
@@ -78,6 +80,9 @@ namespace Coursework.LogicControllers
         [SerializeField] private float _ceilingCheckRadius = 0.1f;
         [SerializeField] private LayerMask _ceilingLayer;
 
+        [Header("Coyote Time")]
+        [SerializeField] private float _coyoteTimeDuration = 0.15f;
+
         [Header("Animator Controller")]
         [SerializeField] private Animator _animator;
 
@@ -100,7 +105,7 @@ namespace Coursework.LogicControllers
         private KnightAnimatorController animatorController;
         private HealthSystem healthSystem;
 
-        
+        private float coyoteTimeCounter;
         #endregion
 
         private void Awake()
@@ -111,6 +116,7 @@ namespace Coursework.LogicControllers
             actionBuffer = new();
             modifierSystem = new();
             movementSystem = new(this, this, modifierSystem);
+            coyoteTimeCounter = _coyoteTimeDuration;
 
             _animator = _animator != null ? _animator : GetComponent<Animator>();
 
@@ -171,6 +177,9 @@ namespace Coursework.LogicControllers
             IsGrounded = CheckGrounded();
             IsCeilingAbove = CheckCeiling();
 
+            if (IsGrounded) coyoteTimeCounter = _coyoteTimeDuration;
+            else coyoteTimeCounter -= Time.fixedDeltaTime;
+
             UpdateFriction();
             actionStateMachine.Update();
 
@@ -181,7 +190,6 @@ namespace Coursework.LogicControllers
             }
 
             ActionRequest action = actionBuffer.GetOldestActionRequest();
-            
             if(action.Action != KnightActions.None && actionStateMachine.TryExecuteAction(action.Action))
             {
                 actionBuffer.RemoveAction(action);
@@ -330,7 +338,8 @@ namespace Coursework.LogicControllers
 
             if (_groundCheck != null)
             {
-                Gizmos.color = Color.red;
+                if (IsGrounded) Gizmos.color = Color.green;
+                else Gizmos.color = Color.red;
                 Gizmos.DrawWireSphere(_groundCheck.position, _groundCheckRadius);
             }
             if (_ceilingCheck != null)

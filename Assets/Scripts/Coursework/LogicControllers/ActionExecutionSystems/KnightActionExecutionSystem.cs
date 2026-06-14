@@ -49,10 +49,11 @@ namespace Coursework.LogicControllers.ActionExecutionSystems
 
         private void OnJump()
         {
-            if (movementContext.Rigidbody.linearVelocityY < 0)
-            {
-                movementContext.Rigidbody.linearVelocityY = 0;
-            }
+            //if (movementContext.Rigidbody.linearVelocityY < 0)
+            //{
+            //    movementContext.Rigidbody.linearVelocityY = 0;
+            //}
+            movementContext.Rigidbody.linearVelocityY = 0;
             if (!actionModifiersHandler.ActionsModifiers.TryGetValue(KnightActions.Jump, out float mod))
             {
                 mod = 2;

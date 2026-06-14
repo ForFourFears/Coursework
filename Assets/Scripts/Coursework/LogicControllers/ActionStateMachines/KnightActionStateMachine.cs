@@ -102,7 +102,7 @@ namespace Coursework.LogicControllers.ActionStateMachines
 
         private bool CanJump(KnightActions action)
         {
-            if (entityContext.IsGrounded && !entityContext.IsCeilingAbove)
+            if ((entityContext.IsGrounded || entityContext.CanCoyoteJump) && !entityContext.IsCeilingAbove)
             {
                 return TryChangeState(KnightActionStates.Air, action);
             }

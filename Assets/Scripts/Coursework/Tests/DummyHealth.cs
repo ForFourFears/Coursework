@@ -15,26 +15,27 @@ public class DummyHealth : MonoBehaviour, IDamageable
     private void OnEnable()
     {
         // Подписываемся на события, чтобы проверить их работу в консоли
-        _healthSystem.OnHealthDecreased += LogDamage;
+        _healthSystem.HealthChanged += LogDamage;
     }
 
     private void OnDisable()
     {
-        _healthSystem.OnHealthDecreased -= LogDamage;
+        _healthSystem.HealthChanged -= LogDamage;
     }
 
     public void TakeDamage(float damage)
     {
+        Debug.Log($"<color=red>[MANNEQUIN]</color> Получен урон: {damage}. ");
         // Передаем урон в систему здоровья манекена
         _healthSystem.Health -= damage;
+
     }
 
-    private void LogDamage(float damageDealt)
+    private void LogDamage(float health, float maxHealth)
     {
-        Debug.Log($"<color=red>[MANNEQUIN]</color> Получен урон: {damageDealt}. " +
-                  $"Текущее ХП: {_healthSystem.Health}/{_healthSystem.MaxHealth}");
+        Debug.Log($"Текущее ХП: {health}/{maxHealth}");
 
-        if (_healthSystem.Health <= 0)
+        if (health <= 0)
         {
             Debug.Log("<color=black><b>[MANNEQUIN] УБИТ!</b></color>");
         }
