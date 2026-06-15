@@ -20,17 +20,17 @@ MonoBehaviour:
     Modifier: 10
   - State: 2
     Modifier: 11
-  - State: 6
-    Modifier: 5
   - State: 3
     Modifier: 5
+  - State: 6
+    Modifier: 5
   - State: 7
+    Modifier: 4
+  - State: 8
     Modifier: 2.5
   - State: 4
     Modifier: 1
   - State: 5
-    Modifier: 1
-  - State: 8
     Modifier: 1
   - State: 9
     Modifier: 1

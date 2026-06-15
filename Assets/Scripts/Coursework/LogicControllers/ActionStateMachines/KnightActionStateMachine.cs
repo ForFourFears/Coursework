@@ -2,6 +2,7 @@
 using Coursework.EnumsCreatures.Knight;
 using Coursework.LogicControllers.ModifierSystems;
 using Coursework.ScriptableObjects;
+using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEditor;
 using UnityEngine;
@@ -14,6 +15,17 @@ namespace Coursework.LogicControllers.ActionStateMachines
         private readonly Rigidbody2D rigidbody;
         private readonly ModifierSystem modifierSystem;
         private readonly IStatesModifiersHandler<KnightActionStates> statesModifiersHandler;
+
+        private static readonly HashSet<KnightActionStates> NonInterruptibleStates = new()
+        {
+            KnightActionStates.Attack,
+            KnightActionStates.Attack2,
+            KnightActionStates.CrouchAttack
+        };
+
+        private readonly float combatTime = 0.3f;
+        private float combatTimeCounter;
+
         public KnightActionStateMachine(
             IEntityContext entityContext,
             IMovementContext movementContext,
@@ -31,6 +43,8 @@ namespace Coursework.LogicControllers.ActionStateMachines
         public void Subscribe()
         {
             observableSMBsHandler["Attack"].ExitState += CheckTransitions;
+            this[KnightActionStates.Attack].Exit += ActivateCombatWindow;
+
             observableSMBsHandler["Attack2"].ExitState += CheckTransitions;
             observableSMBsHandler["CrouchAttack"].ExitState += OnStateCrouchAttackEnd;
         }
@@ -38,16 +52,19 @@ namespace Coursework.LogicControllers.ActionStateMachines
         public void Unsubscribe()
         {
             observableSMBsHandler["Attack"].ExitState -= CheckTransitions;
+            this[KnightActionStates.Attack].Exit -= ActivateCombatWindow;
+
             observableSMBsHandler["Attack2"].ExitState -= CheckTransitions;
             observableSMBsHandler["CrouchAttack"].ExitState -= OnStateCrouchAttackEnd;
         }
 
-        public override void Update()
+        public override void Update(float deltaTime)
         {
-            base.Update();
-            if (CurrentState != KnightActionStates.Attack && 
-                CurrentState != KnightActionStates.CrouchAttack) CheckTransitions();
+            base.Update(deltaTime);
 
+            if (!NonInterruptibleStates.Contains(CurrentState)) CheckTransitions();
+
+            combatTimeCounter = Mathf.Clamp(combatTimeCounter - deltaTime, 0, combatTime);
 
         }
 
@@ -71,13 +88,13 @@ namespace Coursework.LogicControllers.ActionStateMachines
                 KnightActionStates.Locomotion => action switch
                 {
                     KnightActions.Jump => CanJump(action),
-                    KnightActions.Attack => TryChangeState(KnightActionStates.Attack, action),
+                    KnightActions.Attack => Attack(action),
                     _ => false
                 },
                 KnightActionStates.Air => action switch
                 {
                     KnightActions.Jump => CanJump(action),
-                    KnightActions.Attack => TryChangeState(KnightActionStates.Attack, action),
+                    KnightActions.Attack => Attack(action),
                     _ => false
                 },
                 KnightActionStates.Crouch => action switch
@@ -109,10 +126,21 @@ namespace Coursework.LogicControllers.ActionStateMachines
             else return false;
         }
 
-        //private bool CanAttack(KnightActions action)
-        //{
-        //    if 
-        //}
+        private bool Attack(KnightActions action)
+        {
+            if (combatTimeCounter > 0)
+            {
+                bool isCompleted = TryChangeState(KnightActionStates.Attack2, action);
+                if (isCompleted) combatTimeCounter = 0;
+                return isCompleted;
+            }
+            return TryChangeState(KnightActionStates.Attack, action);
+        }
+
+        private void ActivateCombatWindow(KnightActionStates context)
+        {
+            combatTimeCounter = combatTime;
+        }
 
         private void CheckTransitions()
         {

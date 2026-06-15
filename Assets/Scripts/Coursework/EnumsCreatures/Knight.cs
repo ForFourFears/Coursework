@@ -20,6 +20,7 @@
         WallInteraction,
         TurnAround,
         Attack,
+        Attack2,
         CrouchAttack,
         Roll,
         Dash,

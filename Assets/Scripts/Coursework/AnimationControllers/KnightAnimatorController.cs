@@ -60,8 +60,12 @@ namespace Coursework.AnimationControllers
             actionStateMachine[KnightActionStates.Crouch].Entered += OnCrouchStateEntered;
             actionStateMachine[KnightActionStates.Crouch].Exit += OnCrouchStateExited;
 
-            actionStateMachine[KnightActions.Attack].Action += OnActionAttack;
+            actionStateMachine[KnightActionStates.Attack].Entered += OnEnterAttackState;
+            actionStateMachine[KnightActionStates.Attack2].Entered += OnEnterAttack2State;
+            actionStateMachine[KnightActionStates.CrouchAttack].Entered += OnEnterCrouchAttackState;
+
             actionStateMachine[KnightActionStates.Attack].Exit += OnActionInterrupted;
+            actionStateMachine[KnightActionStates.Attack2].Exit += OnActionInterrupted;
             actionStateMachine[KnightActionStates.CrouchAttack].Exit += OnActionInterrupted;
         }
 
@@ -70,8 +74,12 @@ namespace Coursework.AnimationControllers
             actionStateMachine[KnightActionStates.Crouch].Entered -= OnCrouchStateEntered;
             actionStateMachine[KnightActionStates.Crouch].Exit -= OnCrouchStateExited;
 
-            actionStateMachine[KnightActions.Attack].Action -= OnActionAttack;
+            actionStateMachine[KnightActionStates.Attack].Entered -= OnEnterAttackState;
+            actionStateMachine[KnightActionStates.Attack2].Entered -= OnEnterAttack2State;
+            actionStateMachine[KnightActionStates.CrouchAttack].Entered -= OnEnterCrouchAttackState;
+
             actionStateMachine[KnightActionStates.Attack].Exit -= OnActionInterrupted;
+            actionStateMachine[KnightActionStates.Attack2].Exit -= OnActionInterrupted;
             actionStateMachine[KnightActionStates.CrouchAttack].Exit -= OnActionInterrupted;
         }
 
@@ -80,16 +88,27 @@ namespace Coursework.AnimationControllers
             AnimationData targetAnim;
             switch (actionStateMachine.CurrentState)
             {
-                case KnightActionStates.Locomotion or KnightActionStates.Attack:
+                case KnightActionStates.Locomotion:
                     targetAnim = Mathf.Abs(rb.linearVelocityX) > 0.5 ? run : idle;
                     break;
+
                 case KnightActionStates.Air:
                     if (rb.linearVelocityY < 0 && currentLayerHashes[0] == jump.Hash) PlaySequence(jumpFallInBetween);
                     targetAnim = rb.linearVelocityY >= 0 ? jump : fall;
                     break;
-                case KnightActionStates.Crouch or KnightActionStates.CrouchAttack:
+
+                case KnightActionStates.Crouch:
                     targetAnim = Mathf.Abs(rb.linearVelocityX) > 0.5 ? crouchWalk : crouch;
                     break;
+
+                case KnightActionStates.Attack or KnightActionStates.Attack2:
+                    targetAnim = idle;
+                    break;
+
+                case KnightActionStates.CrouchAttack:
+                    targetAnim = crouch;
+                    break;
+
                 default:
                     targetAnim = Mathf.Abs(rb.linearVelocityX) > 0.5 ? run : idle;
                     break;
@@ -113,11 +132,20 @@ namespace Coursework.AnimationControllers
         {
             ChangeAnimation(entryL1);
         }
-        
-        private void OnActionAttack()
+
+        private void OnEnterAttackState(KnightActionStates context)
         {
-            if (!entityContext.IsCrouched && !entityContext.IsCeilingAbove) PlaySequence(attack);
-            else PlaySequence(crouchAttack);
+            PlaySequence(attack);
+        }
+
+        private void OnEnterAttack2State(KnightActionStates context)
+        {
+            PlaySequence(attack2);
+        }
+
+        private void OnEnterCrouchAttackState(KnightActionStates context)
+        {
+            PlaySequence(crouchAttack);
         }
     }
 }

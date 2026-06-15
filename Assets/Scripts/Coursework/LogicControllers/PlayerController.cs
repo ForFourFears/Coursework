@@ -183,7 +183,7 @@ namespace Coursework.LogicControllers
             else coyoteTimeCounter -= Time.fixedDeltaTime;
 
             UpdateFriction();
-            actionStateMachine.Update();
+            actionStateMachine.Update(Time.fixedDeltaTime);
 
             if (IsAttacking)
             {
