@@ -13,33 +13,78 @@ MonoBehaviour:
   m_Name: KnightConfig
   m_EditorClassIdentifier: Assembly-CSharp::Coursework.ScriptableObjects.KnightConfig
   <Health>k__BackingField: 100
-  _knightStatesModifiers:
-  - State: 0
-    Modifier: 1
-  - State: 1
-    Modifier: 10
-  - State: 2
-    Modifier: 11
-  - State: 3
-    Modifier: 5
-  - State: 6
-    Modifier: 5
-  - State: 7
-    Modifier: 4
-  - State: 8
-    Modifier: 2.5
-  - State: 4
-    Modifier: 1
-  - State: 5
-    Modifier: 1
-  - State: 9
-    Modifier: 1
-  - State: 10
-    Modifier: 1
-  - State: 11
-    Modifier: 0
-  _knightActionsModifiers:
-  - Action: 1
-    Modifier: 50
-  - Action: 3
-    Modifier: 35
+  _statesList:
+  - rid: 3152465141576499311
+  - rid: 3152465141576499315
+  - rid: 3152465141576499316
+  - rid: 3152465141576499317
+  - rid: 3152465141576499318
+  - rid: 3152465141576499319
+  - rid: 3152465161458024535
+  _actionsList:
+  - rid: 3152465141576499328
+  - rid: 3152465161458024523
+  - rid: 3152465161458024534
+  references:
+    version: 2
+    RefIds:
+    - rid: 3152465141576499311
+      type: {class: KnightState, ns: Coursework.ScriptableObjects, asm: Assembly-CSharp}
+      data:
+        <SpeedModifier>k__BackingField: 10
+        _targetState: 1
+    - rid: 3152465141576499315
+      type: {class: KnightState, ns: Coursework.ScriptableObjects, asm: Assembly-CSharp}
+      data:
+        <SpeedModifier>k__BackingField: 11
+        _targetState: 2
+    - rid: 3152465141576499316
+      type: {class: KnightState, ns: Coursework.ScriptableObjects, asm: Assembly-CSharp}
+      data:
+        <SpeedModifier>k__BackingField: 5
+        _targetState: 3
+    - rid: 3152465141576499317
+      type: {class: KnightState, ns: Coursework.ScriptableObjects, asm: Assembly-CSharp}
+      data:
+        <SpeedModifier>k__BackingField: 5
+        _targetState: 6
+    - rid: 3152465141576499318
+      type: {class: KnightState, ns: Coursework.ScriptableObjects, asm: Assembly-CSharp}
+      data:
+        <SpeedModifier>k__BackingField: 5
+        _targetState: 7
+    - rid: 3152465141576499319
+      type: {class: KnightState, ns: Coursework.ScriptableObjects, asm: Assembly-CSharp}
+      data:
+        <SpeedModifier>k__BackingField: 2.5
+        _targetState: 8
+    - rid: 3152465141576499328
+      type: {class: KnightJumpAction, ns: Coursework.ScriptableObjects, asm: Assembly-CSharp}
+      data:
+        <Cooldown>k__BackingField: 0.16
+        <JumpModifier>k__BackingField: 45
+        <CoyoteTime>k__BackingField: 0.15
+        <NumberOfJumps>k__BackingField: 2
+    - rid: 3152465161458024523
+      type: {class: KnightAttackAction, ns: Coursework.ScriptableObjects, asm: Assembly-CSharp}
+      data:
+        <Cooldown>k__BackingField: 0
+        <CombateTime>k__BackingField: 0.3
+        _attacksInfo:
+        - AttackType: 1
+          Damage: 35
+        - AttackType: 2
+          Damage: 50
+        - AttackType: 3
+          Damage: 30
+    - rid: 3152465161458024534
+      type: {class: KnightDashActionData, ns: Coursework.ScriptableObjects, asm: Assembly-CSharp}
+      data:
+        <Cooldown>k__BackingField: 2.2
+        <DashDistance>k__BackingField: 4.03
+        <StaminaCost>k__BackingField: 14.74
+    - rid: 3152465161458024535
+      type: {class: KnightState, ns: Coursework.ScriptableObjects, asm: Assembly-CSharp}
+      data:
+        <SpeedModifier>k__BackingField: 2.9
+        _targetState: 5

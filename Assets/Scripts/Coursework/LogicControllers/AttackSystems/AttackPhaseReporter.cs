@@ -5,19 +5,20 @@ namespace Coursework.LogicControllers.AttackSystems
 {
     public enum AttackType
     {
+        None = 0,
         BaseAttack,
         Attack2,
         CrouchAttack
     }
 
     [System.Serializable]
-    public struct AttackInfo
+    public struct HitInfo
     {
         public AttackType AttackType;
 
-        public int AttackPhase;
+        [Min(1)] public int AttackPhase;
 
-        public AttackInfo(AttackType attackType, int attackPhase)
+        public HitInfo(AttackType attackType, int attackPhase)
         {
             this.AttackType = attackType;
             this.AttackPhase = attackPhase;
@@ -26,7 +27,7 @@ namespace Coursework.LogicControllers.AttackSystems
 
     public class AttackPhaseReporter : MonoBehaviour
     {
-        [SerializeField] private AttackInfo attackType;
+        [SerializeField] private HitInfo hitInfo;
 
         private IAttacker attacker;
 
@@ -36,7 +37,7 @@ namespace Coursework.LogicControllers.AttackSystems
         }
         private void OnTriggerEnter2D(Collider2D other)
         {
-            attacker.OnHit(other, attackType);
+            attacker.OnHit(other, hitInfo);
         }
     }
 }

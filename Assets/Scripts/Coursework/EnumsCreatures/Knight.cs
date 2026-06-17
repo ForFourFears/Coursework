@@ -28,4 +28,11 @@
         Death
     }
 
+    public enum KnightActionWindows
+    {
+        None = 0,
+        CoyoteJump,
+        Combat
+    }
+
 }

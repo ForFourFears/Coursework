@@ -10,23 +10,50 @@ namespace Coursework.LogicControllers.ActionExecutionSystems
 {
     public interface IAttacker
     {
-        public void OnHit(Collider2D target, AttackInfo attack);
+        public void OnHit(Collider2D target, HitInfo attack);
     }
     public class KnightActionExecutionSystem : BaseActionExecutionSystem, IAttacker
     {
         private readonly IActionStateMachine<KnightActionStates, KnightActions> actionStateMachine;
         private readonly IMovementContext movementContext;
-        private readonly IActionsModifiersHandler<KnightActions> actionModifiersHandler;
+        private readonly IActionsDataHandler<KnightActions> actionDataHandler;
         private readonly HashSet<IDamageable> damagedTargets;
+
+        private readonly KnightJumpAction jumpData;
+        private readonly KnightAttackAction attackData;
+
+        private readonly Dictionary<AttackType, float> attacksDamage;
 
         public KnightActionExecutionSystem(
             IMovementContext movementContext, 
-            IActionStateMachine<KnightActionStates, KnightActions> actionStateMachine, 
-            IActionsModifiersHandler<KnightActions> actionModifiersHandler)
+            IActionStateMachine<KnightActionStates, KnightActions> actionStateMachine,
+            IActionsDataHandler<KnightActions> actionDataHandler)
         {
             this.movementContext = movementContext;
             this.actionStateMachine = actionStateMachine;
-            this.actionModifiersHandler = actionModifiersHandler;
+            this.actionDataHandler = actionDataHandler;
+
+            if (actionDataHandler[KnightActions.Jump] is KnightJumpAction jumpConfig)
+            {
+                jumpData = jumpConfig;
+            }
+            else throw new System.NullReferenceException("No data for jumpData");
+
+            if (actionDataHandler[KnightActions.Attack] is KnightAttackAction attackConfig)
+            {
+                attackData = attackConfig;
+            }
+            else throw new System.NullReferenceException("No data for attackData");
+
+            attacksDamage = new();
+
+            for (int i = 0; i < attackData.AttacksInfo.Count; i++)
+            {
+                if (attackData.AttacksInfo[i].AttackType != AttackType.None)
+                {
+                    attacksDamage.Add(attackData.AttacksInfo[i].AttackType, attackData.AttacksInfo[i].Damage);
+                }
+            }
 
             damagedTargets = new();
         }
@@ -54,30 +81,17 @@ namespace Coursework.LogicControllers.ActionExecutionSystems
             //    movementContext.Rigidbody.linearVelocityY = 0;
             //}
             movementContext.Rigidbody.linearVelocityY = 0;
-            if (!actionModifiersHandler.ActionsModifiers.TryGetValue(KnightActions.Jump, out float mod))
-            {
-                mod = 2;
-            }
+            float mod = jumpData.JumpModifier;
             movementContext.Rigidbody.AddForceY(mod, ForceMode2D.Impulse);
         }
 
-        public void OnHit(Collider2D target, AttackInfo attackInfo)
+        public void OnHit(Collider2D target, HitInfo hitInfo)
         {
             if (target.TryGetComponent<IDamageable>(out var damageable))
             {
                 if (damagedTargets.Add(damageable))
                 {
-                    if (!actionModifiersHandler.ActionsModifiers.TryGetValue(KnightActions.Attack, out float damage))
-                    {
-                        damage = 5;
-                    }
-
-                    damage = attackInfo.AttackType switch
-                    {
-                        AttackType.Attack2 => damage * 1.1f,
-                        AttackType.CrouchAttack => damage * 0.9f,
-                        _ => damage,
-                    };
+                    float damage = attacksDamage.GetValueOrDefault(hitInfo.AttackType, 0);
                     damageable.TakeDamage(damage);
                 }
             }

@@ -3,8 +3,6 @@ using Coursework.EnumsCreatures.Knight;
 using Coursework.LogicControllers.ModifierSystems;
 using Coursework.ScriptableObjects;
 using System.Collections.Generic;
-using Unity.VisualScripting;
-using UnityEditor;
 using UnityEngine;
 
 namespace Coursework.LogicControllers.ActionStateMachines
@@ -14,7 +12,9 @@ namespace Coursework.LogicControllers.ActionStateMachines
         private readonly IEntityContext entityContext;
         private readonly Rigidbody2D rigidbody;
         private readonly ModifierSystem modifierSystem;
-        private readonly IStatesModifiersHandler<KnightActionStates> statesModifiersHandler;
+        private readonly IEntityDataHandler<KnightActionStates, KnightActions> entityDataHandler;
+
+        private readonly ActionTimerRegistry<KnightActionWindows> actionWindowsTimer;
 
         private static readonly HashSet<KnightActionStates> NonInterruptibleStates = new()
         {
@@ -23,21 +23,35 @@ namespace Coursework.LogicControllers.ActionStateMachines
             KnightActionStates.CrouchAttack
         };
 
-        private readonly float combatTime = 0.3f;
-        private float combatTimeCounter;
+        private readonly KnightJumpAction jumpData;
+        private int jumpCounter;
+        private readonly KnightAttackAction attackData;
+
 
         public KnightActionStateMachine(
             IEntityContext entityContext,
             IMovementContext movementContext,
             ModifierSystem modifierSystem,
-            IStatesModifiersHandler<KnightActionStates> statesModifiersHandler,
+            IEntityDataHandler<KnightActionStates, KnightActions> entityDataHandler,
             IObservableSMBsHandler observableSMBsHandler)
             : base(observableSMBsHandler)
         {
             this.entityContext = entityContext;
             rigidbody = movementContext.Rigidbody;
             this.modifierSystem = modifierSystem;
-            this.statesModifiersHandler = statesModifiersHandler;
+            this.entityDataHandler = entityDataHandler;
+            actionWindowsTimer = new();
+
+            if (entityDataHandler[KnightActions.Jump] is KnightJumpAction jumpConfig)
+            {
+                jumpData = jumpConfig;
+            }
+            else throw new System.NullReferenceException("No data for jumpData");
+            if (entityDataHandler[KnightActions.Attack] is KnightAttackAction attackConfig)
+            {
+                attackData = attackConfig;
+            }
+            else throw new System.NullReferenceException("No data for attackData");
         }
 
         public void Subscribe()
@@ -61,26 +75,38 @@ namespace Coursework.LogicControllers.ActionStateMachines
         public override void Update(float deltaTime)
         {
             base.Update(deltaTime);
+            actionWindowsTimer.Update(deltaTime);
+
+            if (entityContext.IsGrounded)
+            {
+                actionWindowsTimer[KnightActionWindows.CoyoteJump] = jumpData.CoyoteTime;
+                jumpCounter = jumpData.NumberOfJumps;
+            }
+            else if (!actionWindowsTimer.IsActive(KnightActionWindows.CoyoteJump) &&
+                jumpCounter == jumpData.NumberOfJumps)
+            {
+                jumpCounter--;
+            }
 
             if (!NonInterruptibleStates.Contains(CurrentState)) CheckTransitions();
 
-            combatTimeCounter = Mathf.Clamp(combatTimeCounter - deltaTime, 0, combatTime);
+
 
         }
 
         protected override void OnStateChanged(KnightActionStates currentState)
         {
-            if (statesModifiersHandler.StatesModifiers.TryGetValue(currentState, out float mod))
+            var state = entityDataHandler[currentState];
+            float mod = 0;
+
+            if (state != null)
             {
-                modifierSystem.StateModifier = mod;
+                mod = state.SpeedModifier;
             }
-            else
-            {
-                modifierSystem.StateModifier = 0;
-            }
+
+            modifierSystem.StateModifier = mod;
         }
 
-        //Проверяю, возможно ли в текущем состоянии это действие.
         public override bool TryExecuteAction(KnightActions action)
         {
             return CurrentState switch
@@ -119,19 +145,27 @@ namespace Coursework.LogicControllers.ActionStateMachines
 
         private bool CanJump(KnightActions action)
         {
-            if ((entityContext.IsGrounded || entityContext.CanCoyoteJump) && !entityContext.IsCeilingAbove)
+            if (jumpCounter > 0 && !entityContext.IsCeilingAbove)
             {
-                return TryChangeState(KnightActionStates.Air, action);
+                bool isCompleted = TryChangeState(KnightActionStates.Air, action);
+                if (isCompleted)
+                {
+                    jumpCounter--;
+                    actionWindowsTimer[KnightActionWindows.CoyoteJump] = 0;
+                }
+                    
+                    
+                return isCompleted;
             }
             else return false;
         }
 
         private bool Attack(KnightActions action)
         {
-            if (combatTimeCounter > 0)
+            if (actionWindowsTimer.IsActive(KnightActionWindows.Combat))
             {
                 bool isCompleted = TryChangeState(KnightActionStates.Attack2, action);
-                if (isCompleted) combatTimeCounter = 0;
+                if (isCompleted) actionWindowsTimer[KnightActionWindows.Combat] = 0;
                 return isCompleted;
             }
             return TryChangeState(KnightActionStates.Attack, action);
@@ -139,7 +173,7 @@ namespace Coursework.LogicControllers.ActionStateMachines
 
         private void ActivateCombatWindow(KnightActionStates context)
         {
-            combatTimeCounter = combatTime;
+            actionWindowsTimer[KnightActionWindows.Combat] = attackData.CombateTime;
         }
 
         private void CheckTransitions()

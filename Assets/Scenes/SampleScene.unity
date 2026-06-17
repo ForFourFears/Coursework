@@ -1166,8 +1166,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6867b286ded78644881e619fe8c1d5ff, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Coursework.LogicControllers.AttackSystems.AttackPhaseReporter
-  attackType:
-    AttackType: 1
+  hitInfo:
+    AttackType: 2
     AttackPhase: 1
 --- !u!1 &1361711192
 GameObject:
@@ -1300,8 +1300,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6867b286ded78644881e619fe8c1d5ff, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Coursework.LogicControllers.AttackSystems.AttackPhaseReporter
-  attackType:
-    AttackType: 0
+  hitInfo:
+    AttackType: 1
     AttackPhase: 1
 --- !u!1 &1505506910
 GameObject:
@@ -1493,8 +1493,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6867b286ded78644881e619fe8c1d5ff, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Coursework.LogicControllers.AttackSystems.AttackPhaseReporter
-  attackType:
-    AttackType: 2
+  hitInfo:
+    AttackType: 3
     AttackPhase: 1
 --- !u!1 &1574646592
 GameObject:
@@ -1594,8 +1594,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6867b286ded78644881e619fe8c1d5ff, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Coursework.LogicControllers.AttackSystems.AttackPhaseReporter
-  attackType:
-    AttackType: 0
+  hitInfo:
+    AttackType: 1
     AttackPhase: 2
 --- !u!1 &1649720719
 GameObject:
@@ -3600,8 +3600,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6867b286ded78644881e619fe8c1d5ff, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Coursework.LogicControllers.AttackSystems.AttackPhaseReporter
-  attackType:
-    AttackType: 1
+  hitInfo:
+    AttackType: 2
     AttackPhase: 2
 --- !u!1 &2029435079
 GameObject:

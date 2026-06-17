@@ -12,12 +12,14 @@ namespace Coursework.LogicControllers.ActionStateMachines
         protected readonly Dictionary<TState, StateEvents<TState>> stateEvents;
         protected readonly Dictionary<TAction, ActionEvent> actionEvents;
         protected readonly IObservableSMBsHandler observableSMBsHandler;
+        protected readonly ActionTimerRegistry<TAction> cooldownRegistry;
 
         public BaseActionStateMachine(IObservableSMBsHandler observableSMBsHandler)
         {
             this.observableSMBsHandler = observableSMBsHandler;
             stateEvents = new();
             actionEvents = new();
+            cooldownRegistry = new();
         }
 
         public TState CurrentState { get; protected set; }
@@ -50,6 +52,7 @@ namespace Coursework.LogicControllers.ActionStateMachines
 
         public virtual void Update(float deltaTime)
         {
+            cooldownRegistry.Update(deltaTime);
             currentStateEvents?.UpdateInvoke();
         }
         protected void ChangeState(TState newState)
@@ -77,6 +80,7 @@ namespace Coursework.LogicControllers.ActionStateMachines
 
         protected bool TryChangeState(TState newState, TAction action)
         {
+            if (cooldownRegistry.IsActive(action, 0)) return false;
             ChangeState(newState);
             if (actionEvents.TryGetValue(action, out var actionEvent))
             {

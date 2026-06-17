@@ -10,7 +10,6 @@ using Coursework.LogicControllers.ActionStateMachines;
 using Coursework.LogicControllers.ModifierSystems;
 using Coursework.AnimationControllers;
 using Coursework.LogicControllers.AttackSystems;
-using UnityEngine.Splines;
 
 #if UNITY_EDITOR
 using UnityEditor;
@@ -22,7 +21,6 @@ namespace Coursework.LogicControllers
 	public interface IEntityContext
 	{
         public bool IsGrounded { get; }
-        public bool CanCoyoteJump { get; }
         public bool IsCrouched { get; }
 		public bool IsCeilingAbove { get; }
         public bool IsAttacking { get; }
@@ -48,7 +46,6 @@ namespace Coursework.LogicControllers
     {
         #region Public part
         public bool IsGrounded { get; private set; }
-        public bool CanCoyoteJump { get => coyoteTimeCounter > 0; }
         public bool IsCrouched { get; private set; }
         public bool IsCeilingAbove { get; private set; }
         public bool IsAttacking { get; private set; }
@@ -179,9 +176,6 @@ namespace Coursework.LogicControllers
             IsGrounded = CheckGrounded();
             IsCeilingAbove = CheckCeiling();
 
-            if (IsGrounded) coyoteTimeCounter = _coyoteTimeDuration;
-            else coyoteTimeCounter -= Time.fixedDeltaTime;
-
             UpdateFriction();
             actionStateMachine.Update(Time.fixedDeltaTime);
 
@@ -258,9 +252,9 @@ namespace Coursework.LogicControllers
             }
         }
 
-        public void OnHit(Collider2D target, AttackInfo attackInfo)
+        public void OnHit(Collider2D target, HitInfo hitInfo)
         {
-            actionExecutionSystem.OnHit(target, attackInfo);
+            actionExecutionSystem.OnHit(target, hitInfo);
         }
 
         public void TakeDamage(float damage)

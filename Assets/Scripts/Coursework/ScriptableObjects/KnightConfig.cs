@@ -1,47 +1,120 @@
-﻿using UnityEngine;
-using Coursework.EnumsCreatures.Knight;
+﻿using Coursework.EnumsCreatures.Knight;
+using System;
 using System.Collections.Generic;
-using System.Linq;
+using UnityEngine;
+using Coursework.LogicControllers.AttackSystems;
+using Unity.VisualScripting;
 
 namespace Coursework.ScriptableObjects
-    //Гонвно какое-то, переделать бы...
 {
-    [CreateAssetMenu(fileName = "KnightConfig", menuName = "Scriptable Objects/CharacterConfigs/KnightConfig")]
-    public class KnightConfig : CharacterConfig, IStatesModifiersHandler<KnightActionStates>, IActionsModifiersHandler<KnightActions>
+    [CreateAssetMenu(fileName = "KnightConfig", menuName = "Configs/KnightConfig")]
+    public class KnightConfig : BaseCharacterConfig<KnightActionStates, KnightActions>
     {
-        [SerializeField] private KnightStateModifier[] _knightStatesModifiers;
+        [SerializeReference, SelectSubclassData]
+        private List<BaseStateData<KnightActionStates>> _statesList = new();
 
-        [SerializeField] private KnightActionModifier[] _knightActionsModifiers;
+        [SerializeReference, SelectSubclassData]
+        private List<BaseActionData<KnightActions>> _actionsList = new();
 
-        public IReadOnlyDictionary<KnightActionStates, float> StatesModifiers => statesModifiers;
+        protected override List<BaseStateData<KnightActionStates>> StatesList => _statesList;
+        protected override List<BaseActionData<KnightActions>> ActionsList => _actionsList;
 
-        public IReadOnlyDictionary<KnightActions, float> ActionsModifiers => actionsModifiers;
+        
+    }
 
-        private Dictionary<KnightActionStates, float> statesModifiers;
+    #region StatesData
+    [Serializable]
+    public class KnightState : StateData<KnightActionStates> { }
 
-        private Dictionary<KnightActions, float> actionsModifiers;
 
-        private void OnEnable()
+    [Serializable]
+    public class KnightJumpAction : BaseActionData<KnightActions>
+    {
+        public override KnightActions TargetAction
         {
-            statesModifiers = _knightStatesModifiers.ToDictionary( stateModifier => stateModifier.State, stateModifier => stateModifier.Modifier);
-            actionsModifiers = _knightActionsModifiers.ToDictionary(actionModifier => actionModifier.Action, actionModifiers => actionModifiers.Modifier);
+            get => KnightActions.Jump;
+            protected set { }
+        }
+
+        [Header("Jump Settings")]
+        [field: Min(0)]
+        [field: SerializeField] public float JumpModifier { get; private set; } = 10f;
+
+        [field: Min(0)]
+        [field: SerializeField] public float CoyoteTime { get; private set; } = 0.15f;
+
+        [field: Min(1)]
+        [field: SerializeField] public int NumberOfJumps { get; private set; } = 1;
+
+
+        public override void OnValidateAction() { }
+    }
+    #endregion
+
+    #region ActionsData
+    [Serializable]
+    public class KnightAttackAction : BaseActionData<KnightActions>
+    {
+        public override KnightActions TargetAction
+        {
+            get => KnightActions.Attack;
+            protected set { }
+        }
+
+        [Header("Attack Settings")]
+        [field: Min(0)]
+        [field: SerializeField] public float CombateTime { get; private set; } = 0.3f;
+
+        [Serializable]
+        public struct AttackInfo
+        {
+            public AttackType AttackType;
+
+            public float Damage;
+
+            public AttackInfo(AttackType attackType, float damage)
+            {
+                AttackType = attackType;
+                Damage = damage;
+            }
+        }
+
+        [SerializeField] private List<AttackInfo> _attacksInfo = new();
+
+        public List<AttackInfo> AttacksInfo => _attacksInfo;
+
+        public override void OnValidateAction()
+        {
+            if (_attacksInfo != null)
+            {
+                HashSet<AttackType> attacks = new();
+                for (int i = 0; i < _attacksInfo.Count; i++)
+                {
+                    if (_attacksInfo[i].AttackType != AttackType.None && !attacks.Add(_attacksInfo[i].AttackType))
+                    {
+                        _attacksInfo[i] = new();
+                    }
+
+                }
+            }
         }
     }
 
-    [System.Serializable]
-    public struct KnightStateModifier
+    [Serializable]
+    public class KnightDashActionData : BaseActionData<KnightActions>
     {
-        public KnightActionStates State;
-        public float Modifier;
+        public override KnightActions TargetAction
+        {
+            get => KnightActions.Dash;
+            protected set { }
+        }
 
+        [Header("Dash Settings")]
+        [field: SerializeField, Min(0)] public float DashDistance { get; private set; } = 4f;
+        [field: SerializeField, Min(0)] public float StaminaCost { get; private set; } = 15f;
+
+
+        public override void OnValidateAction() { }
     }
-
-    [System.Serializable]
-    public struct KnightActionModifier
-    {
-        public KnightActions Action;
-        public float Modifier;
-
-    }
+    #endregion
 }
-
