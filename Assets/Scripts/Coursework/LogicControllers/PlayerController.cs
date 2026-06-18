@@ -23,9 +23,6 @@ namespace Coursework.LogicControllers
         public bool IsGrounded { get; }
         public bool IsCrouched { get; }
 		public bool IsCeilingAbove { get; }
-        public bool IsAttacking { get; }
-        public bool IsRolling { get; }
-        public bool IsDashing { get; }
     }
 
     public interface IMovementContext
@@ -33,6 +30,8 @@ namespace Coursework.LogicControllers
         public Vector2 MoveInput { get; }
         public Vector2 SlopeDirection { get; }
         public Rigidbody2D Rigidbody { get; }
+
+        public float MaxFallSpeed { get; }
     }
 
     public interface IDamageable
@@ -42,25 +41,26 @@ namespace Coursework.LogicControllers
 
     [RequireComponent(typeof(Rigidbody2D))]
     [RequireComponent(typeof(Animator))]
-    public class PlayerController : MonoBehaviour, IEntityContext, IMovementContext, IAttacker, IDamageable/*, IActionStateMachineProvider<KnightActionStates,  KnightActions>*/
+    public class PlayerController : MonoBehaviour, IEntityContext, IMovementContext, IAttacker, IDamageable/*, IActionStateMachineProvider<KnightStates,  KnightActions>*/
     {
         #region Public part
         public bool IsGrounded { get; private set; }
         public bool IsCrouched { get; private set; }
         public bool IsCeilingAbove { get; private set; }
-        public bool IsAttacking { get; private set; }
-        public bool IsRolling { get; private set; }
-        public bool IsDashing { get; private set; }
 
         public Vector2 MoveInput { get; private set; }
         public Vector2 SlopeDirection { get; private set; }
 
-        public IActionStateMachine<KnightActionStates, KnightActions> ActionStateMachine { get => actionStateMachine; }
+        public IActionStateMachine<KnightStates, KnightActions> ActionStateMachine { get => actionStateMachine; }
         #endregion
 
         #region Serialize part
         [Header("Movement")]
         [field: SerializeField] public Rigidbody2D Rigidbody { get; private set; }
+
+        [field: Min(5)]
+        [field: SerializeField] public float MaxFallSpeed { get; private set; } = 5;
+
         [SerializeField] private PhysicsMaterial2D _fricrion0;
         [SerializeField] private PhysicsMaterial2D _fricrion1;
 
@@ -78,9 +78,6 @@ namespace Coursework.LogicControllers
         [SerializeField] private Transform _ceilingCheck;
         [SerializeField] private float _ceilingCheckRadius = 0.1f;
         [SerializeField] private LayerMask _ceilingLayer;
-
-        [Header("Coyote Time")]
-        [SerializeField] private float _coyoteTimeDuration = 0.15f;
 
         [Header("Animator Controller")]
         [SerializeField] private Animator _animator;
@@ -104,7 +101,7 @@ namespace Coursework.LogicControllers
         private KnightAnimatorController animatorController;
         private HealthSystem healthSystem;
 
-        private float coyoteTimeCounter;
+
         #endregion
 
         private void Awake()
@@ -115,7 +112,6 @@ namespace Coursework.LogicControllers
             actionBuffer = new();
             modifierSystem = new();
             movementSystem = new(this, this, modifierSystem);
-            coyoteTimeCounter = _coyoteTimeDuration;
 
             _animator = _animator != null ? _animator : GetComponent<Animator>();
 
@@ -135,11 +131,17 @@ namespace Coursework.LogicControllers
 
             inputSystemActions.Player.Move.performed += OnMove;
             inputSystemActions.Player.Move.canceled += OnMove;
+
             inputSystemActions.Player.Crouch.performed += OnCrouch;
             inputSystemActions.Player.Crouch.canceled += OnCrouch;
+
             inputSystemActions.Player.Jump.performed += OnJump;
-            inputSystemActions.Player.Attack.performed += OnAttack;
-            inputSystemActions.Player.Attack.canceled += OnAttack;
+
+            //inputSystemActions.Player.Attack.performed += OnAttack;
+
+            //inputSystemActions.Player.Dash.performed += OnDash;
+
+            //inputSystemActions.Player.Roll.performed += OnRoll;
 
             actionStateMachine.Subscribe();
             actionExecutionSystem.Subscribe();
@@ -155,11 +157,18 @@ namespace Coursework.LogicControllers
 
             inputSystemActions.Player.Move.performed -= OnMove;
             inputSystemActions.Player.Move.canceled -= OnMove;
+
             inputSystemActions.Player.Crouch.performed -= OnCrouch;
             inputSystemActions.Player.Crouch.canceled -= OnCrouch;
+
             inputSystemActions.Player.Jump.performed -= OnJump;
-            inputSystemActions.Player.Attack.performed -= OnAttack;
-            inputSystemActions.Player.Attack.canceled -= OnAttack;
+
+            //inputSystemActions.Player.Attack.performed -= OnAttack;
+
+            //inputSystemActions.Player.Dash.performed -= OnDash;
+
+            //inputSystemActions.Player.Roll.performed -= OnRoll;
+
 
             inputSystemActions.Disable();
         }
@@ -179,11 +188,12 @@ namespace Coursework.LogicControllers
             UpdateFriction();
             actionStateMachine.Update(Time.fixedDeltaTime);
 
-            if (IsAttacking)
-            {
-                KnightActions actionAttack = KnightActions.Attack;
-                actionBuffer.AddAction(actionAttack, 0.2f);
-            }
+            KnightActions actionType = KnightActions.None;
+            if (inputSystemActions.Player.Roll.IsPressed()) actionType = KnightActions.Roll;
+            else if (inputSystemActions.Player.Attack.IsPressed()) actionType = KnightActions.Attack;
+            else if (inputSystemActions.Player.Dash.IsPressed()) actionType = KnightActions.Dash;
+ 
+            actionBuffer.AddAction(actionType, 0.2f);
 
             ActionRequest action = actionBuffer.GetOldestActionRequest();
             if(action.Action != KnightActions.None && actionStateMachine.TryExecuteAction(action.Action))
@@ -212,22 +222,23 @@ namespace Coursework.LogicControllers
             IsCrouched = context.ReadValueAsButton();
         }
 
-        private void OnAttack(InputAction.CallbackContext context)
-        {
-            //KnightActions action = KnightActions.Attack;
-            //actionBuffer.AddAction(action, 0.2f);
-            IsAttacking = context.ReadValueAsButton();
-        }
+        //private void OnAttack(InputAction.CallbackContext context)
+        //{
+        //    KnightActions actionAttack = KnightActions.Attack;
+        //    actionBuffer.AddAction(actionAttack, 0.2f);
+        //}
 
-        private void OnRoll(InputAction.CallbackContext context)
-        {
-            IsRolling = context.ReadValueAsButton();
-        }
+        //private void OnDash(InputAction.CallbackContext context)
+        //{
+        //    KnightActions actionAttack = KnightActions.Dash;
+        //    actionBuffer.AddAction(actionAttack, 0.2f);
+        //}
 
-        private void OnDash(InputAction.CallbackContext context)
-        {
-            IsDashing = context.ReadValueAsButton();
-        }
+        //private void OnRoll(InputAction.CallbackContext context)
+        //{
+        //    KnightActions actionAttack = KnightActions.Roll;
+        //    actionBuffer.AddAction(actionAttack, 0.2f);
+        //}
         #endregion
 
         private void UpdateFacingDirection()

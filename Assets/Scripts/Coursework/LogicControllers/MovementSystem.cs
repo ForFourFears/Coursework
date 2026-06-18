@@ -31,6 +31,10 @@ namespace Coursework.LogicControllers
 
         public void FixedUpdate()
         {
+            if (rigidbody.linearVelocityY < -movementContext.MaxFallSpeed)
+            {
+                rigidbody.linearVelocityY = -movementContext.MaxFallSpeed;
+            }
             Move();
         }
 

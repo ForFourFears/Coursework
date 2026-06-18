@@ -1,6 +1,8 @@
 using Coursework.AnimationControllers;
 using System;
+using Coursework.LogicControllers.ModifierSystems;
 using System.Collections.Generic;
+using Coursework.ScriptableObjects;
 
 
 namespace Coursework.LogicControllers.ActionStateMachines
@@ -11,12 +13,19 @@ namespace Coursework.LogicControllers.ActionStateMachines
     {
         protected readonly Dictionary<TState, StateEvents<TState>> stateEvents;
         protected readonly Dictionary<TAction, ActionEvent> actionEvents;
+        protected readonly ModifierSystem modifierSystem;
         protected readonly IObservableSMBsHandler observableSMBsHandler;
+        protected readonly IEntityDataHandler<TState, TAction> entityDataHandler;
         protected readonly ActionTimerRegistry<TAction> cooldownRegistry;
 
-        public BaseActionStateMachine(IObservableSMBsHandler observableSMBsHandler)
+        public BaseActionStateMachine(
+            ModifierSystem modifierSystem,
+            IObservableSMBsHandler observableSMBsHandler, 
+            IEntityDataHandler<TState, TAction> entityDataHandler)
         {
+            this.modifierSystem = modifierSystem;
             this.observableSMBsHandler = observableSMBsHandler;
+            this.entityDataHandler = entityDataHandler;
             stateEvents = new();
             actionEvents = new();
             cooldownRegistry = new();
@@ -74,20 +83,31 @@ namespace Coursework.LogicControllers.ActionStateMachines
             currentStateEvents = newStateEvent;
         }
 
-        protected virtual void OnStateChanged(TState currentState) { }
+        protected virtual void OnStateChanged(TState currentState)
+        {
+            var state = entityDataHandler[currentState];
+            float mod = 0;
+
+            if (state != null)
+            {
+                mod = state.SpeedModifier;
+            }
+
+            modifierSystem.StateModifier = mod;
+        }
 
         public abstract bool TryExecuteAction(TAction action);
 
         protected bool TryChangeState(TState newState, TAction action)
         {
-            if (cooldownRegistry.IsActive(action, 0)) return false;
+            if (cooldownRegistry.IsActive(action)) return false;
             ChangeState(newState);
+            cooldownRegistry[action] = entityDataHandler[action].Cooldown;
             if (actionEvents.TryGetValue(action, out var actionEvent))
             {
                 actionEvent.ActionInvoke();
-                return true;
             }
-            return false;            
+            return true;            
         }
     }
 }

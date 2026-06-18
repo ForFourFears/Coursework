@@ -7,39 +7,37 @@ using UnityEngine;
 
 namespace Coursework.LogicControllers.ActionStateMachines
 {
-    public class KnightActionStateMachine : BaseActionStateMachine<KnightActionStates, KnightActions>
+    public class KnightActionStateMachine : BaseActionStateMachine<KnightStates, KnightActions>
     {
         private readonly IEntityContext entityContext;
         private readonly Rigidbody2D rigidbody;
-        private readonly ModifierSystem modifierSystem;
-        private readonly IEntityDataHandler<KnightActionStates, KnightActions> entityDataHandler;
 
         private readonly ActionTimerRegistry<KnightActionWindows> actionWindowsTimer;
 
-        private static readonly HashSet<KnightActionStates> NonInterruptibleStates = new()
+        private static readonly HashSet<KnightStates> NonInterruptibleStates = new()
         {
-            KnightActionStates.Attack,
-            KnightActionStates.Attack2,
-            KnightActionStates.CrouchAttack
+            KnightStates.Attack,
+            KnightStates.Attack2,
+            KnightStates.CrouchAttack,
+            KnightStates.Dash
         };
 
         private readonly KnightJumpAction jumpData;
         private int jumpCounter;
         private readonly KnightAttackAction attackData;
+        private readonly KnightDashAction dashData;
 
 
         public KnightActionStateMachine(
             IEntityContext entityContext,
             IMovementContext movementContext,
             ModifierSystem modifierSystem,
-            IEntityDataHandler<KnightActionStates, KnightActions> entityDataHandler,
+            IEntityDataHandler<KnightStates, KnightActions> entityDataHandler,
             IObservableSMBsHandler observableSMBsHandler)
-            : base(observableSMBsHandler)
+            : base(modifierSystem, observableSMBsHandler, entityDataHandler)
         {
             this.entityContext = entityContext;
             rigidbody = movementContext.Rigidbody;
-            this.modifierSystem = modifierSystem;
-            this.entityDataHandler = entityDataHandler;
             actionWindowsTimer = new();
 
             if (entityDataHandler[KnightActions.Jump] is KnightJumpAction jumpConfig)
@@ -47,17 +45,24 @@ namespace Coursework.LogicControllers.ActionStateMachines
                 jumpData = jumpConfig;
             }
             else throw new System.NullReferenceException("No data for jumpData");
+
             if (entityDataHandler[KnightActions.Attack] is KnightAttackAction attackConfig)
             {
                 attackData = attackConfig;
             }
             else throw new System.NullReferenceException("No data for attackData");
+
+            if (entityDataHandler[KnightActions.Dash] is KnightDashAction dashConfig)
+            {
+                dashData = dashConfig;
+            }
+            else throw new System.NullReferenceException("No data for dashData");
         }
 
         public void Subscribe()
         {
             observableSMBsHandler["Attack"].ExitState += CheckTransitions;
-            this[KnightActionStates.Attack].Exit += ActivateCombatWindow;
+            this[KnightStates.Attack].Exit += ActivateCombatWindow;
 
             observableSMBsHandler["Attack2"].ExitState += CheckTransitions;
             observableSMBsHandler["CrouchAttack"].ExitState += OnStateCrouchAttackEnd;
@@ -66,7 +71,7 @@ namespace Coursework.LogicControllers.ActionStateMachines
         public void Unsubscribe()
         {
             observableSMBsHandler["Attack"].ExitState -= CheckTransitions;
-            this[KnightActionStates.Attack].Exit -= ActivateCombatWindow;
+            this[KnightStates.Attack].Exit -= ActivateCombatWindow;
 
             observableSMBsHandler["Attack2"].ExitState -= CheckTransitions;
             observableSMBsHandler["CrouchAttack"].ExitState -= OnStateCrouchAttackEnd;
@@ -88,54 +93,65 @@ namespace Coursework.LogicControllers.ActionStateMachines
                 jumpCounter--;
             }
 
-            if (!NonInterruptibleStates.Contains(CurrentState)) CheckTransitions();
-
-
-
-        }
-
-        protected override void OnStateChanged(KnightActionStates currentState)
-        {
-            var state = entityDataHandler[currentState];
-            float mod = 0;
-
-            if (state != null)
+            switch (CurrentState)
             {
-                mod = state.SpeedModifier;
+                case KnightStates.Dash:
+                    if (!actionWindowsTimer.IsActive(KnightActionWindows.DashDuration))
+                    {
+                        CheckTransitions();
+                    }
+                    break;
+
+                case KnightStates state when NonInterruptibleStates.Contains(state):
+                    break;
+
+                default:
+                    CheckTransitions();
+                    break;
             }
 
-            modifierSystem.StateModifier = mod;
+
         }
 
         public override bool TryExecuteAction(KnightActions action)
         {
             return CurrentState switch
             {
-                KnightActionStates.Locomotion => action switch
+                KnightStates.Locomotion => action switch
                 {
                     KnightActions.Jump => CanJump(action),
                     KnightActions.Attack => Attack(action),
+                    KnightActions.Dash => CanDash(action),
                     _ => false
                 },
-                KnightActionStates.Air => action switch
+                KnightStates.Air => action switch
                 {
                     KnightActions.Jump => CanJump(action),
                     KnightActions.Attack => Attack(action),
+                    KnightActions.Dash => CanDash(action),
                     _ => false
                 },
-                KnightActionStates.Crouch => action switch
+                KnightStates.Crouch => action switch
                 {
                     KnightActions.Jump => CanJump(action),
-                    KnightActions.Attack => TryChangeState(KnightActionStates.CrouchAttack, action),
+                    KnightActions.Attack => TryChangeState(KnightStates.CrouchAttack, action),
+                    KnightActions.Dash => CanDash(action),
                     _ => false
                 },
-                KnightActionStates.Attack => action switch 
+                KnightStates.Attack => action switch 
                 { 
                     KnightActions.Jump => CanJump(action),
+                    KnightActions.Dash => CanDash(action),
                     _ => false
                 },
-                KnightActionStates.CrouchAttack => action switch
+                KnightStates.CrouchAttack => action switch
                 {
+                    KnightActions.Jump => CanJump(action),
+                    KnightActions.Dash => CanDash(action),
+                    _ => false
+                },
+                KnightStates.Dash => action switch 
+                { 
                     KnightActions.Jump => CanJump(action),
                     _ => false
                 },
@@ -147,7 +163,7 @@ namespace Coursework.LogicControllers.ActionStateMachines
         {
             if (jumpCounter > 0 && !entityContext.IsCeilingAbove)
             {
-                bool isCompleted = TryChangeState(KnightActionStates.Air, action);
+                bool isCompleted = TryChangeState(KnightStates.Air, action);
                 if (isCompleted)
                 {
                     jumpCounter--;
@@ -164,14 +180,25 @@ namespace Coursework.LogicControllers.ActionStateMachines
         {
             if (actionWindowsTimer.IsActive(KnightActionWindows.Combat))
             {
-                bool isCompleted = TryChangeState(KnightActionStates.Attack2, action);
+                bool isCompleted = TryChangeState(KnightStates.Attack2, action);
                 if (isCompleted) actionWindowsTimer[KnightActionWindows.Combat] = 0;
                 return isCompleted;
             }
-            return TryChangeState(KnightActionStates.Attack, action);
+            return TryChangeState(KnightStates.Attack, action);
         }
 
-        private void ActivateCombatWindow(KnightActionStates context)
+        private bool CanDash(KnightActions actions)
+        {
+            if (!entityContext.IsCeilingAbove)
+            {
+                bool isCompleted = TryChangeState(KnightStates.Dash, actions);
+                if (isCompleted) actionWindowsTimer[KnightActionWindows.DashDuration] = dashData.Duration;
+                return isCompleted;
+            }
+            return false;
+        }
+
+        private void ActivateCombatWindow(KnightStates context)
         {
             actionWindowsTimer[KnightActionWindows.Combat] = attackData.CombateTime;
         }
@@ -180,24 +207,24 @@ namespace Coursework.LogicControllers.ActionStateMachines
         {
             if (!entityContext.IsGrounded)
             {
-                ChangeState(KnightActionStates.Air);
+                ChangeState(KnightStates.Air);
             }
             else /*if (rigidbody.linearVelocityY <= 0)*/
             {
                 if (entityContext.IsCrouched /*|| entityContext.IsCeilingAbove*/)
                 {
-                    ChangeState(KnightActionStates.Crouch);
+                    ChangeState(KnightStates.Crouch);
                 }
                 else if (!(entityContext.IsCrouched || entityContext.IsCeilingAbove))
                 {
-                    ChangeState(KnightActionStates.Locomotion);
+                    ChangeState(KnightStates.Locomotion);
                 }
             }
         }
 
         private void OnStateCrouchAttackEnd()
         {
-            ChangeState(KnightActionStates.Crouch);
+            ChangeState(KnightStates.Crouch);
         }
     }
 }

@@ -11,7 +11,7 @@
         Slide,
         Hit
     }
-    public enum KnightActionStates
+    public enum KnightStates
     {
         None = 0,
         Locomotion,
@@ -32,7 +32,8 @@
     {
         None = 0,
         CoyoteJump,
-        Combat
+        Combat,
+        DashDuration
     }
 
 }

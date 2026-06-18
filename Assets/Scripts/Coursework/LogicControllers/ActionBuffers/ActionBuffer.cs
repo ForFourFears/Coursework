@@ -9,6 +9,7 @@ namespace Coursework.LogicControllers.ActionBuffers
 
         public void AddAction(KnightActions action, float lifeTime = 1f)
         {
+            if(action == KnightActions.None) return;
             int index = FindActionRequestIndex(action);
             if (index != -1)
             {

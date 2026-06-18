@@ -20,11 +20,11 @@ MonoBehaviour:
   - rid: 3152465141576499317
   - rid: 3152465141576499318
   - rid: 3152465141576499319
-  - rid: 3152465161458024535
+  - rid: 3152465161458024580
   _actionsList:
   - rid: 3152465141576499328
   - rid: 3152465161458024523
-  - rid: 3152465161458024534
+  - rid: 3152465161458024578
   references:
     version: 2
     RefIds:
@@ -77,14 +77,15 @@ MonoBehaviour:
           Damage: 50
         - AttackType: 3
           Damage: 30
-    - rid: 3152465161458024534
-      type: {class: KnightDashActionData, ns: Coursework.ScriptableObjects, asm: Assembly-CSharp}
+    - rid: 3152465161458024578
+      type: {class: KnightDashAction, ns: Coursework.ScriptableObjects, asm: Assembly-CSharp}
       data:
-        <Cooldown>k__BackingField: 2.2
-        <DashDistance>k__BackingField: 4.03
-        <StaminaCost>k__BackingField: 14.74
-    - rid: 3152465161458024535
+        <Cooldown>k__BackingField: 3
+        <SpeedModifier>k__BackingField: 15
+        <Duration>k__BackingField: 0.1
+        _distance: 1.5
+    - rid: 3152465161458024580
       type: {class: KnightState, ns: Coursework.ScriptableObjects, asm: Assembly-CSharp}
       data:
-        <SpeedModifier>k__BackingField: 2.9
-        _targetState: 5
+        <SpeedModifier>k__BackingField: 0
+        _targetState: 10

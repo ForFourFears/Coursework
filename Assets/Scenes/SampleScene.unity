@@ -1066,6 +1066,113 @@ Transform:
   m_Children: []
   m_Father: {fileID: 1751149019}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1057705522
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1057705523}
+  - component: {fileID: 1057705525}
+  - component: {fileID: 1057705524}
+  m_Layer: 6
+  m_Name: RollHitBox
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 0
+--- !u!4 &1057705523
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1057705522}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1361711193}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!70 &1057705524
+CapsuleCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1057705522}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Density: 1
+  m_Material: {fileID: 6200000, guid: a32995e5543cf1b4fab543502e23a7c5, type: 2}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_ForceSendLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ForceReceiveLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ContactCaptureLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_CallbackLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_IsTrigger: 0
+  m_UsedByEffector: 0
+  m_CompositeOperation: 0
+  m_CompositeOrder: 0
+  m_Offset: {x: 0.093486786, y: 1.1633394}
+  m_Size: {x: 1.5097084, y: 2.3080325}
+  m_Direction: 0
+--- !u!70 &1057705525
+CapsuleCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1057705522}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Density: 1
+  m_Material: {fileID: 6200000, guid: a32995e5543cf1b4fab543502e23a7c5, type: 2}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_ForceSendLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ForceReceiveLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ContactCaptureLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_CallbackLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_IsTrigger: 0
+  m_UsedByEffector: 0
+  m_CompositeOperation: 0
+  m_CompositeOrder: 0
+  m_Offset: {x: 0.018894196, y: 1.1633394}
+  m_Size: {x: 1.0267525, y: 2.3080325}
+  m_Direction: 0
 --- !u!1 &1131872846
 GameObject:
   m_ObjectHideFlags: 0
@@ -1200,6 +1307,7 @@ Transform:
   m_Children:
   - {fileID: 889666242}
   - {fileID: 100197184}
+  - {fileID: 1057705523}
   m_Father: {fileID: 2130661910}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1483183564
@@ -3839,6 +3947,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Coursework.LogicControllers.CharacterController
   <Rigidbody>k__BackingField: {fileID: 2130661912}
+  <MaxFallSpeed>k__BackingField: 25
   _fricrion0: {fileID: 6200000, guid: 2a56a2ed9c065ce4e9778ba92ad1b952, type: 2}
   _fricrion1: {fileID: 6200000, guid: 5aeb32c8d8f93004f9a80a58511e4070, type: 2}
   _maxSlopeAngle: 45
@@ -3854,7 +3963,6 @@ MonoBehaviour:
   _ceilingLayer:
     serializedVersion: 2
     m_Bits: 8
-  _coyoteTimeDuration: 0.15
   _animator: {fileID: 2130661914}
   _knightConfig: {fileID: 11400000, guid: bf2bc565bc6d6a64c8ea9640b06ab0d8, type: 2}
   infoPosition: {fileID: 519709409}

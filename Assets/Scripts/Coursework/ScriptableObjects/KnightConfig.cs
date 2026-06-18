@@ -8,15 +8,15 @@ using Unity.VisualScripting;
 namespace Coursework.ScriptableObjects
 {
     [CreateAssetMenu(fileName = "KnightConfig", menuName = "Configs/KnightConfig")]
-    public class KnightConfig : BaseCharacterConfig<KnightActionStates, KnightActions>
+    public class KnightConfig : BaseCharacterConfig<KnightStates, KnightActions>
     {
         [SerializeReference, SelectSubclassData]
-        private List<BaseStateData<KnightActionStates>> _statesList = new();
+        private List<BaseStateData<KnightStates>> _statesList = new();
 
         [SerializeReference, SelectSubclassData]
         private List<BaseActionData<KnightActions>> _actionsList = new();
 
-        protected override List<BaseStateData<KnightActionStates>> StatesList => _statesList;
+        protected override List<BaseStateData<KnightStates>> StatesList => _statesList;
         protected override List<BaseActionData<KnightActions>> ActionsList => _actionsList;
 
         
@@ -24,9 +24,10 @@ namespace Coursework.ScriptableObjects
 
     #region StatesData
     [Serializable]
-    public class KnightState : StateData<KnightActionStates> { }
+    public class KnightState : StateData<KnightStates> { }
+    #endregion
 
-
+    #region ActionsData
     [Serializable]
     public class KnightJumpAction : BaseActionData<KnightActions>
     {
@@ -49,9 +50,7 @@ namespace Coursework.ScriptableObjects
 
         public override void OnValidateAction() { }
     }
-    #endregion
 
-    #region ActionsData
     [Serializable]
     public class KnightAttackAction : BaseActionData<KnightActions>
     {
@@ -101,7 +100,7 @@ namespace Coursework.ScriptableObjects
     }
 
     [Serializable]
-    public class KnightDashActionData : BaseActionData<KnightActions>
+    public class KnightDashAction : BaseActionData<KnightActions>
     {
         public override KnightActions TargetAction
         {
@@ -110,11 +109,17 @@ namespace Coursework.ScriptableObjects
         }
 
         [Header("Dash Settings")]
-        [field: SerializeField, Min(0)] public float DashDistance { get; private set; } = 4f;
-        [field: SerializeField, Min(0)] public float StaminaCost { get; private set; } = 15f;
+        [field: SerializeField, Min(0)] public float SpeedModifier { get; private set; } = 15f;
+        [field: SerializeField, Min(0)] public float Duration { get; private set; } = 0.1f;
+
+        [SerializeField] private float _distance;
 
 
-        public override void OnValidateAction() { }
+
+        public override void OnValidateAction() 
+        {
+            _distance = SpeedModifier * Duration;
+        }
     }
     #endregion
 }

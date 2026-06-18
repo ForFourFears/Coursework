@@ -14,7 +14,7 @@ namespace Coursework.LogicControllers.ActionExecutionSystems
     }
     public class KnightActionExecutionSystem : BaseActionExecutionSystem, IAttacker
     {
-        private readonly IActionStateMachine<KnightActionStates, KnightActions> actionStateMachine;
+        private readonly IActionStateMachine<KnightStates, KnightActions> actionStateMachine;
         private readonly IMovementContext movementContext;
         private readonly IActionsDataHandler<KnightActions> actionDataHandler;
         private readonly HashSet<IDamageable> damagedTargets;
@@ -26,7 +26,7 @@ namespace Coursework.LogicControllers.ActionExecutionSystems
 
         public KnightActionExecutionSystem(
             IMovementContext movementContext, 
-            IActionStateMachine<KnightActionStates, KnightActions> actionStateMachine,
+            IActionStateMachine<KnightStates, KnightActions> actionStateMachine,
             IActionsDataHandler<KnightActions> actionDataHandler)
         {
             this.movementContext = movementContext;
