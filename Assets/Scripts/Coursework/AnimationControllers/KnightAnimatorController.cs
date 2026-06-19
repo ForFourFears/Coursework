@@ -90,7 +90,7 @@ namespace Coursework.AnimationControllers
             switch (actionStateMachine.CurrentState)
             {
                 case KnightStates.Locomotion:
-                    targetAnim = Mathf.Abs(rb.linearVelocityX) > 0.5 ? run : idle;
+                    targetAnim = Mathf.Abs(rb.linearVelocityX) > 5 ? run : idle;
                     break;
 
                 case KnightStates.Air:
@@ -99,7 +99,7 @@ namespace Coursework.AnimationControllers
                     break;
 
                 case KnightStates.Crouch:
-                    targetAnim = Mathf.Abs(rb.linearVelocityX) > 0.5 ? crouchWalk : crouch;
+                    targetAnim = Mathf.Abs(rb.linearVelocityX) > 1 ? crouchWalk : crouch;
                     break;
 
                 case KnightStates.Attack or KnightStates.Attack2:
@@ -115,7 +115,7 @@ namespace Coursework.AnimationControllers
                     break;
 
                 default:
-                    targetAnim = Mathf.Abs(rb.linearVelocityX) > 0.5 ? run : idle;
+                    targetAnim = Mathf.Abs(rb.linearVelocityX) > 5 ? run : idle;
                     break;
             }
             ChangeAnimation(targetAnim);

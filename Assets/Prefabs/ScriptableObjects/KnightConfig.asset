@@ -61,14 +61,14 @@ MonoBehaviour:
     - rid: 3152465141576499328
       type: {class: KnightJumpAction, ns: Coursework.ScriptableObjects, asm: Assembly-CSharp}
       data:
-        <Cooldown>k__BackingField: 0.16
-        <JumpModifier>k__BackingField: 45
+        <Cooldown>k__BackingField: 0.15
+        <JumpModifier>k__BackingField: 50
         <CoyoteTime>k__BackingField: 0.15
         <NumberOfJumps>k__BackingField: 2
     - rid: 3152465161458024523
       type: {class: KnightAttackAction, ns: Coursework.ScriptableObjects, asm: Assembly-CSharp}
       data:
-        <Cooldown>k__BackingField: 0
+        <Cooldown>k__BackingField: 0.6
         <CombateTime>k__BackingField: 0.3
         _attacksInfo:
         - AttackType: 1
@@ -80,10 +80,10 @@ MonoBehaviour:
     - rid: 3152465161458024578
       type: {class: KnightDashAction, ns: Coursework.ScriptableObjects, asm: Assembly-CSharp}
       data:
-        <Cooldown>k__BackingField: 3
-        <SpeedModifier>k__BackingField: 15
-        <Duration>k__BackingField: 0.1
-        _distance: 1.5
+        <Cooldown>k__BackingField: 1
+        <SpeedModifier>k__BackingField: 30
+        <Duration>k__BackingField: 0.2
+        _distance: 6
     - rid: 3152465161458024580
       type: {class: KnightState, ns: Coursework.ScriptableObjects, asm: Assembly-CSharp}
       data:

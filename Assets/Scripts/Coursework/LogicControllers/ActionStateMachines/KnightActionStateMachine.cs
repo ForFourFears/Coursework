@@ -10,6 +10,7 @@ namespace Coursework.LogicControllers.ActionStateMachines
     public class KnightActionStateMachine : BaseActionStateMachine<KnightStates, KnightActions>
     {
         private readonly IEntityContext entityContext;
+        private readonly IMovementContext movementContext;
         private readonly Rigidbody2D rigidbody;
 
         private readonly ActionTimerRegistry<KnightActionWindows> actionWindowsTimer;
@@ -40,6 +41,7 @@ namespace Coursework.LogicControllers.ActionStateMachines
             : base(modifierSystem, observableSMBsHandler, entityDataHandler)
         {
             this.entityContext = entityContext;
+            this.movementContext = movementContext;
             rigidbody = movementContext.Rigidbody;
             baseGravatyScale = rigidbody.gravityScale;
             actionWindowsTimer = new();
@@ -91,6 +93,7 @@ namespace Coursework.LogicControllers.ActionStateMachines
         {
             base.Update(deltaTime);
             actionWindowsTimer.Update(deltaTime);
+            UpdateConstraints();
 
             if (entityContext.IsGrounded)
             {
@@ -119,6 +122,20 @@ namespace Coursework.LogicControllers.ActionStateMachines
                     CheckTransitions();
                     break;
             }
+        }
+
+        private void UpdateConstraints()
+        {
+            if (
+                entityContext.IsGrounded && movementContext.MoveInput.x == 0 && 
+                movementContext.SlopeAngle <= movementContext.MaxSlopeAngle &&
+                (CurrentState == KnightStates.Locomotion || CurrentState == KnightStates.Crouch)
+            )
+            {
+                rigidbody.constraints = RigidbodyConstraints2D.FreezePositionX | RigidbodyConstraints2D.FreezeRotation;
+                return;
+            }
+            rigidbody.constraints = RigidbodyConstraints2D.FreezeRotation;
         }
 
         protected override void OnStateChanged(KnightStates currentState)
@@ -167,6 +184,7 @@ namespace Coursework.LogicControllers.ActionStateMachines
                 KnightStates.Dash => action switch 
                 { 
                     KnightActions.Jump => CanJump(action),
+                    KnightActions.Attack => Attack(action),
                     _ => false
                 },
                 _ => false

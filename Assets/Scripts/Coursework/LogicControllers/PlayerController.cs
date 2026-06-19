@@ -30,6 +30,8 @@ namespace Coursework.LogicControllers
     {
         public Vector2 MoveInput { get; }
         public Vector2 SlopeDirection { get; }
+        public float SlopeAngle { get; }
+        public float MaxSlopeAngle { get; }
         public Rigidbody2D Rigidbody { get; }
 
         public float MaxFallSpeed { get; }
@@ -48,12 +50,13 @@ namespace Coursework.LogicControllers
         public bool IsGrounded { get; private set; }
         public bool IsCrouched { get; private set; }
         public bool IsCeilingAbove { get; private set; }
-        public float FacingSign => Mathf.Sign(transform.localScale.x);
+        public float FacingSign { get; private set; }
 
         public Vector2 MoveInput { get; private set; }
         public Vector2 SlopeDirection { get; private set; }
+        public float SlopeAngle { get; private set; }
 
-        public IActionStateMachine<KnightStates, KnightActions> ActionStateMachine { get => actionStateMachine; }
+        public IActionStateMachine<KnightStates, KnightActions> ActionStateMachine => actionStateMachine;
         #endregion
 
         #region Serialize part
@@ -63,14 +66,12 @@ namespace Coursework.LogicControllers
         [field: Min(5)]
         [field: SerializeField] public float MaxFallSpeed { get; private set; } = 5;
 
-        [SerializeField] private PhysicsMaterial2D _fricrion0;
-        [SerializeField] private PhysicsMaterial2D _fricrion1;
-
         [Header("Slope Detection")]
-        [SerializeField] private float _maxSlopeAngle;
+        [field: SerializeField] public float MaxSlopeAngle { get; private set; }
         [SerializeField] private Transform _normalOrigin;
         [SerializeField] private float _normalVectorLength = 0.3f;
         [SerializeField] private float _vectorDistortion;
+        [SerializeField] private float _snapDistance = 0.2f;
 
         [Header("Grounded Check")]
         [SerializeField] private Transform _groundCheck;
@@ -187,8 +188,9 @@ namespace Coursework.LogicControllers
         {
             IsGrounded = CheckGrounded();
             IsCeilingAbove = CheckCeiling();
+            if (MoveInput.x != 0) FacingSign = Mathf.Sign(MoveInput.x);
+            UpdateSlopeDirection();
 
-            UpdateFriction();
             actionStateMachine.Update(Time.fixedDeltaTime);
 
             KnightActions actionType = KnightActions.None;
@@ -254,18 +256,6 @@ namespace Coursework.LogicControllers
             }
         }
 
-        private void UpdateFriction()
-        {
-            if (IsGrounded && MoveInput.x == 0)
-            {
-                Rigidbody.sharedMaterial = _fricrion1;
-            }
-            else
-            {
-                Rigidbody.sharedMaterial = _fricrion0;
-            }
-        }
-
         public void OnHit(Collider2D target, HitInfo hitInfo)
         {
             actionExecutionSystem.OnHit(target, hitInfo);
@@ -279,38 +269,43 @@ namespace Coursework.LogicControllers
         private bool CheckGrounded()
         {
 
-            bool isGround = Physics2D.OverlapCircle(_groundCheck.position, _groundCheckRadius, _groundLayer);
-
-            СalculateSlopeDirection();
+            bool isGround = Physics2D.OverlapCircle(_groundCheck.position, _groundCheckRadius, _groundLayer) != null;
 
             return isGround;
+
         }
 
-        private void СalculateSlopeDirection()
+        private void UpdateSlopeDirection()
         {
-            Vector2 def = Vector2.right * FacingSign;
-            RaycastHit2D hit = Physics2D.Raycast(_normalOrigin.position, Vector2.down, _normalVectorLength, _groundLayer);
+            Vector2 def = Vector2.right;
+            RaycastHit2D hit = Physics2D.Raycast(_normalOrigin.position, Vector2.down, _groundCheckRadius + _snapDistance, _groundLayer);
 
             if (hit.normal == Vector2.zero)
             {
                 SlopeDirection = def;
+                SlopeAngle = 0;
                 return;
             }
 
-            float slopeAngle = Vector2.Angle(Vector2.up, hit.normal);
+            SlopeAngle = Vector2.Angle(Vector2.up, hit.normal);
 
-            if (slopeAngle <= _maxSlopeAngle)
+            if (SlopeAngle <= MaxSlopeAngle)
             {
-                if (Mathf.Abs(slopeAngle) > 0.1f)
+                if (Mathf.Abs(SlopeAngle) > 0.1f)
                 {
-                    Vector2 pureSlopeDir = new Vector2(hit.normal.y, -hit.normal.x) * FacingSign;
-                    SlopeDirection = new Vector2(pureSlopeDir.x, pureSlopeDir.y - _vectorDistortion).normalized;
+                    Vector2 pureSlopeDir = new(hit.normal.y, -hit.normal.x);
+
+                    SlopeDirection = new Vector2(
+                        pureSlopeDir.x,
+                        pureSlopeDir.y - _vectorDistortion * FacingSign
+                    ).normalized;
+
                     return;
                 }
+                
             }
 
             SlopeDirection = def;
-            return;
         }
 
         private bool CheckCeiling()
@@ -334,14 +329,15 @@ namespace Coursework.LogicControllers
 
                 Handles.Label(infoPosition.position, 
                     $"{actionStateMachine.CurrentState}, {modifierSystem.StateModifier},\n" +
-                    $" SlopeDirection: {SlopeDirection}\n" +
+                    $"SlopeDirection: {SlopeDirection}\n" +
+                    $"SlopeAngle: {Vector2.Angle(Vector2.right, SlopeDirection)}\n" +
                     $"IsGrounded: {IsGrounded}", labelStyle);
             }
 
             if (SlopeDirection != Vector2.zero)
             {
                 Vector3 startPoint = SlopeDirectionPosition.position;
-                Vector3 endPoint = startPoint + (Vector3)SlopeDirection * 1f;
+                Vector3 endPoint = startPoint + (Vector3)SlopeDirection * FacingSign;
                 Handles.color = Color.green;
                 Handles.DrawLine(startPoint, endPoint, 4f);
                 Gizmos.color = Color.green;
@@ -358,7 +354,7 @@ namespace Coursework.LogicControllers
             if (_normalOrigin != null)
             {
                 Vector3 startPoint = _normalOrigin.position;
-                Vector3 endPoint = startPoint + Vector3.down * _normalVectorLength;
+                Vector3 endPoint = startPoint + Vector3.down * (_normalVectorLength + _snapDistance);
                 Handles.color = Color.green;
                 Handles.DrawLine(startPoint, endPoint, 6f);
             }

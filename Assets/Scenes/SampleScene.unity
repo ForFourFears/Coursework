@@ -151,7 +151,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Unity.Cinemachine::Unity.Cinemachine.CinemachineFollow
   TrackerSettings:
     BindingMode: 4
-    PositionDamping: {x: 1, y: 1, z: 1}
+    PositionDamping: {x: 1, y: 2, z: 1}
     AngularDampingMode: 0
     RotationDamping: {x: 1, y: 1, z: 1}
     QuaternionDamping: 1
@@ -208,7 +208,7 @@ Transform:
   m_GameObject: {fileID: 11560404}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 24.93, y: 9.49, z: -10}
+  m_LocalPosition: {x: -0.05, y: -2.66, z: -10}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 1
   m_Children: []
@@ -623,7 +623,7 @@ Transform:
   m_GameObject: {fileID: 519420028}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 24.93, y: 9.49, z: -10}
+  m_LocalPosition: {x: -0.05, y: -2.66, z: -10}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 1
   m_Children: []
@@ -1075,7 +1075,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1057705523}
-  - component: {fileID: 1057705525}
   - component: {fileID: 1057705524}
   m_Layer: 6
   m_Name: RollHitBox
@@ -1135,43 +1134,6 @@ CapsuleCollider2D:
   m_CompositeOrder: 0
   m_Offset: {x: 0.093486786, y: 1.1633394}
   m_Size: {x: 1.5097084, y: 2.3080325}
-  m_Direction: 0
---- !u!70 &1057705525
-CapsuleCollider2D:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1057705522}
-  m_Enabled: 1
-  serializedVersion: 3
-  m_Density: 1
-  m_Material: {fileID: 6200000, guid: a32995e5543cf1b4fab543502e23a7c5, type: 2}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_ForceSendLayers:
-    serializedVersion: 2
-    m_Bits: 4294967295
-  m_ForceReceiveLayers:
-    serializedVersion: 2
-    m_Bits: 4294967295
-  m_ContactCaptureLayers:
-    serializedVersion: 2
-    m_Bits: 4294967295
-  m_CallbackLayers:
-    serializedVersion: 2
-    m_Bits: 4294967295
-  m_IsTrigger: 0
-  m_UsedByEffector: 0
-  m_CompositeOperation: 0
-  m_CompositeOrder: 0
-  m_Offset: {x: 0.018894196, y: 1.1633394}
-  m_Size: {x: 1.0267525, y: 2.3080325}
   m_Direction: 0
 --- !u!1 &1131872846
 GameObject:
@@ -1730,7 +1692,7 @@ Transform:
   m_GameObject: {fileID: 1649720719}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0.0188942, y: -0.003, z: 0}
+  m_LocalPosition: {x: 0.0188942, y: -0.06, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -1761,7 +1723,7 @@ Transform:
   m_GameObject: {fileID: 1727579587}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0.0188942, y: 0.092, z: 0}
+  m_LocalPosition: {x: -0.08, y: 0.092, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -3011,54 +2973,42 @@ CompositeCollider2D:
         Y: 49335004
       - X: 229780000
         Y: 49344996
-      - X: 229761443
+      - X: 229760016
         Y: 49335004
       - X: 229760000
         Y: 49335004
       - X: 229760000
-        Y: 49334227
-      - X: 213530000
-        Y: 40594996
-      - X: 209800000
-        Y: 39351667
-      - X: 209800000
-        Y: 39355000
-      - X: 197300000
-        Y: 34355000
-      - X: 189807493
-        Y: 29359997
-      - X: 177320000
-        Y: 24365000
-      - X: 169827476
-        Y: 19369984
-      - X: 157340000
-        Y: 14375000
-      - X: 149847500
-        Y: 9380000
-      - X: 137360000
-        Y: 4385000
-      - X: 129867500
-        Y: -610000
-      - X: 117380000
-        Y: -5605000
-      - X: 109887500
-        Y: -10600000
-      - X: 97400000
-        Y: -15595000
-      - X: 89907488
-        Y: -20590008
-      - X: 77420000
-        Y: -25585000
-      - X: 69927507
-        Y: -30579995
-      - X: 57440000
-        Y: -35575000
+        Y: 49334996
+      - X: 209780000
+        Y: 39345000
+      - X: 189800000
+        Y: 29355002
+      - X: 189800000
+        Y: 29355000
+      - X: 169820000
+        Y: 19365000
+      - X: 169820000
+        Y: 19364992
+      - X: 149840000
+        Y: 9375000
+      - X: 89900000
+        Y: -20595000
+      - X: 89900000
+        Y: -20595004
+      - X: 69940000
+        Y: -30575000
+      - X: 69940000
+        Y: -30574998
       - X: 49940000
         Y: -40575000
       - X: -69920000
         Y: -40575000
-      - X: -77420000
-        Y: -35575000
+      - X: -89900000
+        Y: -30585002
+      - X: -89900000
+        Y: -30585000
+      - X: -89900004
+        Y: -30585000
       - X: -89920008
         Y: -30574998
       - X: -89920008
@@ -3185,30 +3135,16 @@ CompositeCollider2D:
         Y: 21227503
       - X: 119870008
         Y: 20585000
-      - X: 132370008
-        Y: 25585000
       - X: 139870000
         Y: 30585000
       - X: 149840000
         Y: 30585000
       - X: 149840000
         Y: 30574998
-      - X: 162340016
-        Y: 35575000
-      - X: 169832540
-        Y: 40570016
-      - X: 182320000
-        Y: 45565000
-      - X: 189812500
-        Y: 50560000
-      - X: 202300000
-        Y: 55555000
-      - X: 209800000
-        Y: 60555000
-      - X: 209800000
-        Y: 60555769
-      - X: 226030000
-        Y: 69295000
+      - X: 169840016
+        Y: 40575000
+      - X: 169840016
+        Y: 40575008
       - X: 229780000
         Y: 70545000
       - X: 229780000
@@ -3386,28 +3322,10 @@ CompositeCollider2D:
       - {x: 44.956, y: 2.9960291}
       - {x: 44.95597, y: 4.9335003}
       - {x: 22.978, y: 4.93353}
-      - {x: 22.977953, y: 4.9344735}
-      - {x: 21.352999, y: 4.059499}
-      - {x: 20.979998, y: 3.9354992}
-      - {x: 19.73, y: 3.435499}
-      - {x: 18.980747, y: 2.935999}
-      - {x: 17.731998, y: 2.4364989}
-      - {x: 16.982746, y: 1.9369977}
-      - {x: 15.733998, y: 1.4374988}
-      - {x: 14.984747, y: 0.9379991}
-      - {x: 13.735998, y: 0.4384988}
-      - {x: 12.986748, y: -0.061000902}
-      - {x: 11.737999, y: -0.5605012}
-      - {x: 10.988749, y: -1.0600009}
-      - {x: 9.739999, y: -1.5595012}
-      - {x: 8.9907465, y: -2.0590017}
-      - {x: 7.7419987, y: -2.5585012}
-      - {x: 6.9927487, y: -3.0580003}
-      - {x: 5.7439985, y: -3.5575013}
-      - {x: 4.9939923, y: -4.0575}
-      - {x: -6.9920063, y: -4.057496}
-      - {x: -7.7420034, y: -3.557499}
-      - {x: -8.992001, y: -3.0575473}
+      - {x: 22.977953, y: 4.934476}
+      - {x: 4.993994, y: -4.0575}
+      - {x: -6.992005, y: -4.0574975}
+      - {x: -8.992001, y: -3.0575528}
       - {x: -8.99203, y: -3.0585}
       - {x: -9.992403, y: -3.058499}
       - {x: -11.051505, y: -2.746988}
@@ -3468,19 +3386,11 @@ CompositeCollider2D:
       - {x: 11.23901, y: 1.8105098}
       - {x: 11.489009, y: 2.0605013}
       - {x: 11.987, y: 2.1227162}
-      - {x: 11.987045, y: 2.0585177}
-      - {x: 13.237002, y: 2.5585012}
-      - {x: 13.987008, y: 3.0585}
+      - {x: 11.987048, y: 2.0585237}
+      - {x: 13.987006, y: 3.0585}
       - {x: 14.984, y: 3.0584707}
-      - {x: 14.984043, y: 3.0575173}
-      - {x: 16.234003, y: 3.5575013}
-      - {x: 16.983255, y: 4.0570025}
-      - {x: 18.232002, y: 4.5565014}
-      - {x: 18.981253, y: 5.0560007}
-      - {x: 20.230001, y: 5.5555015}
-      - {x: 20.980001, y: 6.0555778}
-      - {x: 22.603003, y: 6.929501}
-      - {x: 22.978, y: 7.05452}
+      - {x: 14.984048, y: 3.0575237}
+      - {x: 22.978, y: 7.054517}
       - {x: 22.978018, y: 7.117776}
       - {x: 23.788504, y: 7.4295106}
       - {x: 23.913513, y: 7.7420034}
@@ -3845,7 +3755,7 @@ Transform:
   m_GameObject: {fileID: 2130661907}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 24.93, y: 8.99, z: 0}
+  m_LocalPosition: {x: -0.05, y: -3.16, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -3898,7 +3808,7 @@ Rigidbody2D:
   m_UseFullKinematicContacts: 0
   m_UseAutoMass: 0
   m_Mass: 2.1
-  m_LinearDamping: 0
+  m_LinearDamping: 1.5
   m_AngularDamping: 0.05
   m_GravityScale: 5
   m_Material: {fileID: 6200000, guid: 2a56a2ed9c065ce4e9778ba92ad1b952, type: 2}
@@ -3948,13 +3858,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Coursework.LogicControllers.CharacterController
   <Rigidbody>k__BackingField: {fileID: 2130661912}
   <MaxFallSpeed>k__BackingField: 25
-  _fricrion0: {fileID: 6200000, guid: 2a56a2ed9c065ce4e9778ba92ad1b952, type: 2}
-  _fricrion1: {fileID: 6200000, guid: 5aeb32c8d8f93004f9a80a58511e4070, type: 2}
-  _maxSlopeAngle: 45
+  <MaxSlopeAngle>k__BackingField: 45
   _normalOrigin: {fileID: 1727579588}
-  _normalVectorLength: 0.3
+  _normalVectorLength: 0.25
+  _vectorDistortion: 0.2
+  _snapDistance: 0.2
   _groundCheck: {fileID: 1649720720}
-  _groundCheckRadius: 0.17
+  _groundCheckRadius: 0.3
   _groundLayer:
     serializedVersion: 2
     m_Bits: 8

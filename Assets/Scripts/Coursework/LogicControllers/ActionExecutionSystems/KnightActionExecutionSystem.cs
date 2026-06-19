@@ -108,7 +108,7 @@ namespace Coursework.LogicControllers.ActionExecutionSystems
         private void OnDashStateUpdate()
         {
             float targetSpeed = dashData.SpeedModifier * entityContext.FacingSign;
-            Vector2 desiredVelocity = movementContext.SlopeDirection * Mathf.Abs(targetSpeed);
+            Vector2 desiredVelocity = movementContext.SlopeDirection * targetSpeed;
             if (entityContext.IsGrounded)
             {
                 movementContext.Rigidbody.linearVelocity = desiredVelocity;
