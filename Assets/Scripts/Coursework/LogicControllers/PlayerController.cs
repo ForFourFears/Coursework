@@ -23,6 +23,7 @@ namespace Coursework.LogicControllers
         public bool IsGrounded { get; }
         public bool IsCrouched { get; }
 		public bool IsCeilingAbove { get; }
+        public float FacingSign { get; }
     }
 
     public interface IMovementContext
@@ -47,6 +48,7 @@ namespace Coursework.LogicControllers
         public bool IsGrounded { get; private set; }
         public bool IsCrouched { get; private set; }
         public bool IsCeilingAbove { get; private set; }
+        public float FacingSign => Mathf.Sign(transform.localScale.x);
 
         public Vector2 MoveInput { get; private set; }
         public Vector2 SlopeDirection { get; private set; }
@@ -68,6 +70,7 @@ namespace Coursework.LogicControllers
         [SerializeField] private float _maxSlopeAngle;
         [SerializeField] private Transform _normalOrigin;
         [SerializeField] private float _normalVectorLength = 0.3f;
+        [SerializeField] private float _vectorDistortion;
 
         [Header("Grounded Check")]
         [SerializeField] private Transform _groundCheck;
@@ -117,7 +120,7 @@ namespace Coursework.LogicControllers
 
             observableSMBsHandler = new(_animator);
             actionStateMachine = new(this, this, modifierSystem, _knightConfig, observableSMBsHandler);
-            actionExecutionSystem = new(this, ActionStateMachine, _knightConfig);
+            actionExecutionSystem = new(this, this, ActionStateMachine, _knightConfig);
 
             animatorController = new (this, Rigidbody, _animator, ActionStateMachine, observableSMBsHandler);
 
@@ -278,18 +281,19 @@ namespace Coursework.LogicControllers
 
             bool isGround = Physics2D.OverlapCircle(_groundCheck.position, _groundCheckRadius, _groundLayer);
 
-            СalculateSlopeDirection(new Vector2(1, 0));
+            СalculateSlopeDirection();
 
             return isGround;
         }
 
-        private void СalculateSlopeDirection(Vector2 deafult)
+        private void СalculateSlopeDirection()
         {
+            Vector2 def = Vector2.right * FacingSign;
             RaycastHit2D hit = Physics2D.Raycast(_normalOrigin.position, Vector2.down, _normalVectorLength, _groundLayer);
 
             if (hit.normal == Vector2.zero)
             {
-                SlopeDirection = deafult;
+                SlopeDirection = def;
                 return;
             }
 
@@ -297,11 +301,15 @@ namespace Coursework.LogicControllers
 
             if (slopeAngle <= _maxSlopeAngle)
             {
-                SlopeDirection = new Vector2(hit.normal.y, -hit.normal.x);
-                return;
+                if (Mathf.Abs(slopeAngle) > 0.1f)
+                {
+                    Vector2 pureSlopeDir = new Vector2(hit.normal.y, -hit.normal.x) * FacingSign;
+                    SlopeDirection = new Vector2(pureSlopeDir.x, pureSlopeDir.y - _vectorDistortion).normalized;
+                    return;
+                }
             }
 
-            SlopeDirection = deafult;
+            SlopeDirection = def;
             return;
         }
 

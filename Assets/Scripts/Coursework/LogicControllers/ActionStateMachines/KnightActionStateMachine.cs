@@ -24,8 +24,11 @@ namespace Coursework.LogicControllers.ActionStateMachines
 
         private readonly KnightJumpAction jumpData;
         private int jumpCounter;
+
         private readonly KnightAttackAction attackData;
+
         private readonly KnightDashAction dashData;
+        private readonly float baseGravatyScale;
 
 
         public KnightActionStateMachine(
@@ -38,6 +41,7 @@ namespace Coursework.LogicControllers.ActionStateMachines
         {
             this.entityContext = entityContext;
             rigidbody = movementContext.Rigidbody;
+            baseGravatyScale = rigidbody.gravityScale;
             actionWindowsTimer = new();
 
             if (entityDataHandler[KnightActions.Jump] is KnightJumpAction jumpConfig)
@@ -62,19 +66,25 @@ namespace Coursework.LogicControllers.ActionStateMachines
         public void Subscribe()
         {
             observableSMBsHandler["Attack"].ExitState += CheckTransitions;
-            this[KnightStates.Attack].Exit += ActivateCombatWindow;
+            this[KnightStates.Attack].OnExit += ActivateCombatWindow;
 
             observableSMBsHandler["Attack2"].ExitState += CheckTransitions;
             observableSMBsHandler["CrouchAttack"].ExitState += OnStateCrouchAttackEnd;
+
+            this[KnightStates.Dash].OnEnter += OnDashStateEntered;
+            this[KnightStates.Dash].OnExit += OnDashStateExited;
         }
 
         public void Unsubscribe()
         {
             observableSMBsHandler["Attack"].ExitState -= CheckTransitions;
-            this[KnightStates.Attack].Exit -= ActivateCombatWindow;
+            this[KnightStates.Attack].OnExit -= ActivateCombatWindow;
 
             observableSMBsHandler["Attack2"].ExitState -= CheckTransitions;
             observableSMBsHandler["CrouchAttack"].ExitState -= OnStateCrouchAttackEnd;
+
+            this[KnightStates.Dash].OnEnter -= OnDashStateEntered;
+            this[KnightStates.Dash].OnExit -= OnDashStateExited;
         }
 
         public override void Update(float deltaTime)
@@ -109,8 +119,12 @@ namespace Coursework.LogicControllers.ActionStateMachines
                     CheckTransitions();
                     break;
             }
+        }
 
-
+        protected override void OnStateChanged(KnightStates currentState)
+        {
+            base.OnStateChanged(currentState);
+            
         }
 
         public override bool TryExecuteAction(KnightActions action)
@@ -205,7 +219,7 @@ namespace Coursework.LogicControllers.ActionStateMachines
 
         private void CheckTransitions()
         {
-            if (!entityContext.IsGrounded)
+            if (!entityContext.IsGrounded && Mathf.Abs(rigidbody.linearVelocityY) > 1.5f)
             {
                 ChangeState(KnightStates.Air);
             }
@@ -225,6 +239,16 @@ namespace Coursework.LogicControllers.ActionStateMachines
         private void OnStateCrouchAttackEnd()
         {
             ChangeState(KnightStates.Crouch);
+        }
+
+        private void OnDashStateEntered(KnightStates context)
+        {
+            rigidbody.gravityScale = 0;
+        }
+
+        private void OnDashStateExited(KnightStates context)
+        {
+            rigidbody.gravityScale = baseGravatyScale;
         }
     }
 }

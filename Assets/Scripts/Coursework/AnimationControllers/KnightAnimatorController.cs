@@ -58,30 +58,30 @@ namespace Coursework.AnimationControllers
 
         public override void Subscribe()
         {
-            actionStateMachine[KnightStates.Crouch].Entered += OnCrouchStateEntered;
-            actionStateMachine[KnightStates.Crouch].Exit += OnCrouchStateExited;
+            actionStateMachine[KnightStates.Crouch].OnEnter += OnCrouchStateTransition;
+            actionStateMachine[KnightStates.Crouch].OnExit += OnCrouchStateTransition;
 
-            actionStateMachine[KnightStates.Attack].Entered += OnEnterAttackState;
-            actionStateMachine[KnightStates.Attack2].Entered += OnEnterAttack2State;
-            actionStateMachine[KnightStates.CrouchAttack].Entered += OnEnterCrouchAttackState;
+            actionStateMachine[KnightStates.Attack].OnEnter += OnEnterAttackState;
+            actionStateMachine[KnightStates.Attack2].OnEnter += OnEnterAttack2State;
+            actionStateMachine[KnightStates.CrouchAttack].OnEnter += OnEnterCrouchAttackState;
 
-            actionStateMachine[KnightStates.Attack].Exit += OnActionInterrupted;
-            actionStateMachine[KnightStates.Attack2].Exit += OnActionInterrupted;
-            actionStateMachine[KnightStates.CrouchAttack].Exit += OnActionInterrupted;
+            actionStateMachine[KnightStates.Attack].OnExit += OnActionInterrupted;
+            actionStateMachine[KnightStates.Attack2].OnExit += OnActionInterrupted;
+            actionStateMachine[KnightStates.CrouchAttack].OnExit += OnActionInterrupted;
         }
 
         public override void Unsubscribe()
         {
-            actionStateMachine[KnightStates.Crouch].Entered -= OnCrouchStateEntered;
-            actionStateMachine[KnightStates.Crouch].Exit -= OnCrouchStateExited;
+            actionStateMachine[KnightStates.Crouch].OnEnter -= OnCrouchStateTransition;
+            actionStateMachine[KnightStates.Crouch].OnExit -= OnCrouchStateTransition;
 
-            actionStateMachine[KnightStates.Attack].Entered -= OnEnterAttackState;
-            actionStateMachine[KnightStates.Attack2].Entered -= OnEnterAttack2State;
-            actionStateMachine[KnightStates.CrouchAttack].Entered -= OnEnterCrouchAttackState;
+            actionStateMachine[KnightStates.Attack].OnEnter -= OnEnterAttackState;
+            actionStateMachine[KnightStates.Attack2].OnEnter -= OnEnterAttack2State;
+            actionStateMachine[KnightStates.CrouchAttack].OnEnter -= OnEnterCrouchAttackState;
 
-            actionStateMachine[KnightStates.Attack].Exit -= OnActionInterrupted;
-            actionStateMachine[KnightStates.Attack2].Exit -= OnActionInterrupted;
-            actionStateMachine[KnightStates.CrouchAttack].Exit -= OnActionInterrupted;
+            actionStateMachine[KnightStates.Attack].OnExit -= OnActionInterrupted;
+            actionStateMachine[KnightStates.Attack2].OnExit -= OnActionInterrupted;
+            actionStateMachine[KnightStates.CrouchAttack].OnExit -= OnActionInterrupted;
         }
 
         public void Update()
@@ -121,17 +121,12 @@ namespace Coursework.AnimationControllers
             ChangeAnimation(targetAnim);
         }
 
-        private void OnCrouchStateEntered(KnightStates previousState)
+        private void OnCrouchStateTransition(KnightStates state)
         {
-            if (previousState == KnightStates.CrouchAttack) return;
+            if (state == KnightStates.CrouchAttack) return;
             PlaySequence(crouchTransition);
         }
 
-        private void OnCrouchStateExited(KnightStates nextState)
-        {
-            if (nextState == KnightStates.CrouchAttack) return;
-            PlaySequence(crouchTransition);
-        }
 
         private void OnActionInterrupted(KnightStates context)
         {

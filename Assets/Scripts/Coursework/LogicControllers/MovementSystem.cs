@@ -47,10 +47,11 @@ namespace Coursework.LogicControllers
         private void Move()
         {
             float targetSpeed = movementContext.MoveInput.x * modifierSystem.ApplyModifiers();
-            Vector2 desiredVelocity = movementContext.SlopeDirection * targetSpeed;
+            if (modifierSystem.StateModifier == 0) return;
+            Vector2 desiredVelocity = movementContext.SlopeDirection * Mathf.Abs(targetSpeed);
             if (entityContext.IsGrounded && rigidbody.linearVelocityY <= desiredVelocity.y)
             {
-                rigidbody.linearVelocity = movementContext.SlopeDirection * targetSpeed;
+                rigidbody.linearVelocity = desiredVelocity;
             }
             else
             {
