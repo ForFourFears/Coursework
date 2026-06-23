@@ -65,6 +65,8 @@ namespace Coursework.LogicControllers.ActionStateMachines.Implementations
                 dashData = dashConfig;
             }
             else throw new System.NullReferenceException("No data for dashData");
+
+            CurrentState = KnightStates.None;
         }
 
         public void Subscribe()
@@ -239,7 +241,7 @@ namespace Coursework.LogicControllers.ActionStateMachines.Implementations
 
         private void CheckTransitions()
         {
-            if (!entityContext.IsGrounded && Mathf.Abs(rigidbody.linearVelocityY) > 1.5f)
+            if (!entityContext.IsGrounded && Mathf.Abs(rigidbody.linearVelocityY) != 0)
             {
                 ChangeState(KnightStates.Air);
             }
