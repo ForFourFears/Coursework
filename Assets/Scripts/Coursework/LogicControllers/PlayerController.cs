@@ -1,14 +1,16 @@
-﻿using System;
-using Scripts;
+﻿using Scripts;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using Coursework.ScriptableObjects;
 using Coursework.EnumsCreatures.Knight;
 using Coursework.LogicControllers.ActionBuffers;
 using Coursework.LogicControllers.ActionExecutionSystems;
-using Coursework.LogicControllers.ActionStateMachines;
+using Coursework.LogicControllers.ActionStateMachines.Core;
+using Coursework.LogicControllers.ActionStateMachines.Implementations;
 using Coursework.LogicControllers.ModifierSystems;
-using Coursework.AnimationControllers;
+using Coursework.LogicControllers.MovementSystems;
+using Coursework.AnimationControllers.Core;
+using Coursework.AnimationControllers.Implementations;
 using Coursework.LogicControllers.AttackSystems;
 
 #if UNITY_EDITOR

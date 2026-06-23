@@ -1,11 +1,11 @@
-using Coursework.AnimationControllers;
+using Coursework.AnimationControllers.Core;
 using System;
 using Coursework.LogicControllers.ModifierSystems;
 using System.Collections.Generic;
 using Coursework.ScriptableObjects;
 
 
-namespace Coursework.LogicControllers.ActionStateMachines
+namespace Coursework.LogicControllers.ActionStateMachines.Core
 {
     public abstract class BaseActionStateMachine<TState, TAction> : IActionStateMachine<TState, TAction>
         where TState : Enum
@@ -13,15 +13,19 @@ namespace Coursework.LogicControllers.ActionStateMachines
     {
         protected readonly Dictionary<TState, StateEvents<TState>> stateEvents;
         protected readonly Dictionary<TAction, ActionEvent> actionEvents;
+
         protected readonly ModifierSystem modifierSystem;
+
         protected readonly IObservableSMBsHandler observableSMBsHandler;
+
         protected readonly IEntityDataHandler<TState, TAction> entityDataHandler;
         protected readonly ActionTimerRegistry<TAction> cooldownRegistry;
 
         public BaseActionStateMachine(
             ModifierSystem modifierSystem,
             IObservableSMBsHandler observableSMBsHandler, 
-            IEntityDataHandler<TState, TAction> entityDataHandler)
+            IEntityDataHandler<TState, TAction> entityDataHandler
+        )
         {
             this.modifierSystem = modifierSystem;
             this.observableSMBsHandler = observableSMBsHandler;

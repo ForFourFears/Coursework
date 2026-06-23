@@ -1,7 +1,7 @@
 ﻿using System;
 using UnityEngine;
 
-namespace Coursework.LogicControllers.ActionStateMachines
+namespace Coursework.LogicControllers.ActionStateMachines.Core
 {
     public class ActionTimerRegistry<TAction> where TAction : Enum
     {

@@ -1,7 +1,7 @@
 using System;
 
 
-namespace Coursework.LogicControllers.ActionStateMachines
+namespace Coursework.LogicControllers.ActionStateMachines.Core
 {
     public interface IStateEvents<TState> where TState : Enum
     {

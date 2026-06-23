@@ -1,11 +1,10 @@
+using Coursework.AnimationControllers.Core;
 using Coursework.EnumsCreatures.Knight;
 using Coursework.LogicControllers;
-using Coursework.LogicControllers.ActionStateMachines;
-using System;
-using Unity.VisualScripting;
+using Coursework.LogicControllers.ActionStateMachines.Core;
 using UnityEngine;
 
-namespace Coursework.AnimationControllers
+namespace Coursework.AnimationControllers.Implementations
 {
     public class KnightAnimatorController : BaseAnimationController<KnightStates, KnightActions>
     {

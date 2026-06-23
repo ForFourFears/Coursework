@@ -1,6 +1,6 @@
 ﻿using Coursework.EnumsCreatures.Knight;
 using Coursework.LogicControllers;
-using Coursework.LogicControllers.ActionStateMachines;
+using Coursework.LogicControllers.ActionStateMachines.Core;
 using Coursework.LogicControllers.AttackSystems;
 using Coursework.LogicControllers.ModifierSystems;
 using Coursework.ScriptableObjects;

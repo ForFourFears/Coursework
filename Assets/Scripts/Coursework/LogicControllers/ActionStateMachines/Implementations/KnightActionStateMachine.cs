@@ -1,11 +1,13 @@
-﻿using Coursework.AnimationControllers;
+﻿using Coursework.AnimationControllers.Core;
+using Coursework.AnimationControllers.Implementations;
 using Coursework.EnumsCreatures.Knight;
 using Coursework.LogicControllers.ModifierSystems;
 using Coursework.ScriptableObjects;
 using System.Collections.Generic;
 using UnityEngine;
+using Coursework.LogicControllers.ActionStateMachines.Core;
 
-namespace Coursework.LogicControllers.ActionStateMachines
+namespace Coursework.LogicControllers.ActionStateMachines.Implementations
 {
     public class KnightActionStateMachine : BaseActionStateMachine<KnightStates, KnightActions>
     {

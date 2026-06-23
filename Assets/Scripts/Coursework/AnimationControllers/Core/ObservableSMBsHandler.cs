@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 
-namespace Coursework.AnimationControllers
+namespace Coursework.AnimationControllers.Core
 {
     public interface IObservableSMBsHandler
     {

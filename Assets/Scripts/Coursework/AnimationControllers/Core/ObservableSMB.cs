@@ -1,7 +1,7 @@
 using System;
 using UnityEngine;
 
-namespace Coursework.AnimationControllers
+namespace Coursework.AnimationControllers.Core
 {
     public class ObservableSMB : StateMachineBehaviour
     {

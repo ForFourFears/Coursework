@@ -1,10 +1,11 @@
 using System;
 using UnityEngine;
 using Coursework.LogicControllers;
-using Coursework.LogicControllers.ActionStateMachines;
+using Coursework.LogicControllers.ActionStateMachines.Core;
 using System.Collections.Generic;
+using Coursework.AnimationControllers.Core;
 
-namespace Coursework.AnimationControllers
+namespace Coursework.AnimationControllers.Core
 {
     //[RequireComponent(typeof(Animator))]
     public abstract class BaseAnimationController<TState, TAction> 

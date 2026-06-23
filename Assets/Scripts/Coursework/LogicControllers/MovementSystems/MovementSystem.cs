@@ -1,8 +1,7 @@
 ﻿using Coursework.LogicControllers.ModifierSystems;
 using UnityEngine;
-using UnityEngine.Splines;
 
-namespace Coursework.LogicControllers
+namespace Coursework.LogicControllers.MovementSystems
 {
     public class MovementSystem
     {
