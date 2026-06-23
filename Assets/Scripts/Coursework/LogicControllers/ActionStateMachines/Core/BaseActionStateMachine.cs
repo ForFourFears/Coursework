@@ -102,6 +102,17 @@ namespace Coursework.LogicControllers.ActionStateMachines.Core
 
         public abstract bool TryExecuteAction(TAction action);
 
+        protected bool TryTriggerAction(TAction action)
+        {
+            if (cooldownRegistry.IsActive(action)) return false;
+            cooldownRegistry[action] = entityDataHandler[action].Cooldown;
+            if (actionEvents.TryGetValue(action, out var actionEvent))
+            {
+                actionEvent.ActionInvoke();
+            }
+            return true;
+        }
+
         protected bool TryChangeState(TState newState, TAction action)
         {
             if (cooldownRegistry.IsActive(action)) return false;

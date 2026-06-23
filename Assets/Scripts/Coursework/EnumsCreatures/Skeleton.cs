@@ -1,4 +1,4 @@
-﻿namespace Coursework.EnumsCreatures
+﻿namespace Coursework.EnumsCreatures.Skeleton
 {
     public enum SkeletonActions
     {

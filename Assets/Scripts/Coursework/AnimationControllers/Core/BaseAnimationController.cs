@@ -17,15 +17,13 @@ namespace Coursework.AnimationControllers.Core
         protected Animator animator;
 
         protected IActionStateMachine<TState, TAction> actionStateMachine;
-        protected Rigidbody2D rb;
 
         protected IObservableSMBsHandler animationEventsHandler;
         protected int[] currentLayerHashes;
         protected readonly HashSet<ObservableSMB> ActiveOSMBs = new();
 
-        public BaseAnimationController(Rigidbody2D rigidbody, Animator animator, IActionStateMachine<TState, TAction> actionStateMachine, IObservableSMBsHandler animationEventsHandler)
+        public BaseAnimationController(Animator animator, IActionStateMachine<TState, TAction> actionStateMachine, IObservableSMBsHandler animationEventsHandler)
         {
-            rb = rigidbody;
             this.actionStateMachine = actionStateMachine;
             this.animator = animator;
             currentLayerHashes = new int[animator.layerCount];

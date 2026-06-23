@@ -97,7 +97,6 @@ namespace Coursework.LogicControllers.ActionStateMachines.Implementations
         {
             base.Update(deltaTime);
             actionWindowsTimer.Update(deltaTime);
-            UpdateConstraints();
 
             if (entityContext.IsGrounded)
             {
@@ -125,6 +124,27 @@ namespace Coursework.LogicControllers.ActionStateMachines.Implementations
                 default:
                     CheckTransitions();
                     break;
+            }
+
+            UpdateConstraints();
+        }
+
+        private void CheckTransitions()
+        {
+            if (!entityContext.IsGrounded && Mathf.Abs(rigidbody.linearVelocityY) != 0)
+            {
+                ChangeState(KnightStates.Air);
+            }
+            else /*if (rigidbody.linearVelocityY <= 0)*/
+            {
+                if (entityContext.IsCrouched /*|| entityContext.IsCeilingAbove*/)
+                {
+                    ChangeState(KnightStates.Crouch);
+                }
+                else if (!(entityContext.IsCrouched || entityContext.IsCeilingAbove))
+                {
+                    ChangeState(KnightStates.Locomotion);
+                }
             }
         }
 
@@ -239,24 +259,6 @@ namespace Coursework.LogicControllers.ActionStateMachines.Implementations
             actionWindowsTimer[KnightActionWindows.Combat] = attackData.CombateTime;
         }
 
-        private void CheckTransitions()
-        {
-            if (!entityContext.IsGrounded && Mathf.Abs(rigidbody.linearVelocityY) != 0)
-            {
-                ChangeState(KnightStates.Air);
-            }
-            else /*if (rigidbody.linearVelocityY <= 0)*/
-            {
-                if (entityContext.IsCrouched /*|| entityContext.IsCeilingAbove*/)
-                {
-                    ChangeState(KnightStates.Crouch);
-                }
-                else if (!(entityContext.IsCrouched || entityContext.IsCeilingAbove))
-                {
-                    ChangeState(KnightStates.Locomotion);
-                }
-            }
-        }
 
         private void OnStateCrouchAttackEnd()
         {

@@ -20,12 +20,17 @@ using UnityEditor;
 
 namespace Coursework.LogicControllers
 {
-	public interface IEntityContext
-	{
+    public interface IBaseEntityContext
+    {
         public bool IsGrounded { get; }
+
+        public float FacingSign { get; }
+    }
+
+	public interface IEntityContext : IBaseEntityContext
+    {
         public bool IsCrouched { get; }
 		public bool IsCeilingAbove { get; }
-        public float FacingSign { get; }
     }
 
     public interface IMovementContext

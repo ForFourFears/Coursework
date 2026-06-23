@@ -20,7 +20,6 @@ namespace Coursework.AnimationControllers.Implementations
         private static readonly AnimationData wallSlide = new(Animator.StringToHash("WallSlide"), 0);
         private static readonly AnimationData crouch = new(Animator.StringToHash("Crouch"), 0);
         private static readonly AnimationData crouchWalk = new(Animator.StringToHash("CrouchWalk"), 0);
-        private static readonly AnimationData crouchFull = new(Animator.StringToHash("CrouchFull"), 0); //???
         private static readonly AnimationData dashL0 = new(Animator.StringToHash("DashL0"), 0);
         private static readonly AnimationData roll = new(Animator.StringToHash("Roll"), 0);
         private static readonly AnimationData slide = new(Animator.StringToHash("Slide"), 0);
@@ -31,7 +30,6 @@ namespace Coursework.AnimationControllers.Implementations
         private static readonly AnimationData hit = new(Animator.StringToHash("Hit"), 1);
         private static readonly AnimationData attack = new(Animator.StringToHash("Attack"), 1);
         private static readonly AnimationData attack2 = new(Animator.StringToHash("Attack2"), 1);
-        private static readonly AnimationData attackCombo = new(Animator.StringToHash("AttackCombo"), 1); //???
         private static readonly AnimationData crouchAttack = new(Animator.StringToHash("CrouchAttack"), 1);
         private static readonly AnimationData jumpFallInBetween = new(Animator.StringToHash("JumpFallInBetween"), 1);
         private static readonly AnimationData crouchTransition = new(Animator.StringToHash("CrouchTransition"), 1);
@@ -42,6 +40,7 @@ namespace Coursework.AnimationControllers.Implementations
         #endregion
 
         //[SerializeField] private float _airStateThreshold = 1f;
+        private readonly Rigidbody2D rigidbody;
         private readonly IEntityContext entityContext;
 
         public KnightAnimatorController (
@@ -50,8 +49,9 @@ namespace Coursework.AnimationControllers.Implementations
             Animator animator,  
             IActionStateMachine<KnightStates, KnightActions> actionStateMachine, 
             IObservableSMBsHandler animationEventsHandle) 
-            : base (rigidbody, animator, actionStateMachine, animationEventsHandle) 
-        { 
+            : base (animator, actionStateMachine, animationEventsHandle) 
+        {
+            this.rigidbody = rigidbody;
             this.entityContext = entityContext;
         }
 
@@ -89,16 +89,16 @@ namespace Coursework.AnimationControllers.Implementations
             switch (actionStateMachine.CurrentState)
             {
                 case KnightStates.Locomotion:
-                    targetAnim = Mathf.Abs(rb.linearVelocityX) > 5 ? run : idle;
+                    targetAnim = Mathf.Abs(rigidbody.linearVelocityX) > 5 ? run : idle;
                     break;
 
                 case KnightStates.Air:
-                    if (rb.linearVelocityY < 0 && currentLayerHashes[0] != fall.Hash) PlaySequence(jumpFallInBetween);
-                    targetAnim = rb.linearVelocityY >= 0 ? jump : fall;
+                    if (rigidbody.linearVelocityY < 0 && currentLayerHashes[0] != fall.Hash) PlaySequence(jumpFallInBetween);
+                    targetAnim = rigidbody.linearVelocityY >= 0 ? jump : fall;
                     break;
 
                 case KnightStates.Crouch:
-                    targetAnim = Mathf.Abs(rb.linearVelocityX) > 1 ? crouchWalk : crouch;
+                    targetAnim = Mathf.Abs(rigidbody.linearVelocityX) > 1 ? crouchWalk : crouch;
                     break;
 
                 case KnightStates.Attack or KnightStates.Attack2:
@@ -114,7 +114,7 @@ namespace Coursework.AnimationControllers.Implementations
                     break;
 
                 default:
-                    targetAnim = Mathf.Abs(rb.linearVelocityX) > 5 ? run : idle;
+                    targetAnim = Mathf.Abs(rigidbody.linearVelocityX) > 5 ? run : idle;
                     break;
             }
             ChangeAnimation(targetAnim);
