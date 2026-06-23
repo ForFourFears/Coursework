@@ -130,7 +130,7 @@ namespace Coursework.LogicControllers
             actionStateMachine = new(this, this, modifierSystem, _knightConfig, observableSMBsHandler);
             actionExecutionSystem = new(this, this, ActionStateMachine, _knightConfig);
 
-            animatorController = new (this, Rigidbody, _animator, ActionStateMachine, observableSMBsHandler);
+            animatorController = new (Rigidbody, _animator, ActionStateMachine, observableSMBsHandler);
 
             healthSystem = new(_knightConfig.Health, _knightConfig.Health);
 

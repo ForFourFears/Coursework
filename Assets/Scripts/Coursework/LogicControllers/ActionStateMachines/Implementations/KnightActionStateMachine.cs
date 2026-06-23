@@ -150,8 +150,7 @@ namespace Coursework.LogicControllers.ActionStateMachines.Implementations
 
         private void UpdateConstraints()
         {
-            if (
-                entityContext.IsGrounded && movementContext.MoveInput.x == 0 && 
+            if (entityContext.IsGrounded && movementContext.MoveInput.x == 0 && 
                 movementContext.SlopeAngle <= movementContext.MaxSlopeAngle &&
                 (CurrentState == KnightStates.Locomotion || CurrentState == KnightStates.Crouch)
             )

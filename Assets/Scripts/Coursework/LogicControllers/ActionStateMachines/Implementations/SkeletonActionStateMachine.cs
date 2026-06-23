@@ -1,4 +1,5 @@
 ﻿using Coursework.AnimationControllers.Core;
+using Coursework.EnumsCreatures.Knight;
 using Coursework.EnumsCreatures.Skeleton;
 using Coursework.LogicControllers.ActionStateMachines.Core;
 using Coursework.LogicControllers.ModifierSystems;
@@ -13,6 +14,7 @@ namespace Coursework.LogicControllers.ActionStateMachines.Implementations
     {
         private readonly IMovementContext movementContext;
         private readonly Rigidbody2D rigidbody;
+        private readonly IBaseEntityContext entityContext;
 
         private static readonly HashSet<SkeletonStates> NonInterruptibleStates = new()
         {
@@ -22,6 +24,7 @@ namespace Coursework.LogicControllers.ActionStateMachines.Implementations
 
         public SkeletonActionStateMachine(
             IMovementContext movementContext,
+            IBaseEntityContext entityContext,
             ModifierSystem modifierSystem,
             IEntityDataHandler<SkeletonStates, SkeletonActions> entityDataHandler,
             IObservableSMBsHandler observableSMBsHandler)
@@ -29,6 +32,9 @@ namespace Coursework.LogicControllers.ActionStateMachines.Implementations
         {
             this.movementContext = movementContext;
             rigidbody = movementContext.Rigidbody;
+            this.entityContext = entityContext;
+
+            CurrentState = SkeletonStates.None;
         }
 
         public void Subscribe()
@@ -56,7 +62,10 @@ namespace Coursework.LogicControllers.ActionStateMachines.Implementations
 
         private void UpdateConstraints()
         {
-            if (CurrentState == SkeletonStates.Death || movementContext.MoveInput.x == 0)
+            if (entityContext.IsGrounded && movementContext.MoveInput.x == 0 &&
+                movementContext.SlopeAngle <= movementContext.MaxSlopeAngle &&
+                CurrentState == SkeletonStates.Locomotion
+            )
             {
                 rigidbody.constraints = RigidbodyConstraints2D.FreezePositionX | RigidbodyConstraints2D.FreezeRotation;
                 return;
@@ -72,6 +81,7 @@ namespace Coursework.LogicControllers.ActionStateMachines.Implementations
                 {
                     SkeletonActions.Attack => TryChangeState(SkeletonStates.Attack, action),
                     SkeletonActions.Hit => TryTriggerAction(action),
+                    SkeletonActions.React => TryTriggerAction(action),
                     _ => false
                 },
                 SkeletonStates.Attack => action switch 

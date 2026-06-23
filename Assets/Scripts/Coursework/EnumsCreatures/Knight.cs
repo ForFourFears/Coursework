@@ -11,17 +11,17 @@
         Slide,
         Hit
     }
+
     public enum KnightStates
     {
         None = 0,
         Locomotion,
         Air,
         Crouch,
-        WallInteraction,
-        TurnAround,
         Attack,
         Attack2,
         CrouchAttack,
+        //WallInteraction,
         Roll,
         Dash,
         Slide,

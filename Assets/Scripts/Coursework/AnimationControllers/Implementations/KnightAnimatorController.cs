@@ -9,6 +9,7 @@ namespace Coursework.AnimationControllers.Implementations
     public class KnightAnimatorController : BaseAnimationController<KnightStates, KnightActions>
     {
         #region Animation Data
+
         #region States (Layer 0)
         private static readonly AnimationData idle = new(Animator.StringToHash("Idle"), 0);
         private static readonly AnimationData run = new(Animator.StringToHash("Run"), 0);
@@ -24,10 +25,11 @@ namespace Coursework.AnimationControllers.Implementations
         private static readonly AnimationData roll = new(Animator.StringToHash("Roll"), 0);
         private static readonly AnimationData slide = new(Animator.StringToHash("Slide"), 0);
         private static readonly AnimationData slideFull = new(Animator.StringToHash("SlideFull"), 0); //???
-
         #endregion
+
         #region Actions & Transitions (Layer 1)
         private static readonly AnimationData hit = new(Animator.StringToHash("Hit"), 1);
+        private static readonly AnimationData deathTransition = new(Animator.StringToHash("DeathTransition"), 1);
         private static readonly AnimationData attack = new(Animator.StringToHash("Attack"), 1);
         private static readonly AnimationData attack2 = new(Animator.StringToHash("Attack2"), 1);
         private static readonly AnimationData crouchAttack = new(Animator.StringToHash("CrouchAttack"), 1);
@@ -37,22 +39,20 @@ namespace Coursework.AnimationControllers.Implementations
         private static readonly AnimationData slideTransitionStart = new(Animator.StringToHash("SlideTransitionStart"), 1);
         private static readonly AnimationData slideTransitionEnd = new(Animator.StringToHash("SlideTransitionEnd"), 1);
         #endregion
+
         #endregion
 
         //[SerializeField] private float _airStateThreshold = 1f;
         private readonly Rigidbody2D rigidbody;
-        private readonly IEntityContext entityContext;
 
         public KnightAnimatorController (
-            IEntityContext entityContext,
             Rigidbody2D rigidbody,
             Animator animator,  
             IActionStateMachine<KnightStates, KnightActions> actionStateMachine, 
-            IObservableSMBsHandler animationEventsHandle) 
-            : base (animator, actionStateMachine, animationEventsHandle) 
+            IObservableSMBsHandler animationEventsHandle
+        ) : base (animator, actionStateMachine, animationEventsHandle) 
         {
             this.rigidbody = rigidbody;
-            this.entityContext = entityContext;
         }
 
         public override void Subscribe()
@@ -67,6 +67,8 @@ namespace Coursework.AnimationControllers.Implementations
             actionStateMachine[KnightStates.Attack].OnExit += OnActionInterrupted;
             actionStateMachine[KnightStates.Attack2].OnExit += OnActionInterrupted;
             actionStateMachine[KnightStates.CrouchAttack].OnExit += OnActionInterrupted;
+
+            actionStateMachine[KnightStates.Death].OnEnter += OnEnterDeathState;
         }
 
         public override void Unsubscribe()
@@ -81,6 +83,8 @@ namespace Coursework.AnimationControllers.Implementations
             actionStateMachine[KnightStates.Attack].OnExit -= OnActionInterrupted;
             actionStateMachine[KnightStates.Attack2].OnExit -= OnActionInterrupted;
             actionStateMachine[KnightStates.CrouchAttack].OnExit -= OnActionInterrupted;
+
+            actionStateMachine[KnightStates.Death].OnEnter -= OnEnterDeathState;
         }
 
         public void Update()
@@ -113,8 +117,12 @@ namespace Coursework.AnimationControllers.Implementations
                     targetAnim = dashL0;
                     break;
 
+                case KnightStates.Death:
+                    targetAnim = death;
+                    break;
+
                 default:
-                    targetAnim = Mathf.Abs(rigidbody.linearVelocityX) > 5 ? run : idle;
+                    targetAnim = idle;
                     break;
             }
             ChangeAnimation(targetAnim);
@@ -145,6 +153,11 @@ namespace Coursework.AnimationControllers.Implementations
         private void OnEnterCrouchAttackState(KnightStates context)
         {
             PlaySequence(crouchAttack);
+        }
+
+        private void OnEnterDeathState(KnightStates context)
+        {
+            PlaySequence(deathTransition);
         }
 
     }
