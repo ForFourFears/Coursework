@@ -1,10 +1,6 @@
 ﻿using Coursework.AnimationControllers.Core;
-using Coursework.EnumsCreatures.Knight;
 using Coursework.EnumsCreatures.Skeleton;
 using Coursework.LogicControllers.ActionStateMachines.Core;
-using System;
-using System.Collections.Generic;
-using System.Text;
 using UnityEngine;
 
 namespace Coursework.AnimationControllers.Implementations

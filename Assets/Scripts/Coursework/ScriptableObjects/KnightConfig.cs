@@ -64,20 +64,6 @@ namespace Coursework.ScriptableObjects
         [field: Min(0)]
         [field: SerializeField] public float CombateTime { get; private set; } = 0.3f;
 
-        [Serializable]
-        public struct AttackInfo
-        {
-            public AttackType AttackType;
-
-            public float Damage;
-
-            public AttackInfo(AttackType attackType, float damage)
-            {
-                AttackType = attackType;
-                Damage = damage;
-            }
-        }
-
         [SerializeField] private List<AttackInfo> _attacksInfo = new();
 
         public List<AttackInfo> AttacksInfo => _attacksInfo;

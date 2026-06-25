@@ -1,0 +1,46 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d41574d7bf614a34fb9804b5b4ed3ae7, type: 3}
+  m_Name: SkeletonConfig
+  m_EditorClassIdentifier: Assembly-CSharp::Coursework.ScriptableObjects.SkeletonConfig
+  <Health>k__BackingField: 150
+  _statesList:
+  - rid: 3152465323455676493
+  - rid: 3152465323455676494
+  - rid: 3152465323455676495
+  _actionsList:
+  - rid: 3152465323455676497
+  references:
+    version: 2
+    RefIds:
+    - rid: 3152465323455676493
+      type: {class: SkeletonState, ns: Coursework.ScriptableObjects, asm: Assembly-CSharp}
+      data:
+        <SpeedModifier>k__BackingField: 6
+        _targetState: 1
+    - rid: 3152465323455676494
+      type: {class: SkeletonState, ns: Coursework.ScriptableObjects, asm: Assembly-CSharp}
+      data:
+        <SpeedModifier>k__BackingField: 0
+        _targetState: 2
+    - rid: 3152465323455676495
+      type: {class: SkeletonState, ns: Coursework.ScriptableObjects, asm: Assembly-CSharp}
+      data:
+        <SpeedModifier>k__BackingField: 0
+        _targetState: 3
+    - rid: 3152465323455676497
+      type: {class: SkeletonAttackAction, ns: Coursework.ScriptableObjects, asm: Assembly-CSharp}
+      data:
+        <Cooldown>k__BackingField: 1
+        attacksInfo:
+          AttackType: 1
+          Damage: 20

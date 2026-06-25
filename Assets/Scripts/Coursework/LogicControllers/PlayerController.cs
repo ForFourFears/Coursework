@@ -4,7 +4,8 @@ using UnityEngine.InputSystem;
 using Coursework.ScriptableObjects;
 using Coursework.EnumsCreatures.Knight;
 using Coursework.LogicControllers.ActionBuffers;
-using Coursework.LogicControllers.ActionExecutionSystems;
+using Coursework.LogicControllers.ActionExecutionSystems.Core;
+using Coursework.LogicControllers.ActionExecutionSystems.Implementations;
 using Coursework.LogicControllers.ActionStateMachines.Core;
 using Coursework.LogicControllers.ActionStateMachines.Implementations;
 using Coursework.LogicControllers.ModifierSystems;
@@ -12,6 +13,8 @@ using Coursework.LogicControllers.MovementSystems;
 using Coursework.AnimationControllers.Core;
 using Coursework.AnimationControllers.Implementations;
 using Coursework.LogicControllers.AttackSystems;
+using System;
+
 
 #if UNITY_EDITOR
 using UnityEditor;
@@ -44,6 +47,16 @@ namespace Coursework.LogicControllers
         public float MaxFallSpeed { get; }
     }
 
+    public interface IBaseController<TAction>
+        where TAction : Enum
+    {
+        public Vector2 MoveInput { get; set; }
+
+        public bool TryExecuteAction(TAction action);
+
+        public float MaxSlopeAngle { get; }
+    }
+
     public interface IDamageable
     {
         public void TakeDamage(float damage);
@@ -55,11 +68,11 @@ namespace Coursework.LogicControllers
     {
         #region Public part
         public bool IsGrounded { get; private set; }
-        public bool IsCrouched { get; private set; }
+        public bool IsCrouched { get; set; }
         public bool IsCeilingAbove { get; private set; }
         public float FacingSign { get; private set; }
 
-        public Vector2 MoveInput { get; private set; }
+        public Vector2 MoveInput { get; set; }
         public Vector2 SlopeDirection { get; private set; }
         public float SlopeAngle { get; private set; }
 
@@ -195,7 +208,7 @@ namespace Coursework.LogicControllers
         {
             IsGrounded = CheckGrounded();
             IsCeilingAbove = CheckCeiling();
-            if (MoveInput.x != 0) FacingSign = Mathf.Sign(MoveInput.x);
+            FacingSign = Mathf.Sign(transform.localScale.x);
             UpdateSlopeDirection();
 
             actionStateMachine.Update(Time.fixedDeltaTime);
@@ -217,6 +230,7 @@ namespace Coursework.LogicControllers
             actionExecutionSystem.Update();
         }
 
+        //Этот регион должен быть в управлении игрока, а не контроллера
         #region On Event Callbacks
         private void OnMove(InputAction.CallbackContext context)
         {
@@ -257,9 +271,9 @@ namespace Coursework.LogicControllers
         {
             if (MoveInput.x != 0)
             {
-                float direction = Mathf.Sign(MoveInput.x);
-                Vector3 scale = transform.localScale;
-                transform.localScale = new Vector3(Mathf.Abs(scale.x) * direction, scale.y, scale.z);
+                float moveDirection = Mathf.Sign(MoveInput.x);
+                Vector3 facingDirection = transform.localScale;
+                transform.localScale = new Vector3(Mathf.Abs(facingDirection.x) * moveDirection, facingDirection.y, facingDirection.z);
             }
         }
 
@@ -275,17 +289,15 @@ namespace Coursework.LogicControllers
 
         private bool CheckGrounded()
         {
-
             bool isGround = Physics2D.OverlapCircle(_groundCheck.position, _groundCheckRadius, _groundLayer) != null;
 
             return isGround;
-
         }
 
         private void UpdateSlopeDirection()
         {
             Vector2 def = Vector2.right;
-            RaycastHit2D hit = Physics2D.Raycast(_normalOrigin.position, Vector2.down, _groundCheckRadius + _snapDistance, _groundLayer);
+            RaycastHit2D hit = Physics2D.Raycast(_normalOrigin.position, Vector2.down, _normalVectorLength + _snapDistance, _groundLayer);
 
             if (hit.normal == Vector2.zero)
             {
@@ -298,7 +310,7 @@ namespace Coursework.LogicControllers
 
             if (SlopeAngle <= MaxSlopeAngle)
             {
-                if (Mathf.Abs(SlopeAngle) > 0.1f)
+                if (SlopeAngle > 10f)
                 {
                     Vector2 pureSlopeDir = new(hit.normal.y, -hit.normal.x);
 
@@ -324,7 +336,7 @@ namespace Coursework.LogicControllers
 
         private void OnDrawGizmos()
         {
-            if (actionStateMachine != null && modifierSystem != null)
+            if (actionStateMachine != null && modifierSystem != null && infoPosition != null)
             {
                 GUIStyle labelStyle = new()
                 {

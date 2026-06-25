@@ -17,6 +17,8 @@ MonoBehaviour:
   - rid: 3152465141576499311
   - rid: 3152465141576499315
   - rid: 3152465141576499316
+  - rid: 3152465306783055947
+  - rid: 3152465306783055948
   - rid: 3152465141576499317
   - rid: 3152465141576499318
   - rid: 3152465141576499319
@@ -51,12 +53,12 @@ MonoBehaviour:
     - rid: 3152465141576499318
       type: {class: KnightState, ns: Coursework.ScriptableObjects, asm: Assembly-CSharp}
       data:
-        <SpeedModifier>k__BackingField: 5
+        <SpeedModifier>k__BackingField: 0
         _targetState: 7
     - rid: 3152465141576499319
       type: {class: KnightState, ns: Coursework.ScriptableObjects, asm: Assembly-CSharp}
       data:
-        <SpeedModifier>k__BackingField: 2.5
+        <SpeedModifier>k__BackingField: 0
         _targetState: 8
     - rid: 3152465141576499328
       type: {class: KnightJumpAction, ns: Coursework.ScriptableObjects, asm: Assembly-CSharp}
@@ -89,3 +91,13 @@ MonoBehaviour:
       data:
         <SpeedModifier>k__BackingField: 0
         _targetState: 10
+    - rid: 3152465306783055947
+      type: {class: KnightState, ns: Coursework.ScriptableObjects, asm: Assembly-CSharp}
+      data:
+        <SpeedModifier>k__BackingField: 6
+        _targetState: 4
+    - rid: 3152465306783055948
+      type: {class: KnightState, ns: Coursework.ScriptableObjects, asm: Assembly-CSharp}
+      data:
+        <SpeedModifier>k__BackingField: 5
+        _targetState: 5

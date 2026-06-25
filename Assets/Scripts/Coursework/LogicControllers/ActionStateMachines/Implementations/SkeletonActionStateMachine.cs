@@ -1,5 +1,4 @@
 ﻿using Coursework.AnimationControllers.Core;
-using Coursework.EnumsCreatures.Knight;
 using Coursework.EnumsCreatures.Skeleton;
 using Coursework.LogicControllers.ActionStateMachines.Core;
 using Coursework.LogicControllers.ModifierSystems;
@@ -37,12 +36,12 @@ namespace Coursework.LogicControllers.ActionStateMachines.Implementations
             CurrentState = SkeletonStates.None;
         }
 
-        public void Subscribe()
+        public override void Subscribe()
         {
             observableSMBsHandler["Attack"].ExitState += CheckTransitions;
         }
 
-        public void Unsubscribe()
+        public override void Unsubscribe()
         {
             observableSMBsHandler["Attack"].ExitState -= CheckTransitions;
         }

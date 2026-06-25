@@ -2,23 +2,19 @@
 using Coursework.LogicControllers;
 using Coursework.LogicControllers.ActionStateMachines.Core;
 using Coursework.LogicControllers.AttackSystems;
+using Coursework.LogicControllers.ActionExecutionSystems.Core;
 using Coursework.LogicControllers.ModifierSystems;
 using Coursework.ScriptableObjects;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace Coursework.LogicControllers.ActionExecutionSystems
+namespace Coursework.LogicControllers.ActionExecutionSystems.Implementations
 {
-    public interface IAttacker
+
+    public class KnightActionExecutionSystem : BaseActionExecutionSystem<KnightStates, KnightActions>, IAttacker
     {
-        public void OnHit(Collider2D target, HitInfo attack);
-    }
-    public class KnightActionExecutionSystem : BaseActionExecutionSystem, IAttacker
-    {
-        private readonly IActionStateMachine<KnightStates, KnightActions> actionStateMachine;
         private readonly IMovementContext movementContext;
         private readonly IEntityContext entityContext;
-        private readonly IActionsDataHandler<KnightActions> actionDataHandler;
         private readonly HashSet<IDamageable> damagedTargets;
 
         private readonly KnightJumpAction jumpData;
@@ -31,12 +27,11 @@ namespace Coursework.LogicControllers.ActionExecutionSystems
             IMovementContext movementContext, 
             IEntityContext entityContext,
             IActionStateMachine<KnightStates, KnightActions> actionStateMachine,
-            IActionsDataHandler<KnightActions> actionDataHandler)
+            IActionsDataHandler<KnightActions> actionDataHandler
+        ) : base (actionStateMachine, actionDataHandler)
         {
             this.movementContext = movementContext;
             this.entityContext = entityContext;
-            this.actionStateMachine = actionStateMachine;
-            this.actionDataHandler = actionDataHandler;
 
             if (actionDataHandler[KnightActions.Jump] is KnightJumpAction jumpConfig)
             {
@@ -72,7 +67,15 @@ namespace Coursework.LogicControllers.ActionExecutionSystems
         public override void Subscribe()
         {
             actionStateMachine[KnightActions.Jump].Action += OnJump;
-            actionStateMachine[KnightActions.Attack].Action += ResetAttackMemory;
+
+            actionStateMachine[KnightStates.Attack].OnEnter += ResetAttackMemory;
+            actionStateMachine[KnightStates.Attack].OnExit += ResetAttackMemory;
+
+            actionStateMachine[KnightStates.Attack2].OnEnter += ResetAttackMemory;
+            actionStateMachine[KnightStates.Attack2].OnExit += ResetAttackMemory;
+
+            actionStateMachine[KnightStates.CrouchAttack].OnEnter += ResetAttackMemory;
+            actionStateMachine[KnightStates.CrouchAttack].OnExit += ResetAttackMemory;
 
             actionStateMachine[KnightStates.Dash].OnEnter += OnDash;
             actionStateMachine[KnightStates.Dash].OnUpdate += OnDashStateUpdate;
@@ -81,7 +84,15 @@ namespace Coursework.LogicControllers.ActionExecutionSystems
         public override void Unsubscribe()
         {
             actionStateMachine[KnightActions.Jump].Action -= OnJump;
-            actionStateMachine[KnightActions.Attack].Action -= ResetAttackMemory;
+
+            actionStateMachine[KnightStates.Attack].OnEnter -= ResetAttackMemory;
+            actionStateMachine[KnightStates.Attack].OnExit -= ResetAttackMemory;
+
+            actionStateMachine[KnightStates.Attack2].OnEnter -= ResetAttackMemory;
+            actionStateMachine[KnightStates.Attack2].OnExit -= ResetAttackMemory;
+
+            actionStateMachine[KnightStates.CrouchAttack].OnEnter -= ResetAttackMemory;
+            actionStateMachine[KnightStates.CrouchAttack].OnExit -= ResetAttackMemory;
 
             actionStateMachine[KnightStates.Dash].OnEnter -= OnDash;
             actionStateMachine[KnightStates.Dash].OnUpdate -= OnDashStateUpdate;
@@ -131,7 +142,7 @@ namespace Coursework.LogicControllers.ActionExecutionSystems
             }
         }
 
-        private void ResetAttackMemory()
+        private void ResetAttackMemory(KnightStates context)
         {
             damagedTargets.Clear();
         }

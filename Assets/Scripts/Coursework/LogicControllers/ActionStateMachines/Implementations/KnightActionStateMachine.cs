@@ -69,24 +69,24 @@ namespace Coursework.LogicControllers.ActionStateMachines.Implementations
             CurrentState = KnightStates.None;
         }
 
-        public void Subscribe()
+        public override void Subscribe()
         {
-            observableSMBsHandler["Attack"].ExitState += CheckTransitions;
+            observableSMBsHandler["Attack"].ExitState += OnAttackStateEnd;
             this[KnightStates.Attack].OnExit += ActivateCombatWindow;
 
-            observableSMBsHandler["Attack2"].ExitState += CheckTransitions;
+            observableSMBsHandler["Attack2"].ExitState += OnAttackStateEnd;
             observableSMBsHandler["CrouchAttack"].ExitState += OnStateCrouchAttackEnd;
 
             this[KnightStates.Dash].OnEnter += OnDashStateEntered;
             this[KnightStates.Dash].OnExit += OnDashStateExited;
         }
 
-        public void Unsubscribe()
+        public override void Unsubscribe()
         {
-            observableSMBsHandler["Attack"].ExitState -= CheckTransitions;
+            observableSMBsHandler["Attack"].ExitState -= OnAttackStateEnd;
             this[KnightStates.Attack].OnExit -= ActivateCombatWindow;
 
-            observableSMBsHandler["Attack2"].ExitState -= CheckTransitions;
+            observableSMBsHandler["Attack2"].ExitState -= OnAttackStateEnd;
             observableSMBsHandler["CrouchAttack"].ExitState -= OnStateCrouchAttackEnd;
 
             this[KnightStates.Dash].OnEnter -= OnDashStateEntered;
@@ -192,7 +192,7 @@ namespace Coursework.LogicControllers.ActionStateMachines.Implementations
                     KnightActions.Dash => CanDash(action),
                     _ => false
                 },
-                KnightStates.Attack => action switch 
+                KnightStates.Attack or KnightStates.Attack2 => action switch 
                 { 
                     KnightActions.Jump => CanJump(action),
                     KnightActions.Dash => CanDash(action),
@@ -258,9 +258,15 @@ namespace Coursework.LogicControllers.ActionStateMachines.Implementations
             actionWindowsTimer[KnightActionWindows.Combat] = attackData.CombateTime;
         }
 
+        private void OnAttackStateEnd()
+        {
+            if (CurrentState == KnightStates.Dash) return;
+            CheckTransitions();
+        }
 
         private void OnStateCrouchAttackEnd()
         {
+            if (CurrentState == KnightStates.Dash) return;
             ChangeState(KnightStates.Crouch);
         }
 

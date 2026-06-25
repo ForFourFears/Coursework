@@ -6,11 +6,11 @@ namespace Coursework.LogicControllers.MovementSystems
     public class MovementSystem
     {
         private readonly IMovementContext movementContext;
-        private readonly IEntityContext entityContext;
+        private readonly IBaseEntityContext entityContext;
         private readonly ModifierSystem modifierSystem;
         private readonly Rigidbody2D rigidbody;
 
-        public MovementSystem(IMovementContext movementContext, IEntityContext entityContext,ModifierSystem modifierSystem)
+        public MovementSystem(IMovementContext movementContext, IBaseEntityContext entityContext,ModifierSystem modifierSystem)
         {
             this.movementContext = movementContext;
             this.entityContext = entityContext;

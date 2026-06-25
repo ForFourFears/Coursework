@@ -1,6 +1,7 @@
-using UnityEngine;
-using System.Collections.Generic;
+using Coursework.LogicControllers.AttackSystems;
 using System;
+using System.Collections.Generic;
+using UnityEngine;
 
 namespace Coursework.ScriptableObjects
 {
@@ -18,6 +19,20 @@ namespace Coursework.ScriptableObjects
         where TState : Enum
         where TAction : Enum
     { }
+
+    [Serializable]
+    public struct AttackInfo
+    {
+        public AttackType AttackType;
+
+        public float Damage;
+
+        public AttackInfo(AttackType attackType, float damage)
+        {
+            AttackType = attackType;
+            Damage = damage;
+        }
+    }
 
     public abstract class BaseCharacterConfig<TState, TAction> : ScriptableObject, IEntityDataHandler<TState, TAction>
         where TState : Enum

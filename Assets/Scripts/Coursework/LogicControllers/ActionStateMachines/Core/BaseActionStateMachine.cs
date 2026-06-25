@@ -68,6 +68,11 @@ namespace Coursework.LogicControllers.ActionStateMachines.Core
             cooldownRegistry.Update(deltaTime);
             currentStateEvents?.UpdateInvoke();
         }
+
+        public abstract void Subscribe();
+
+        public abstract void Unsubscribe();
+
         protected void ChangeState(TState newState)
         {
             if (Equals(CurrentState, newState)) return;
