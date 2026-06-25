@@ -173,40 +173,46 @@ namespace Coursework.LogicControllers.ActionStateMachines.Implementations
             {
                 KnightStates.Locomotion => action switch
                 {
-                    KnightActions.Jump => CanJump(action),
+                    KnightActions.TurnAround => TryTurnAround(action),
+                    KnightActions.Jump => TryJump(action),
                     KnightActions.Attack => Attack(action),
-                    KnightActions.Dash => CanDash(action),
+                    KnightActions.Dash => TryDash(action),
                     _ => false
                 },
                 KnightStates.Air => action switch
                 {
-                    KnightActions.Jump => CanJump(action),
+                    KnightActions.TurnAround => TryTurnAround(action),
+                    KnightActions.Jump => TryJump(action),
                     KnightActions.Attack => Attack(action),
-                    KnightActions.Dash => CanDash(action),
+                    KnightActions.Dash => TryDash(action),
                     _ => false
                 },
                 KnightStates.Crouch => action switch
                 {
-                    KnightActions.Jump => CanJump(action),
+                    KnightActions.TurnAround => TryTurnAround(action),
+                    KnightActions.Jump => TryJump(action),
                     KnightActions.Attack => TryChangeState(KnightStates.CrouchAttack, action),
-                    KnightActions.Dash => CanDash(action),
+                    KnightActions.Dash => TryDash(action),
                     _ => false
                 },
                 KnightStates.Attack or KnightStates.Attack2 => action switch 
-                { 
-                    KnightActions.Jump => CanJump(action),
-                    KnightActions.Dash => CanDash(action),
+                {
+                    KnightActions.TurnAround => TryTurnAround(action),
+                    KnightActions.Jump => TryJump(action),
+                    KnightActions.Dash => TryDash(action),
                     _ => false
                 },
                 KnightStates.CrouchAttack => action switch
                 {
-                    KnightActions.Jump => CanJump(action),
-                    KnightActions.Dash => CanDash(action),
+                    KnightActions.TurnAround => TryTurnAround(action),
+                    KnightActions.Jump => TryJump(action),
+                    KnightActions.Dash => TryDash(action),
                     _ => false
                 },
                 KnightStates.Dash => action switch 
-                { 
-                    KnightActions.Jump => CanJump(action),
+                {
+                    KnightActions.TurnAround => TryTurnAround(action),
+                    KnightActions.Jump => TryJump(action),
                     KnightActions.Attack => Attack(action),
                     _ => false
                 },
@@ -214,7 +220,16 @@ namespace Coursework.LogicControllers.ActionStateMachines.Implementations
             };
         }
 
-        private bool CanJump(KnightActions action)
+        private bool TryTurnAround(KnightActions action)
+        {
+            if (entityDataHandler[CurrentState].SpeedModifier > 0)
+            {
+                return TryTriggerAction(action);
+            }
+            return false;
+        }
+
+        private bool TryJump(KnightActions action)
         {
             if (jumpCounter > 0 && !entityContext.IsCeilingAbove)
             {
@@ -242,7 +257,7 @@ namespace Coursework.LogicControllers.ActionStateMachines.Implementations
             return TryChangeState(KnightStates.Attack, action);
         }
 
-        private bool CanDash(KnightActions actions)
+        private bool TryDash(KnightActions actions)
         {
             if (!entityContext.IsCeilingAbove)
             {

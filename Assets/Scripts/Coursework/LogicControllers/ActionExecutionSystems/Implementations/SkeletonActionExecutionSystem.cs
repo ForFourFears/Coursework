@@ -10,16 +10,24 @@ namespace Coursework.LogicControllers.ActionExecutionSystems.Implementations
 {
     public class SkeletonActionExecutionSystem : BaseActionExecutionSystem<SkeletonStates, SkeletonActions>, IAttacker
     {
-        private readonly Dictionary<AttackType, float> attacksDamage = new();
+        private readonly IMovementContext movementContext;
+        private readonly Transform transform;
+
         private readonly HashSet<IDamageable> damagedTargets = new();
+        private readonly Dictionary<AttackType, float> attacksDamage = new();
 
         private readonly SkeletonAttackAction attackData;
 
         public SkeletonActionExecutionSystem(
+            IMovementContext movementContext,
+            ITransformComponent transformHandler,
             IActionStateMachine<SkeletonStates, SkeletonActions> actionStateMachine,
             IActionsDataHandler<SkeletonActions> actionsDataHandler
         ) : base(actionStateMachine, actionsDataHandler)
         {
+            this.movementContext = movementContext;
+            transform = transformHandler.Transform;
+
             if (actionDataHandler[SkeletonActions.Attack] is SkeletonAttackAction attackConfig)
             {
                 attackData = attackConfig;
@@ -31,14 +39,26 @@ namespace Coursework.LogicControllers.ActionExecutionSystems.Implementations
 
         public override void Subscribe()
         {
+            actionStateMachine[SkeletonActions.TurnAround].Action += OnTurnAround;
+
             actionStateMachine[SkeletonStates.Attack].OnEnter += ResetAttackMemory;
             actionStateMachine[SkeletonStates.Attack].OnExit += ResetAttackMemory;
         }
 
         public override void Unsubscribe()
         {
+            actionStateMachine[SkeletonActions.TurnAround].Action -= OnTurnAround;
+
             actionStateMachine[SkeletonStates.Attack].OnEnter -= ResetAttackMemory;
             actionStateMachine[SkeletonStates.Attack].OnExit -= ResetAttackMemory;
+        }
+
+        private void OnTurnAround()
+        {
+            float moveDirection = Mathf.Sign(movementContext.MoveInput.x);
+            Vector3 facingDirection = transform.localScale;
+
+            transform.localScale = new Vector3(Mathf.Abs(facingDirection.x) * moveDirection, facingDirection.y, facingDirection.z);
         }
 
         public void OnHit(Collider2D target, HitInfo hitInfo)

@@ -3,6 +3,7 @@
     public enum KnightActions
     {
         None = 0,
+        TurnAround,
         Jump,
         Crouch,
         Attack,

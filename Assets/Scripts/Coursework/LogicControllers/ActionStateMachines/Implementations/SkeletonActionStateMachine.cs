@@ -78,6 +78,7 @@ namespace Coursework.LogicControllers.ActionStateMachines.Implementations
             {
                 SkeletonStates.Locomotion => action switch
                 {
+                    SkeletonActions.TurnAround => TryTurnAround(action),
                     SkeletonActions.Attack => TryChangeState(SkeletonStates.Attack, action),
                     SkeletonActions.Hit => TryTriggerAction(action),
                     SkeletonActions.React => TryTriggerAction(action),
@@ -85,11 +86,21 @@ namespace Coursework.LogicControllers.ActionStateMachines.Implementations
                 },
                 SkeletonStates.Attack => action switch 
                 {
+                    SkeletonActions.TurnAround => TryTurnAround(action),
                     SkeletonActions.Hit => TryTriggerAction(action),
                     _ => false
                 },
-                _ => false,
+                _ => false
             };
+        }
+
+        private bool TryTurnAround(SkeletonActions action)
+        {
+            if (entityDataHandler[CurrentState].SpeedModifier > 0)
+            {
+                return TryTriggerAction(action);
+            }
+            return false;
         }
     }
 }

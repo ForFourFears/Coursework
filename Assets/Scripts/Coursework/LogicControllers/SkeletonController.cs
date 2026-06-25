@@ -11,6 +11,8 @@ using Coursework.LogicControllers.MovementSystems;
 using Coursework.ScriptableObjects;
 using UnityEngine;
 using Scripts;
+using Coursework.EnumsCreatures.Knight;
+
 
 
 #if UNITY_EDITOR
@@ -21,7 +23,7 @@ namespace Coursework.LogicControllers
 {
     [RequireComponent(typeof(Rigidbody2D))]
     [RequireComponent(typeof(Animator))]
-    public class SkeletonController : MonoBehaviour, IBaseController<SkeletonActions>, IMovementContext, IBaseEntityContext, IAttacker, IDamageable
+    public class SkeletonController : MonoBehaviour, IBaseController<SkeletonActions>, IMovementContext, IBaseEntityContext, ITransformComponent, IAttacker, IDamageable
     {
         #region Public part
         public bool IsGrounded { get; private set; }
@@ -30,6 +32,8 @@ namespace Coursework.LogicControllers
         public Vector2 MoveInput { get; set; }
         public Vector2 SlopeDirection { get; private set; }
         public float SlopeAngle { get; private set; }
+
+        public Transform Transform => transform;
 
         public IActionStateMachine<SkeletonStates, SkeletonActions> ActionStateMachine => actionStateMachine;
         #endregion
@@ -85,7 +89,7 @@ namespace Coursework.LogicControllers
 
             observableSMBsHandler = new(_animator);
             actionStateMachine = new(this, this, modifierSystem, _skeletonConfig, observableSMBsHandler);
-            actionExecutionSystem = new(ActionStateMachine, _skeletonConfig);
+            actionExecutionSystem = new(this, this, ActionStateMachine, _skeletonConfig);
 
             animatorController = new(Rigidbody, _animator, ActionStateMachine, observableSMBsHandler);
 
@@ -121,7 +125,6 @@ namespace Coursework.LogicControllers
         private void FixedUpdate()
         {
             IsGrounded = CheckGrounded();
-            FacingSign = Mathf.Sign(transform.localScale.x);
             UpdateSlopeDirection();
 
 
@@ -136,9 +139,9 @@ namespace Coursework.LogicControllers
             if (MoveInput.x != 0)
             {
                 float moveDirection = Mathf.Sign(MoveInput.x);
-                Vector3 facingDirection = transform.localScale;
-                transform.localScale = new Vector3(Mathf.Abs(facingDirection.x) * moveDirection, facingDirection.y, facingDirection.z);
+                if (moveDirection != FacingSign) actionStateMachine.TryExecuteAction(SkeletonActions.TurnAround);
             }
+            if (transform.localScale.x != 0) FacingSign = Mathf.Sign(transform.localScale.x);
         }
 
         private bool CheckGrounded()
@@ -219,7 +222,7 @@ namespace Coursework.LogicControllers
                     $"IsGrounded: {IsGrounded}", labelStyle);
             }
 
-            if (SlopeDirection != Vector2.zero)
+            if (SlopeDirection != Vector2.zero && SlopeDirectionPosition != null)
             {
                 Vector3 startPoint = SlopeDirectionPosition.position;
                 Vector3 endPoint = startPoint + (Vector3)SlopeDirection * FacingSign;

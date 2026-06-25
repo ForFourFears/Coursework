@@ -44,7 +44,6 @@ namespace Coursework.LogicControllers.EnemyAI
         private WaitForSeconds detectionWait;
         private Coroutine detectionCorutine;
         private Transform target;
-        private float sqrtDitanceToTarget;
         private Vector2 lastKnowPosTarget;
         private float targetLossTimer;
         private readonly List<Collider2D> targets = new(5);
@@ -124,9 +123,24 @@ namespace Coursework.LogicControllers.EnemyAI
 
         private void UpdateAIState()
         {
-            if (target != null && sqrtDitanceToTarget <= Mathf.Pow(_attackDistance, 2)) AIState = AIState.Attack;
-            else if (target != null || targetLossTimer > 0) AIState = AIState.Chase;
-            else AIState = AIState.Patrol;
+            if (target == null && targetLossTimer <= 0)
+            {
+                AIState = AIState.Patrol;
+                return;
+            }
+
+            Vector2 currentPos = transform.position;
+            Vector2 currentDestination = target != null ? target.position : lastKnowPosTarget;
+            float sqrDistanceToTarget = (currentDestination - currentPos).sqrMagnitude;
+
+            if (target != null && sqrDistanceToTarget <= Mathf.Pow(_attackDistance, 2))
+            {
+                AIState = AIState.Attack;
+            }
+            else
+            {
+                AIState = AIState.Chase;
+            }
         }
 
         private IEnumerator DetectionCoritine()

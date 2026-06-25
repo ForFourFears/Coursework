@@ -27,6 +27,9 @@ namespace Coursework.ScriptableObjects
 
     #region ActionsData
     [Serializable]
+    public class SkeletonAction : ActionData<SkeletonActions> { }
+
+    [Serializable]
     public class SkeletonAttackAction : BaseActionData<SkeletonActions>
     {
         public override SkeletonActions TargetAction

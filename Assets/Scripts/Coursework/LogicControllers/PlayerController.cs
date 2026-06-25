@@ -47,6 +47,11 @@ namespace Coursework.LogicControllers
         public float MaxFallSpeed { get; }
     }
 
+    public interface ITransformComponent
+    {
+        public Transform Transform { get; }
+    }
+
     public interface IBaseController<TAction>
         where TAction : Enum
     {
@@ -64,7 +69,7 @@ namespace Coursework.LogicControllers
 
     [RequireComponent(typeof(Rigidbody2D))]
     [RequireComponent(typeof(Animator))]
-    public class PlayerController : MonoBehaviour, IEntityContext, IMovementContext, IAttacker, IDamageable/*, IActionStateMachineProvider<KnightStates,  KnightActions>*/
+    public class PlayerController : MonoBehaviour, IEntityContext, IMovementContext, ITransformComponent, IAttacker, IDamageable/*, IActionStateMachineProvider<KnightStates,  KnightActions>*/
     {
         #region Public part
         public bool IsGrounded { get; private set; }
@@ -75,6 +80,8 @@ namespace Coursework.LogicControllers
         public Vector2 MoveInput { get; set; }
         public Vector2 SlopeDirection { get; private set; }
         public float SlopeAngle { get; private set; }
+
+        public Transform Transform => transform;
 
         public IActionStateMachine<KnightStates, KnightActions> ActionStateMachine => actionStateMachine;
         #endregion
@@ -141,7 +148,7 @@ namespace Coursework.LogicControllers
 
             observableSMBsHandler = new(_animator);
             actionStateMachine = new(this, this, modifierSystem, _knightConfig, observableSMBsHandler);
-            actionExecutionSystem = new(this, this, ActionStateMachine, _knightConfig);
+            actionExecutionSystem = new(this, this, this, ActionStateMachine, _knightConfig);
 
             animatorController = new (Rigidbody, _animator, ActionStateMachine, observableSMBsHandler);
 
@@ -208,7 +215,6 @@ namespace Coursework.LogicControllers
         {
             IsGrounded = CheckGrounded();
             IsCeilingAbove = CheckCeiling();
-            FacingSign = Mathf.Sign(transform.localScale.x);
             UpdateSlopeDirection();
 
             actionStateMachine.Update(Time.fixedDeltaTime);
@@ -272,9 +278,9 @@ namespace Coursework.LogicControllers
             if (MoveInput.x != 0)
             {
                 float moveDirection = Mathf.Sign(MoveInput.x);
-                Vector3 facingDirection = transform.localScale;
-                transform.localScale = new Vector3(Mathf.Abs(facingDirection.x) * moveDirection, facingDirection.y, facingDirection.z);
+                if (moveDirection != FacingSign) actionStateMachine.TryExecuteAction(KnightActions.TurnAround);
             }
+            if (transform.localScale.x != 0) FacingSign = Mathf.Sign(transform.localScale.x);
         }
 
         public void OnHit(Collider2D target, HitInfo hitInfo)
@@ -353,7 +359,7 @@ namespace Coursework.LogicControllers
                     $"IsGrounded: {IsGrounded}", labelStyle);
             }
 
-            if (SlopeDirection != Vector2.zero)
+            if (SlopeDirection != Vector2.zero && SlopeDirectionPosition != null)
             {
                 Vector3 startPoint = SlopeDirectionPosition.position;
                 Vector3 endPoint = startPoint + (Vector3)SlopeDirection * FacingSign;

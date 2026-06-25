@@ -1,12 +1,14 @@
 ﻿using Coursework.EnumsCreatures.Knight;
 using Coursework.LogicControllers;
+using Coursework.LogicControllers.ActionExecutionSystems.Core;
 using Coursework.LogicControllers.ActionStateMachines.Core;
 using Coursework.LogicControllers.AttackSystems;
-using Coursework.LogicControllers.ActionExecutionSystems.Core;
 using Coursework.LogicControllers.ModifierSystems;
 using Coursework.ScriptableObjects;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.EventSystems;
+using UnityEngine.UIElements;
 
 namespace Coursework.LogicControllers.ActionExecutionSystems.Implementations
 {
@@ -15,6 +17,7 @@ namespace Coursework.LogicControllers.ActionExecutionSystems.Implementations
     {
         private readonly IMovementContext movementContext;
         private readonly IEntityContext entityContext;
+        private readonly Transform transform;
         private readonly HashSet<IDamageable> damagedTargets;
 
         private readonly KnightJumpAction jumpData;
@@ -24,14 +27,16 @@ namespace Coursework.LogicControllers.ActionExecutionSystems.Implementations
         private readonly Dictionary<AttackType, float> attacksDamage;
 
         public KnightActionExecutionSystem(
-            IMovementContext movementContext, 
+            IMovementContext movementContext,
             IEntityContext entityContext,
+            ITransformComponent transformHandler,
             IActionStateMachine<KnightStates, KnightActions> actionStateMachine,
             IActionsDataHandler<KnightActions> actionDataHandler
         ) : base (actionStateMachine, actionDataHandler)
         {
             this.movementContext = movementContext;
             this.entityContext = entityContext;
+            transform = transformHandler.Transform;
 
             if (actionDataHandler[KnightActions.Jump] is KnightJumpAction jumpConfig)
             {
@@ -66,6 +71,8 @@ namespace Coursework.LogicControllers.ActionExecutionSystems.Implementations
 
         public override void Subscribe()
         {
+            actionStateMachine[KnightActions.TurnAround].Action += OnTurnAround;
+
             actionStateMachine[KnightActions.Jump].Action += OnJump;
 
             actionStateMachine[KnightStates.Attack].OnEnter += ResetAttackMemory;
@@ -83,6 +90,8 @@ namespace Coursework.LogicControllers.ActionExecutionSystems.Implementations
         }
         public override void Unsubscribe()
         {
+            actionStateMachine[KnightActions.TurnAround].Action -= OnTurnAround;
+
             actionStateMachine[KnightActions.Jump].Action -= OnJump;
 
             actionStateMachine[KnightStates.Attack].OnEnter -= ResetAttackMemory;
@@ -102,6 +111,14 @@ namespace Coursework.LogicControllers.ActionExecutionSystems.Implementations
         public override void Update()
         {
             base.Update();
+        }
+
+        private void OnTurnAround()
+        {
+            float moveDirection = Mathf.Sign(movementContext.MoveInput.x);
+            Vector3 facingDirection = transform.localScale;
+
+            transform.localScale = new Vector3(Mathf.Abs(facingDirection.x) * moveDirection, facingDirection.y, facingDirection.z);
         }
 
         private void OnJump()

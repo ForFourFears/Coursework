@@ -3,6 +3,7 @@
     public enum SkeletonActions
     {
         None = 0,
+        TurnAround,
         Attack,
         React,
         Hit
