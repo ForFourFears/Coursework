@@ -5,6 +5,7 @@ namespace Coursework.LogicControllers.ModifierSystems
 {
     public class ModifierSystem
     {
+        public bool IgnoreMovementUpdates;
         public float StateModifier;
         public List<float> EffectsModifiers;
 

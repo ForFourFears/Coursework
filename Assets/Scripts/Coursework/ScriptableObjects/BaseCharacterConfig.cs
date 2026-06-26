@@ -143,7 +143,8 @@ namespace Coursework.ScriptableObjects
     {
         public abstract TState TargetState { get; protected set; }
 
-        [field: SerializeField] public float SpeedModifier { get; private set; } = 1f;
+        [field: SerializeField] public bool IgnoreMovementUpdates { get; protected set; } = false;
+        [field: SerializeField] public float SpeedModifier { get; protected set; } = 1f;
 
 
         public abstract void OnValidateState();
@@ -173,7 +174,7 @@ namespace Coursework.ScriptableObjects
         public abstract TAction TargetAction { get; protected set; }
 
         //Сюда можно докинуть общие параметры для ВСЕХ экшенов (например, кулдаун)
-        [field: SerializeField] public float Cooldown { get; private set; } = 0f;
+        [field: SerializeField] public float Cooldown { get; protected set; } = 0f;
 
 
         public abstract void OnValidateAction();

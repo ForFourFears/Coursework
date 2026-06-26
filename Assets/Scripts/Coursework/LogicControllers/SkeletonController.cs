@@ -10,9 +10,6 @@ using Coursework.LogicControllers.ModifierSystems;
 using Coursework.LogicControllers.MovementSystems;
 using Coursework.ScriptableObjects;
 using UnityEngine;
-using Scripts;
-using Coursework.EnumsCreatures.Knight;
-
 
 
 #if UNITY_EDITOR

@@ -96,13 +96,16 @@ namespace Coursework.LogicControllers.ActionStateMachines.Core
         {
             var state = entityDataHandler[currentState];
             float mod = 0;
+            bool ignoreMovementUpdates = false;
 
             if (state != null)
             {
                 mod = state.SpeedModifier;
+                ignoreMovementUpdates = state.IgnoreMovementUpdates;
             }
 
             modifierSystem.StateModifier = mod;
+            modifierSystem.IgnoreMovementUpdates = ignoreMovementUpdates;
         }
 
         public abstract bool TryExecuteAction(TAction action);

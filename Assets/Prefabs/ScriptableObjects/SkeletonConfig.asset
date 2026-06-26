@@ -19,12 +19,11 @@ MonoBehaviour:
   - rid: 3152465323455676495
   _actionsList:
   - rid: 3152465323455676497
-  - rid: -2
+  - rid: 3152465347598352458
+  - rid: 3152465347598352473
   references:
     version: 2
     RefIds:
-    - rid: -2
-      type: {class: , ns: , asm: }
     - rid: 3152465323455676493
       type: {class: SkeletonState, ns: Coursework.ScriptableObjects, asm: Assembly-CSharp}
       data:
@@ -47,3 +46,13 @@ MonoBehaviour:
         attacksInfo:
           AttackType: 1
           Damage: 20
+    - rid: 3152465347598352458
+      type: {class: SkeletonAction, ns: Coursework.ScriptableObjects, asm: Assembly-CSharp}
+      data:
+        <Cooldown>k__BackingField: 0.5
+        _targetAction: 1
+    - rid: 3152465347598352473
+      type: {class: SkeletonAction, ns: Coursework.ScriptableObjects, asm: Assembly-CSharp}
+      data:
+        <Cooldown>k__BackingField: 0
+        _targetAction: 3
