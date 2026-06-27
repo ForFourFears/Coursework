@@ -48,7 +48,7 @@ namespace Coursework.ScriptableObjects
         [field: SerializeField] public float CoyoteTime { get; private set; } = 0.15f;
 
         [field: Min(1)]
-        [field: SerializeField] public int NumberOfJumps { get; private set; } = 1;
+        [field: SerializeField] public int NumberOfJumps { get; set; } = 1;
 
 
         public override void OnValidateAction() { }
@@ -100,9 +100,10 @@ namespace Coursework.ScriptableObjects
         [Header("Dash Settings")]
         [field: SerializeField, Min(0)] public float SpeedModifier { get; private set; } = 15f;
         [field: SerializeField, Min(0)] public float Duration { get; private set; } = 0.1f;
-
         [SerializeField] private float _distance;
 
+        [field: SerializeField] public int NumberOfDashCharges { get; set; } = 1;
+        [field: SerializeField, Min(0)] public float DashChargeCooldown { get; set; } = 2f;
 
 
         public override void OnValidateAction() 

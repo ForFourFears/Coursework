@@ -16,7 +16,7 @@ using UnityEngine;
 using UnityEditor;
 #endif
 
-namespace Coursework.LogicControllers
+namespace Coursework.LogicControllers.CharactersControllers
 {
     [RequireComponent(typeof(Rigidbody2D))]
     [RequireComponent(typeof(Animator))]

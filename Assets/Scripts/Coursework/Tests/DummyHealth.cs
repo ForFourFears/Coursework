@@ -1,4 +1,4 @@
-using Coursework.LogicControllers;
+using Coursework.LogicControllers.CharactersControllers;
 using Coursework.LogicControllers.AttackSystems;
 using UnityEngine;
 

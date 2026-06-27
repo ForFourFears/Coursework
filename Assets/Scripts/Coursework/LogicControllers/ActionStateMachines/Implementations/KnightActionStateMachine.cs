@@ -1,5 +1,4 @@
 ﻿using Coursework.AnimationControllers.Core;
-using Coursework.AnimationControllers.Implementations;
 using Coursework.EnumsCreatures.Knight;
 using Coursework.LogicControllers.ModifierSystems;
 using Coursework.ScriptableObjects;
@@ -7,6 +6,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Coursework.LogicControllers.ActionStateMachines.Core;
 using Coursework.LogicControllers.AttackSystems;
+using Coursework.LogicControllers.CharactersControllers;
 
 namespace Coursework.LogicControllers.ActionStateMachines.Implementations
 {
@@ -15,11 +15,12 @@ namespace Coursework.LogicControllers.ActionStateMachines.Implementations
         private readonly IEntityContext entityContext;
         private readonly IMovementContext movementContext;
         private readonly Rigidbody2D rigidbody;
-        private readonly float baseGravatyScale;
+        private readonly float baseGravityScale;
 
         private readonly IMutableHealth healthSystem;
 
-        private readonly ActionTimerRegistry<KnightActionWindows> actionWindowsTimer;
+        private readonly ActionTimerRegistry<ActionWindows> actionWindowsTimer;
+        private readonly ActionTimerRegistry<DashTimers> dashTimers;
 
         private static readonly HashSet<KnightStates> NonAutoTransitionalStates = new()
         {
@@ -30,10 +31,16 @@ namespace Coursework.LogicControllers.ActionStateMachines.Implementations
             KnightStates.Death
         };
 
+        private static readonly HashSet<KnightStates> frozenWindowsTimerStates = new()
+        {
+            KnightStates.Dash
+        };
+
         private readonly KnightJumpAction jumpData;
         private int jumpCounter;
         private readonly KnightAttackAction attackData;
         private readonly KnightDashAction dashData;
+        private int dashCounter;
 
         public KnightActionStateMachine(
             IEntityContext entityContext,
@@ -47,11 +54,12 @@ namespace Coursework.LogicControllers.ActionStateMachines.Implementations
             this.entityContext = entityContext;
             this.movementContext = movementContext;
             rigidbody = movementContext.Rigidbody;
-            baseGravatyScale = rigidbody.gravityScale;
+            baseGravityScale = rigidbody.gravityScale;
 
             this.healthSystem = healthSystem;
 
             actionWindowsTimer = new();
+            dashTimers = new();
 
             if (entityDataHandler[KnightActions.Jump] is KnightJumpAction jumpConfig)
             {
@@ -72,6 +80,9 @@ namespace Coursework.LogicControllers.ActionStateMachines.Implementations
             else throw new System.NullReferenceException("No data for dashData");
 
             CurrentState = KnightStates.None;
+
+            jumpCounter = jumpData.NumberOfJumps;
+            dashCounter = dashData.NumberOfDashCharges;
         }
 
         public override void Subscribe()
@@ -105,14 +116,17 @@ namespace Coursework.LogicControllers.ActionStateMachines.Implementations
         public override void Update(float deltaTime)
         {
             base.Update(deltaTime);
-            actionWindowsTimer.Update(deltaTime);
+            dashTimers.Update(deltaTime);
+            if (!frozenWindowsTimerStates.Contains(CurrentState)) actionWindowsTimer.Update(deltaTime);
+
+            CheckReturnDashCharge();
 
             if (entityContext.IsGrounded)
             {
-                actionWindowsTimer[KnightActionWindows.CoyoteJump] = jumpData.CoyoteTime;
+                actionWindowsTimer[ActionWindows.CoyoteJump] = jumpData.CoyoteTime;
                 jumpCounter = jumpData.NumberOfJumps;
             }
-            else if (!actionWindowsTimer.IsActive(KnightActionWindows.CoyoteJump) &&
+            else if (!actionWindowsTimer.IsActive(ActionWindows.CoyoteJump) &&
                 jumpCounter == jumpData.NumberOfJumps)
             {
                 jumpCounter--;
@@ -121,7 +135,7 @@ namespace Coursework.LogicControllers.ActionStateMachines.Implementations
             switch (CurrentState)
             {
                 case KnightStates.Dash:
-                    if (!actionWindowsTimer.IsActive(KnightActionWindows.DashDuration))
+                    if (!dashTimers.IsActive(DashTimers.DashDuration))
                     {
                         CheckTransitions();
                     }
@@ -253,7 +267,7 @@ namespace Coursework.LogicControllers.ActionStateMachines.Implementations
                 if (isCompleted)
                 {
                     jumpCounter--;
-                    actionWindowsTimer[KnightActionWindows.CoyoteJump] = 0;
+                    actionWindowsTimer[ActionWindows.CoyoteJump] = 0;
                 }
                 return isCompleted;
             }
@@ -262,10 +276,10 @@ namespace Coursework.LogicControllers.ActionStateMachines.Implementations
 
         private bool Attack(KnightActions action)
         {
-            if (actionWindowsTimer.IsActive(KnightActionWindows.Combat))
+            if (actionWindowsTimer.IsActive(ActionWindows.Combat))
             {
                 bool isCompleted = TryChangeState(KnightStates.Attack2, action);
-                if (isCompleted) actionWindowsTimer[KnightActionWindows.Combat] = 0;
+                if (isCompleted) actionWindowsTimer[ActionWindows.Combat] = 0;
                 return isCompleted;
             }
             return TryChangeState(KnightStates.Attack, action);
@@ -273,18 +287,41 @@ namespace Coursework.LogicControllers.ActionStateMachines.Implementations
 
         private bool TryDash(KnightActions actions)
         {
-            if (!entityContext.IsCeilingAbove)
+            if (!entityContext.IsCeilingAbove && dashCounter > 0)
             {
                 bool isCompleted = TryChangeState(KnightStates.Dash, actions);
-                if (isCompleted) actionWindowsTimer[KnightActionWindows.DashDuration] = dashData.Duration;
+
+                if (isCompleted)
+                {
+                    dashCounter--;
+                    dashTimers[DashTimers.DashDuration] = dashData.Duration;
+
+                    if (!dashTimers.IsActive(DashTimers.DashChargeCooldown))
+                    {
+                        dashTimers[DashTimers.DashChargeCooldown] = dashData.DashChargeCooldown;
+                    }
+                }
+
                 return isCompleted;
             }
             return false;
         }
 
+        private void CheckReturnDashCharge()
+        {
+            if (dashCounter < dashData.NumberOfDashCharges && !dashTimers.IsActive(DashTimers.DashChargeCooldown))
+            {
+                dashCounter++;
+                if (dashCounter < dashData.NumberOfDashCharges)
+                {
+                    dashTimers[DashTimers.DashChargeCooldown] = dashData.DashChargeCooldown;
+                }
+            }
+        }
+
         private void ActivateCombatWindow(KnightStates context)
         {
-            actionWindowsTimer[KnightActionWindows.Combat] = attackData.CombateTime;
+            actionWindowsTimer[ActionWindows.Combat] = attackData.CombateTime;
         }
 
         private void OnAttackStateEnd()
@@ -306,7 +343,7 @@ namespace Coursework.LogicControllers.ActionStateMachines.Implementations
 
         private void OnDashStateExited(KnightStates context)
         {
-            rigidbody.gravityScale = baseGravatyScale;
+            rigidbody.gravityScale = baseGravityScale;
         }
 
         public void TakeDamage(float damage)

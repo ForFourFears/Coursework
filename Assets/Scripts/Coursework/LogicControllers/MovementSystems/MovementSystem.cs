@@ -1,5 +1,6 @@
 ﻿using Coursework.LogicControllers.ModifierSystems;
 using UnityEngine;
+using Coursework.LogicControllers.CharactersControllers;
 
 namespace Coursework.LogicControllers.MovementSystems
 {

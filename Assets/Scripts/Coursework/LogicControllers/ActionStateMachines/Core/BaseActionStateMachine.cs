@@ -109,10 +109,11 @@ namespace Coursework.LogicControllers.ActionStateMachines.Core
 
         public abstract bool TryExecuteAction(TAction action);
 
-        protected bool TryTriggerAction(TAction action)
+        protected bool TryTriggerAction(TAction action/*, bool respectCooldown = true*/)
         {
-            if (cooldownRegistry.IsActive(action)) return false;
+            if (/*respectCooldown && */cooldownRegistry.IsActive(action)) return false;
             cooldownRegistry[action] = entityDataHandler[action].Cooldown;
+
             if (actionEvents.TryGetValue(action, out var actionEvent))
             {
                 actionEvent.ActionInvoke();
@@ -120,11 +121,13 @@ namespace Coursework.LogicControllers.ActionStateMachines.Core
             return true;
         }
 
-        protected bool TryChangeState(TState newState, TAction action)
+        protected bool TryChangeState(TState newState, TAction action/*, bool respectCooldown = true*/)
         {
-            if (cooldownRegistry.IsActive(action)) return false;
-            ChangeState(newState);
+            if (/*respectCooldown && */cooldownRegistry.IsActive(action)) return false;
             cooldownRegistry[action] = entityDataHandler[action].Cooldown;
+
+            ChangeState(newState);
+
             if (actionEvents.TryGetValue(action, out var actionEvent))
             {
                 actionEvent.ActionInvoke();

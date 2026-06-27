@@ -21,7 +21,7 @@ using UnityEditor;
 #endif
 
 
-namespace Coursework.LogicControllers
+namespace Coursework.LogicControllers.CharactersControllers
 {
     public interface IBaseEntityContext
     {
@@ -40,9 +40,11 @@ namespace Coursework.LogicControllers
     {
         public Vector2 MoveInput { get; }
         public float FacingSign { get; }
+
         public Vector2 SlopeDirection { get; }
         public float SlopeAngle { get; }
         public float MaxSlopeAngle { get; }
+
         public Rigidbody2D Rigidbody { get; }
 
         public float MaxFallSpeed { get; }
@@ -56,11 +58,10 @@ namespace Coursework.LogicControllers
     public interface IBaseController<TAction> : IBaseEntityContext
         where TAction : Enum
     {
-        public Vector2 MoveInput { get; set; }
-
-        public bool TryExecuteAction(TAction action);
-
         public float MaxSlopeAngle { get; }
+
+        public Vector2 MoveInput { get; set; }
+        public bool TryExecuteAction(TAction action);
     }
 
     public interface IDamageable
@@ -172,7 +173,7 @@ namespace Coursework.LogicControllers
 
             //inputSystemActions.Player.Attack.performed += OnAttack;
 
-            //inputSystemActions.Player.Dash.performed += OnDash;
+            inputSystemActions.Player.Dash.performed += OnDash;
 
             //inputSystemActions.Player.Roll.performed += OnRoll;
 
@@ -198,7 +199,7 @@ namespace Coursework.LogicControllers
 
             //inputSystemActions.Player.Attack.performed -= OnAttack;
 
-            //inputSystemActions.Player.Dash.performed -= OnDash;
+            inputSystemActions.Player.Dash.performed -= OnDash;
 
             //inputSystemActions.Player.Roll.performed -= OnRoll;
 
@@ -224,7 +225,6 @@ namespace Coursework.LogicControllers
             KnightActions actionType = KnightActions.None;
             if (inputSystemActions.Player.Roll.IsPressed()) actionType = KnightActions.Roll;
             else if (inputSystemActions.Player.Attack.IsPressed()) actionType = KnightActions.Attack;
-            else if (inputSystemActions.Player.Dash.IsPressed()) actionType = KnightActions.Dash;
  
             actionBuffer.AddAction(actionType, 0.2f);
 
@@ -262,11 +262,11 @@ namespace Coursework.LogicControllers
         //    actionBuffer.AddAction(actionAttack, 0.2f);
         //}
 
-        //private void OnDash(InputAction.CallbackContext context)
-        //{
-        //    KnightActions actionAttack = KnightActions.Dash;
-        //    actionBuffer.AddAction(actionAttack, 0.2f);
-        //}
+        private void OnDash(InputAction.CallbackContext context)
+        {
+            KnightActions actionAttack = KnightActions.Dash;
+            actionBuffer.AddAction(actionAttack, 0.2f);
+        }
 
         //private void OnRoll(InputAction.CallbackContext context)
         //{

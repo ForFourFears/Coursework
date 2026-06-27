@@ -29,12 +29,19 @@
         Death
     }
 
-    public enum KnightActionWindows
+    public enum ActionWindows
     {
         None = 0,
         CoyoteJump,
         Combat,
-        DashDuration
+
+    }
+
+    public enum DashTimers
+    {
+        None = 0,
+        DashDuration,
+        DashChargeCooldown
     }
 
 }

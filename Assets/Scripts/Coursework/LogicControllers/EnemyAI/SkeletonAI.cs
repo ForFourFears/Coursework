@@ -2,6 +2,7 @@ using Coursework.EnumsCreatures.Skeleton;
 using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+using Coursework.LogicControllers.CharactersControllers;
 
 namespace Coursework.LogicControllers.EnemyAI
 {
@@ -380,9 +381,9 @@ namespace Coursework.LogicControllers.EnemyAI
                 Gizmos.DrawWireSphere(lastKnowBodyPos, 0.2f);
             }
 
-            if (_wallCheckOrigin != null && _wallCheckOffsets != null && _controller != null)
+            if (_wallCheckOrigin != null && _wallCheckOffsets != null)
             {
-                float facingDirection = _controller.FacingSign;
+                float facingDirection = transform.localScale.x;
                 Gizmos.color = HasWallAhead ? Color.red : Color.cyan;
                 Vector3 wallDirection = Vector2.right * (facingDirection * _wallCheckDistance);
 

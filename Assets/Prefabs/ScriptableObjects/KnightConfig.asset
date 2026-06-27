@@ -90,10 +90,12 @@ MonoBehaviour:
     - rid: 3152465161458024578
       type: {class: KnightDashAction, ns: Coursework.ScriptableObjects, asm: Assembly-CSharp}
       data:
-        <Cooldown>k__BackingField: 1
+        <Cooldown>k__BackingField: 0.2
         <SpeedModifier>k__BackingField: 30
         <Duration>k__BackingField: 0.2
         _distance: 6
+        <NumberOfDashCharges>k__BackingField: 2
+        <DashChargeCooldown>k__BackingField: 1
     - rid: 3152465161458024580
       type: {class: KnightState, ns: Coursework.ScriptableObjects, asm: Assembly-CSharp}
       data:
