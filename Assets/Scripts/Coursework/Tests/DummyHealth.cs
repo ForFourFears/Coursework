@@ -25,14 +25,14 @@ public class DummyHealth : MonoBehaviour, IDamageable
 
     public void TakeDamage(float damage)
     {
-        Debug.Log($"<color=red>[MANNEQUIN]</color> Получен урон: {damage}. ");
-        // Передаем урон в систему здоровья манекена
+        
         _healthSystem.Health -= damage;
 
     }
 
-    private void LogDamage(float health, float maxHealth)
+    private void LogDamage(float health, float maxHealth, float delta)
     {
+        Debug.Log($"<color=red>[MANNEQUIN]</color> Получен урон: {Mathf.Abs(delta)}. ");
         Debug.Log($"Текущее ХП: {health}/{maxHealth}");
 
         if (health <= 0)

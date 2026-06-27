@@ -28,6 +28,7 @@ MonoBehaviour:
   - rid: 3152465161458024523
   - rid: 3152465161458024578
   - rid: 3152465346623438931
+  - rid: 3152465363902922877
   references:
     version: 2
     RefIds:
@@ -116,3 +117,8 @@ MonoBehaviour:
       data:
         <Cooldown>k__BackingField: 0
         _targetAction: 1
+    - rid: 3152465363902922877
+      type: {class: KnightAction, ns: Coursework.ScriptableObjects, asm: Assembly-CSharp}
+      data:
+        <Cooldown>k__BackingField: 1
+        _targetAction: 8

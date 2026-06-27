@@ -25,8 +25,8 @@ namespace Coursework.LogicControllers
 {
     public interface IBaseEntityContext
     {
+        public bool IsAlive { get; }
         public bool IsGrounded { get; }
-
         public float FacingSign { get; }
     }
 
@@ -39,6 +39,7 @@ namespace Coursework.LogicControllers
     public interface IMovementContext
     {
         public Vector2 MoveInput { get; }
+        public float FacingSign { get; }
         public Vector2 SlopeDirection { get; }
         public float SlopeAngle { get; }
         public float MaxSlopeAngle { get; }
@@ -52,7 +53,7 @@ namespace Coursework.LogicControllers
         public Transform Transform { get; }
     }
 
-    public interface IBaseController<TAction>
+    public interface IBaseController<TAction> : IBaseEntityContext
         where TAction : Enum
     {
         public Vector2 MoveInput { get; set; }
@@ -72,16 +73,18 @@ namespace Coursework.LogicControllers
     public class PlayerController : MonoBehaviour, IEntityContext, IMovementContext, ITransformComponent, IAttacker, IDamageable/*, IActionStateMachineProvider<KnightStates,  KnightActions>*/
     {
         #region Public part
+        public bool IsAlive => actionStateMachine.CurrentState != KnightStates.Death;
         public bool IsGrounded { get; private set; }
+        public float FacingSign { get; private set; }
         public bool IsCrouched { get; set; }
         public bool IsCeilingAbove { get; private set; }
-        public float FacingSign { get; private set; }
 
         public Vector2 MoveInput { get; set; }
         public Vector2 SlopeDirection { get; private set; }
         public float SlopeAngle { get; private set; }
 
         public Transform Transform => transform;
+
 
         public IActionStateMachine<KnightStates, KnightActions> ActionStateMachine => actionStateMachine;
         #endregion
@@ -137,6 +140,8 @@ namespace Coursework.LogicControllers
 
         private void Awake()
         {
+            healthSystem = new(_knightConfig.Health, _knightConfig.Health);
+
             Rigidbody = Rigidbody != null ? Rigidbody : GetComponent<Rigidbody2D>();
 
             inputSystemActions = new();
@@ -147,13 +152,10 @@ namespace Coursework.LogicControllers
             _animator = _animator != null ? _animator : GetComponent<Animator>();
 
             observableSMBsHandler = new(_animator);
-            actionStateMachine = new(this, this, modifierSystem, _knightConfig, observableSMBsHandler);
+            actionStateMachine = new(this, this, modifierSystem, healthSystem, observableSMBsHandler, _knightConfig);
             actionExecutionSystem = new(this, this, this, ActionStateMachine, _knightConfig);
 
             animatorController = new (Rigidbody, _animator, ActionStateMachine, observableSMBsHandler);
-
-            healthSystem = new(_knightConfig.Health, _knightConfig.Health);
-
         }
 
         private void OnEnable()
@@ -290,7 +292,7 @@ namespace Coursework.LogicControllers
 
         public void TakeDamage(float damage)
         {
-            healthSystem.Health -= damage;
+            actionStateMachine.TakeDamage(damage);
         }
 
         private bool CheckGrounded()
@@ -342,7 +344,7 @@ namespace Coursework.LogicControllers
 
         private void OnDrawGizmos()
         {
-            if (actionStateMachine != null && modifierSystem != null && infoPosition != null)
+            if (actionStateMachine != null && modifierSystem != null && healthSystem != null && infoPosition != null)
             {
                 GUIStyle labelStyle = new()
                 {
@@ -353,6 +355,7 @@ namespace Coursework.LogicControllers
 
 
                 Handles.Label(infoPosition.position, 
+                    $"Health: {healthSystem.Health}\\{healthSystem.MaxHealth}\n" +
                     $"{actionStateMachine.CurrentState}, {modifierSystem.StateModifier},\n" +
                     $"SlopeDirection: {SlopeDirection}\n" +
                     $"SlopeAngle: {Vector2.Angle(Vector2.right, SlopeDirection)}\n" +

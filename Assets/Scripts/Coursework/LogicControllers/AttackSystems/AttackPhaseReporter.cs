@@ -36,6 +36,7 @@ namespace Coursework.LogicControllers.AttackSystems
         {
             attacker = GetComponentInParent<IAttacker>();
         }
+
         private void OnTriggerEnter2D(Collider2D other)
         {
             attacker.OnHit(other, hitInfo);

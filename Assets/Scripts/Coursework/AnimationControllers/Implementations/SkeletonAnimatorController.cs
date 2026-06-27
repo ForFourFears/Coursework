@@ -42,8 +42,6 @@ namespace Coursework.AnimationControllers.Implementations
             actionStateMachine[SkeletonStates.Attack].OnEnter += OnEnterAttackState;
             actionStateMachine[SkeletonActions.Hit].Action += OnActionHit;
             actionStateMachine[SkeletonStates.Death].OnEnter += OnEnterDeathState;
-            
-
         }
 
         public override void Unsubscribe()

@@ -23,6 +23,8 @@ namespace Coursework.LogicControllers
     public class SkeletonController : MonoBehaviour, IBaseController<SkeletonActions>, IMovementContext, IBaseEntityContext, ITransformComponent, IAttacker, IDamageable
     {
         #region Public part
+
+        public bool IsAlive => actionStateMachine.CurrentState != SkeletonStates.Death;
         public bool IsGrounded { get; private set; }
         public float FacingSign { get; private set; }
 
@@ -77,6 +79,8 @@ namespace Coursework.LogicControllers
 
         private void Awake()
         {
+            healthSystem = new(_skeletonConfig.Health, _skeletonConfig.Health);
+
             Rigidbody = Rigidbody != null ? Rigidbody : GetComponent<Rigidbody2D>();
 
             modifierSystem = new();
@@ -85,13 +89,10 @@ namespace Coursework.LogicControllers
             _animator = _animator != null ? _animator : GetComponent<Animator>();
 
             observableSMBsHandler = new(_animator);
-            actionStateMachine = new(this, this, modifierSystem, _skeletonConfig, observableSMBsHandler);
+            actionStateMachine = new(this, this, modifierSystem, healthSystem, observableSMBsHandler, _skeletonConfig);
             actionExecutionSystem = new(this, this, ActionStateMachine, _skeletonConfig);
 
             animatorController = new(Rigidbody, _animator, ActionStateMachine, observableSMBsHandler);
-
-            healthSystem = new(_skeletonConfig.Health, _skeletonConfig.Health);
-
         }
 
         private void OnEnable()
@@ -195,14 +196,14 @@ namespace Coursework.LogicControllers
 
         public void TakeDamage(float damage)
         {
-            healthSystem.Health -= damage;
+            actionStateMachine.TakeDamage(damage);
         }
 
 
 #if UNITY_EDITOR
         private void OnDrawGizmos()
         {
-            if (actionStateMachine != null && modifierSystem != null && infoPosition != null)
+            if (actionStateMachine != null && modifierSystem != null && healthSystem != null && infoPosition != null)
             {
                 GUIStyle labelStyle = new()
                 {
@@ -213,6 +214,7 @@ namespace Coursework.LogicControllers
 
 
                 Handles.Label(infoPosition.position,
+                    $"Health: {healthSystem.Health}\\{healthSystem.MaxHealth}\n" +
                     $"{actionStateMachine.CurrentState}, {modifierSystem.StateModifier},\n" +
                     $"SlopeDirection: {SlopeDirection}\n" +
                     $"SlopeAngle: {Vector2.Angle(Vector2.right, SlopeDirection)}\n" +

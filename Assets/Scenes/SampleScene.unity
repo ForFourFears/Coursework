@@ -1772,7 +1772,7 @@ MonoBehaviour:
     m_Bits: 8
   _animator: {fileID: 1260961686}
   _skeletonConfig: {fileID: 11400000, guid: a0fea8cd10f33e64385a6b7eeff4ce93, type: 2}
-  infoPosition: {fileID: 0}
+  infoPosition: {fileID: 92354834}
   SlopeDirectionPosition: {fileID: 276405446}
 --- !u!50 &1260961688
 Rigidbody2D:
@@ -1828,6 +1828,10 @@ MonoBehaviour:
   _detectionInterval: 0.2
   _targetLossTime: 2
   _wallCheckOrigin: {fileID: 276405446}
+  _wallCheckOffsets:
+  - {x: 0, y: 1.12}
+  - {x: 0, y: 0.15}
+  - {x: 0, y: -0.82}
   _wallCheckDistance: 1
   _ledgeCheckOrigin: {fileID: 1001279661}
   _ledgeCheckDistance: 2

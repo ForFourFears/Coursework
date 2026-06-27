@@ -6,46 +6,51 @@ using Coursework.ScriptableObjects;
 using System.Collections.Generic;
 using UnityEngine;
 using Coursework.LogicControllers.ActionStateMachines.Core;
+using Coursework.LogicControllers.AttackSystems;
 
 namespace Coursework.LogicControllers.ActionStateMachines.Implementations
 {
-    public class KnightActionStateMachine : BaseActionStateMachine<KnightStates, KnightActions>
+    public class KnightActionStateMachine : BaseActionStateMachine<KnightStates, KnightActions>, IDamageable
     {
         private readonly IEntityContext entityContext;
         private readonly IMovementContext movementContext;
         private readonly Rigidbody2D rigidbody;
+        private readonly float baseGravatyScale;
+
+        private readonly IMutableHealth healthSystem;
 
         private readonly ActionTimerRegistry<KnightActionWindows> actionWindowsTimer;
 
-        private static readonly HashSet<KnightStates> NonInterruptibleStates = new()
+        private static readonly HashSet<KnightStates> NonAutoTransitionalStates = new()
         {
             KnightStates.Attack,
             KnightStates.Attack2,
             KnightStates.CrouchAttack,
-            KnightStates.Dash
+            KnightStates.Dash,
+            KnightStates.Death
         };
 
         private readonly KnightJumpAction jumpData;
         private int jumpCounter;
-
         private readonly KnightAttackAction attackData;
-
         private readonly KnightDashAction dashData;
-        private readonly float baseGravatyScale;
-
 
         public KnightActionStateMachine(
             IEntityContext entityContext,
             IMovementContext movementContext,
             ModifierSystem modifierSystem,
-            IEntityDataHandler<KnightStates, KnightActions> entityDataHandler,
-            IObservableSMBsHandler observableSMBsHandler)
+            IMutableHealth healthSystem,
+            IObservableSMBsHandler observableSMBsHandler,
+            IEntityDataHandler<KnightStates, KnightActions> entityDataHandler)
             : base(modifierSystem, observableSMBsHandler, entityDataHandler)
         {
             this.entityContext = entityContext;
             this.movementContext = movementContext;
             rigidbody = movementContext.Rigidbody;
             baseGravatyScale = rigidbody.gravityScale;
+
+            this.healthSystem = healthSystem;
+
             actionWindowsTimer = new();
 
             if (entityDataHandler[KnightActions.Jump] is KnightJumpAction jumpConfig)
@@ -79,6 +84,8 @@ namespace Coursework.LogicControllers.ActionStateMachines.Implementations
 
             this[KnightStates.Dash].OnEnter += OnDashStateEntered;
             this[KnightStates.Dash].OnExit += OnDashStateExited;
+
+            healthSystem.HealthChanged += OnHealthChanged;
         }
 
         public override void Unsubscribe()
@@ -91,6 +98,8 @@ namespace Coursework.LogicControllers.ActionStateMachines.Implementations
 
             this[KnightStates.Dash].OnEnter -= OnDashStateEntered;
             this[KnightStates.Dash].OnExit -= OnDashStateExited;
+
+            healthSystem.HealthChanged -= OnHealthChanged;
         }
 
         public override void Update(float deltaTime)
@@ -118,7 +127,7 @@ namespace Coursework.LogicControllers.ActionStateMachines.Implementations
                     }
                     break;
 
-                case KnightStates state when NonInterruptibleStates.Contains(state):
+                case KnightStates state when NonAutoTransitionalStates.Contains(state):
                     break;
 
                 default:
@@ -131,13 +140,15 @@ namespace Coursework.LogicControllers.ActionStateMachines.Implementations
 
         private void CheckTransitions()
         {
+            if (CurrentState == KnightStates.Death) return;
+
             if (!entityContext.IsGrounded && Mathf.Abs(rigidbody.linearVelocityY) != 0)
             {
                 ChangeState(KnightStates.Air);
             }
-            else /*if (rigidbody.linearVelocityY <= 0)*/
+            else
             {
-                if (entityContext.IsCrouched /*|| entityContext.IsCeilingAbove*/)
+                if (entityContext.IsCrouched)
                 {
                     ChangeState(KnightStates.Crouch);
                 }
@@ -164,7 +175,6 @@ namespace Coursework.LogicControllers.ActionStateMachines.Implementations
         protected override void OnStateChanged(KnightStates currentState)
         {
             base.OnStateChanged(currentState);
-            
         }
 
         public override bool TryExecuteAction(KnightActions action)
@@ -177,6 +187,7 @@ namespace Coursework.LogicControllers.ActionStateMachines.Implementations
                     KnightActions.Jump => TryJump(action),
                     KnightActions.Attack => Attack(action),
                     KnightActions.Dash => TryDash(action),
+                    KnightActions.Hit => TryTakeHitStance(action),
                     _ => false
                 },
                 KnightStates.Air => action switch
@@ -185,6 +196,7 @@ namespace Coursework.LogicControllers.ActionStateMachines.Implementations
                     KnightActions.Jump => TryJump(action),
                     KnightActions.Attack => Attack(action),
                     KnightActions.Dash => TryDash(action),
+                    KnightActions.Hit => TryTakeHitStance(action),
                     _ => false
                 },
                 KnightStates.Crouch => action switch
@@ -193,6 +205,7 @@ namespace Coursework.LogicControllers.ActionStateMachines.Implementations
                     KnightActions.Jump => TryJump(action),
                     KnightActions.Attack => TryChangeState(KnightStates.CrouchAttack, action),
                     KnightActions.Dash => TryDash(action),
+                    KnightActions.Hit => TryTakeHitStance(action),
                     _ => false
                 },
                 KnightStates.Attack or KnightStates.Attack2 => action switch 
@@ -200,6 +213,7 @@ namespace Coursework.LogicControllers.ActionStateMachines.Implementations
                     KnightActions.TurnAround => TryTurnAround(action),
                     KnightActions.Jump => TryJump(action),
                     KnightActions.Dash => TryDash(action),
+                    KnightActions.Hit => TryTakeHitStance(action),
                     _ => false
                 },
                 KnightStates.CrouchAttack => action switch
@@ -207,6 +221,7 @@ namespace Coursework.LogicControllers.ActionStateMachines.Implementations
                     KnightActions.TurnAround => TryTurnAround(action),
                     KnightActions.Jump => TryJump(action),
                     KnightActions.Dash => TryDash(action),
+                    KnightActions.Hit => TryTakeHitStance(action),
                     _ => false
                 },
                 KnightStates.Dash => action switch 
@@ -214,6 +229,7 @@ namespace Coursework.LogicControllers.ActionStateMachines.Implementations
                     KnightActions.TurnAround => TryTurnAround(action),
                     KnightActions.Jump => TryJump(action),
                     KnightActions.Attack => Attack(action),
+                    KnightActions.Hit => TryTakeHitStance(action),
                     _ => false
                 },
                 _ => false
@@ -239,11 +255,9 @@ namespace Coursework.LogicControllers.ActionStateMachines.Implementations
                     jumpCounter--;
                     actionWindowsTimer[KnightActionWindows.CoyoteJump] = 0;
                 }
-                    
-                    
                 return isCompleted;
             }
-            else return false;
+            return false;
         }
 
         private bool Attack(KnightActions action)
@@ -293,6 +307,25 @@ namespace Coursework.LogicControllers.ActionStateMachines.Implementations
         private void OnDashStateExited(KnightStates context)
         {
             rigidbody.gravityScale = baseGravatyScale;
+        }
+
+        public void TakeDamage(float damage)
+        {
+            healthSystem.ApplyDamage(damage);
+            TryExecuteAction(KnightActions.Hit);
+        }
+
+        private bool TryTakeHitStance(KnightActions action)
+        {
+            bool result = TryTriggerAction(action);
+            if (result) CheckTransitions();
+            return result;
+        }
+
+        private void OnHealthChanged(float health, float maxHealth, float delta)
+        {
+            Debug.Log($"Получен урон: {Mathf.Abs(delta)}, осталось хп: {health}/{maxHealth}");
+            if (health <= 0) ChangeState(KnightStates.Death); 
         }
     }
 }

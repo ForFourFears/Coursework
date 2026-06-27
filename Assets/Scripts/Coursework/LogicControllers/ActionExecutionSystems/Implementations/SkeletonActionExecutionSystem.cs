@@ -63,7 +63,10 @@ namespace Coursework.LogicControllers.ActionExecutionSystems.Implementations
 
         public void OnHit(Collider2D target, HitInfo hitInfo)
         {
-            if (target.TryGetComponent<IDamageable>(out var damageable))
+
+            var damageable = target.GetComponentInParent<IDamageable>();
+
+            if (damageable != null)
             {
                 if (damagedTargets.Add(damageable))
                 {

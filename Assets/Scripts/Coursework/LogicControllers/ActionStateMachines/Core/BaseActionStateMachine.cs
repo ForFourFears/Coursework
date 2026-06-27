@@ -82,14 +82,13 @@ namespace Coursework.LogicControllers.ActionStateMachines.Core
             TState previousState = CurrentState;
             CurrentState = newState;
 
-            OnStateChanged(CurrentState);
-
-            if (stateEvents.TryGetValue(CurrentState, out var newStateEvent))
-            {
-                newStateEvent.EnteredInvoke(previousState);
-            }
+            stateEvents.TryGetValue(CurrentState, out var newStateEvent);
 
             currentStateEvents = newStateEvent;
+
+            OnStateChanged(CurrentState);
+
+            newStateEvent?.EnteredInvoke(previousState);
         }
 
         protected virtual void OnStateChanged(TState currentState)

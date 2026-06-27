@@ -47,6 +47,11 @@ namespace Coursework.LogicControllers.MovementSystems
         {
             if (modifierSystem.IgnoreMovementUpdates) return;
             float input = movementContext.MoveInput.x;
+            if (Mathf.Abs(input) > 0.01f && Mathf.Sign(input) != movementContext.FacingSign)
+            {
+                input = 0f;
+            }
+
             float targetSpeed = input * modifierSystem.ApplyModifiers();
             
             Vector2 desiredVelocity = movementContext.SlopeDirection * targetSpeed;

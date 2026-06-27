@@ -1,21 +1,24 @@
-﻿using Coursework.AnimationControllers.Core;
-using Coursework.EnumsCreatures.Skeleton;
-using Coursework.LogicControllers.ActionStateMachines.Core;
-using Coursework.LogicControllers.ModifierSystems;
-using Coursework.ScriptableObjects;
+﻿using System;
 using System.Collections.Generic;
 using UnityEngine;
-
+using Coursework.AnimationControllers.Core;
+using Coursework.EnumsCreatures.Skeleton;
+using Coursework.LogicControllers.ActionStateMachines.Core;
+using Coursework.LogicControllers.AttackSystems;
+using Coursework.LogicControllers.ModifierSystems;
+using Coursework.ScriptableObjects;
 
 namespace Coursework.LogicControllers.ActionStateMachines.Implementations
 {
-    public class SkeletonActionStateMachine : BaseActionStateMachine<SkeletonStates, SkeletonActions>
+    public class SkeletonActionStateMachine : BaseActionStateMachine<SkeletonStates, SkeletonActions>, IDamageable
     {
         private readonly IMovementContext movementContext;
         private readonly Rigidbody2D rigidbody;
         private readonly IBaseEntityContext entityContext;
 
-        private static readonly HashSet<SkeletonStates> NonInterruptibleStates = new()
+        private readonly IMutableHealth healthSystem;
+
+        private static readonly HashSet<SkeletonStates> NonAutoTransitionalStates = new()
         {
             SkeletonStates.Attack,
             SkeletonStates.Death
@@ -25,13 +28,16 @@ namespace Coursework.LogicControllers.ActionStateMachines.Implementations
             IMovementContext movementContext,
             IBaseEntityContext entityContext,
             ModifierSystem modifierSystem,
-            IEntityDataHandler<SkeletonStates, SkeletonActions> entityDataHandler,
-            IObservableSMBsHandler observableSMBsHandler)
+            IMutableHealth healthSystem,
+            IObservableSMBsHandler observableSMBsHandler,
+            IEntityDataHandler<SkeletonStates, SkeletonActions> entityDataHandler)
             : base(modifierSystem, observableSMBsHandler, entityDataHandler)
         {
             this.movementContext = movementContext;
             rigidbody = movementContext.Rigidbody;
             this.entityContext = entityContext;
+
+            this.healthSystem = healthSystem;
 
             CurrentState = SkeletonStates.None;
         }
@@ -39,24 +45,32 @@ namespace Coursework.LogicControllers.ActionStateMachines.Implementations
         public override void Subscribe()
         {
             observableSMBsHandler["Attack"].ExitState += CheckTransitions;
+            healthSystem.HealthChanged += OnHealthChanged;
         }
 
         public override void Unsubscribe()
         {
             observableSMBsHandler["Attack"].ExitState -= CheckTransitions;
+            healthSystem.HealthChanged -= OnHealthChanged;
         }
 
         public override void Update(float deltaTime)
         {
             base.Update(deltaTime);
-            if (!NonInterruptibleStates.Contains(CurrentState)) CheckTransitions();
+
+            if (!NonAutoTransitionalStates.Contains(CurrentState)) CheckTransitions();
 
             UpdateConstraints();
         }
 
         public void CheckTransitions()
         {
-            ChangeState(SkeletonStates.Locomotion);
+            if (CurrentState == SkeletonStates.Death) return;
+
+            if (CurrentState != SkeletonStates.Locomotion)
+            {
+                ChangeState(SkeletonStates.Locomotion);
+            }
         }
 
         private void UpdateConstraints()
@@ -80,14 +94,14 @@ namespace Coursework.LogicControllers.ActionStateMachines.Implementations
                 {
                     SkeletonActions.TurnAround => TryTurnAround(action),
                     SkeletonActions.Attack => TryChangeState(SkeletonStates.Attack, action),
-                    SkeletonActions.Hit => TryTriggerAction(action),
+                    SkeletonActions.Hit => TryTakeHitStance(action),
                     SkeletonActions.React => TryTriggerAction(action),
                     _ => false
                 },
-                SkeletonStates.Attack => action switch 
+                SkeletonStates.Attack => action switch
                 {
                     SkeletonActions.TurnAround => TryTurnAround(action),
-                    SkeletonActions.Hit => TryTriggerAction(action),
+                    SkeletonActions.Hit => TryTakeHitStance(action),
                     _ => false
                 },
                 _ => false
@@ -101,6 +115,29 @@ namespace Coursework.LogicControllers.ActionStateMachines.Implementations
                 return TryTriggerAction(action);
             }
             return false;
+        }
+
+        public void TakeDamage(float damage)
+        {
+            healthSystem.ApplyDamage(damage);
+            TryExecuteAction(SkeletonActions.Hit);
+        }
+
+        private bool TryTakeHitStance(SkeletonActions action)
+        {
+            bool result = TryTriggerAction(action);
+            if (result) CheckTransitions();
+            return result;
+        }
+
+        private void OnHealthChanged(float health, float maxHealth, float delta)
+        {
+            Debug.Log($"Скелет получил урон: {Mathf.Abs(delta)}, ХП: {health}/{maxHealth}");
+
+            if (health <= 0f)
+            {
+                ChangeState(SkeletonStates.Death);
+            }
         }
     }
 }

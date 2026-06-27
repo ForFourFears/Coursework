@@ -68,6 +68,7 @@ namespace Coursework.AnimationControllers.Implementations
             actionStateMachine[KnightStates.Attack2].OnExit += OnActionInterrupted;
             actionStateMachine[KnightStates.CrouchAttack].OnExit += OnActionInterrupted;
 
+            actionStateMachine[KnightActions.Hit].Action += OnActionHit;
             actionStateMachine[KnightStates.Death].OnEnter += OnEnterDeathState;
         }
 
@@ -84,6 +85,7 @@ namespace Coursework.AnimationControllers.Implementations
             actionStateMachine[KnightStates.Attack2].OnExit -= OnActionInterrupted;
             actionStateMachine[KnightStates.CrouchAttack].OnExit -= OnActionInterrupted;
 
+            actionStateMachine[KnightActions.Hit].Action -= OnActionHit;
             actionStateMachine[KnightStates.Death].OnEnter -= OnEnterDeathState;
         }
 
@@ -158,6 +160,11 @@ namespace Coursework.AnimationControllers.Implementations
         private void OnEnterDeathState(KnightStates context)
         {
             PlaySequence(deathTransition);
+        }
+
+        private void OnActionHit()
+        {
+            PlaySequence(hit);
         }
 
     }
