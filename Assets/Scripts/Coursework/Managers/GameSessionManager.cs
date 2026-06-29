@@ -4,19 +4,20 @@ using Coursework.EnumsCreatures.Knight;
 
 namespace Coursework.Managers
 {
-    public class GameSessionManager : MonoBehaviour
+    public class GameSessionManager : MonoBehaviour, ISceneInitializable
     {
         public static GameSessionManager Instance { get; private set; }
 
         [Header("Original Prefabs from Project")]
         [SerializeField] private KnightConfig _knightConfigPrefab;
 
-        // Это то, с чем будет работать вся игра в рантайме
-        public IEntityDataHandler<KnightStates, KnightActions> KnightRuntimeData => _knightRuntimeConfig;
+        public IEntityDataHandler<KnightStates, KnightActions> KnightData => knightRuntimeConfig;
 
-        private KnightConfig _knightRuntimeConfig;
+        private KnightConfig knightRuntimeConfig;
 
-        private void Awake()
+        public Vector3? RespawnPosition { get; set; }
+
+        public void Initialize()
         {
             if (Instance != null)
             {
@@ -38,23 +39,24 @@ namespace Coursework.Managers
                 return;
             }
 
-            // Наш честный глубокий клон через JSON
-            string json = JsonUtility.ToJson(_knightConfigPrefab);
-            _knightRuntimeConfig = ScriptableObject.CreateInstance<KnightConfig>();
-            JsonUtility.FromJsonOverwrite(json, _knightRuntimeConfig);
-
-            // Метод OnEnable внутри _knightRuntimeConfig выполнится автоматически 
-            // и соберет новые словари для склонированных экшенов
+            knightRuntimeConfig = Instantiate(_knightConfigPrefab);
         }
 
-        // Пример метода для зоны апгрейда
-        public void UpgradeKnightDashCharges()
+        public void AddDashCharge()
         {
-            // Достаем экшен через твой индексатор и кастим к конкретному классу
-            if (_knightRuntimeConfig[KnightActions.Dash] is KnightDashAction dashAction)
+            if (knightRuntimeConfig[KnightActions.Dash] is KnightDashAction dashAction)
             {
                 dashAction.NumberOfDashCharges++;
                 Debug.Log($"Рыцарь прокачан! Макс. зарядов дэша: {dashAction.NumberOfDashCharges}");
+            }
+        }
+
+        public void AddJumpCharge()
+        {
+            if (knightRuntimeConfig[KnightActions.Jump] is KnightJumpAction jumpAction)
+            {
+                jumpAction.NumberOfJumps++;
+                Debug.Log($"Рыцарь прокачан! Макс. зарядов прыжка: {jumpAction.NumberOfJumps}");
             }
         }
     }

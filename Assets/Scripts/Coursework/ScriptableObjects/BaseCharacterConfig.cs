@@ -18,7 +18,9 @@ namespace Coursework.ScriptableObjects
     public interface IEntityDataHandler<TState, TAction> : IStatesDataHandler<TState>, IActionsDataHandler<TAction>
         where TState : Enum
         where TAction : Enum
-    { }
+    { 
+        public float Health { get; }
+    }
 
     [Serializable]
     public struct AttackInfo
@@ -40,7 +42,7 @@ namespace Coursework.ScriptableObjects
     {
         [field: SerializeField] 
         [field: Min(0)] 
-        public int Health { get; protected set; }
+        public float Health { get; protected set; }
 
         protected abstract List<BaseStateData<TState>> StatesList { get; }
         protected abstract List<BaseActionData<TAction>> ActionsList { get; }

@@ -1,6 +1,7 @@
 ﻿using Scripts;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using Coursework;
 using Coursework.ScriptableObjects;
 using Coursework.EnumsCreatures.Knight;
 using Coursework.LogicControllers.ActionBuffers;
@@ -14,6 +15,9 @@ using Coursework.AnimationControllers.Core;
 using Coursework.AnimationControllers.Implementations;
 using Coursework.LogicControllers.AttackSystems;
 using System;
+using Coursework.Managers;
+using System.Collections;
+
 
 
 #if UNITY_EDITOR
@@ -71,7 +75,7 @@ namespace Coursework.LogicControllers.CharactersControllers
 
     [RequireComponent(typeof(Rigidbody2D))]
     [RequireComponent(typeof(Animator))]
-    public class PlayerController : MonoBehaviour, IEntityContext, IMovementContext, ITransformComponent, IAttacker, IDamageable/*, IActionStateMachineProvider<KnightStates,  KnightActions>*/
+    public class PlayerController : MonoBehaviour, IEntityContext, IMovementContext, ITransformComponent, IAttacker, IDamageable/*, IActionStateMachineProvider<KnightStates,  KnightActions>*/, ISceneInitializable
     {
         #region Public part
         public bool IsAlive => actionStateMachine.CurrentState != KnightStates.Death;
@@ -86,7 +90,7 @@ namespace Coursework.LogicControllers.CharactersControllers
 
         public Transform Transform => transform;
 
-
+        public IHealth Health => healthSystem;
         public IActionStateMachine<KnightStates, KnightActions> ActionStateMachine => actionStateMachine;
         #endregion
 
@@ -117,9 +121,6 @@ namespace Coursework.LogicControllers.CharactersControllers
         [Header("Animator Controller")]
         [SerializeField] private Animator _animator;
 
-        [Header("Configs")]
-        [SerializeField] private KnightConfig _knightConfig;
-
         [Header("Debug")]
         [SerializeField] private Transform infoPosition;
         [SerializeField] private Transform SlopeDirectionPosition;
@@ -136,12 +137,26 @@ namespace Coursework.LogicControllers.CharactersControllers
         private KnightAnimatorController animatorController;
         private HealthSystem healthSystem;
 
+        private IEntityDataHandler<KnightStates, KnightActions> knightConfig;
 
+        private readonly WaitForSeconds death = new(1.5f);
+
+        private bool isInitialized;
+        private bool isSubscribed;
         #endregion
 
-        private void Awake()
+        public void Initialize()
         {
-            healthSystem = new(_knightConfig.Health, _knightConfig.Health);
+            G.Player = gameObject;
+
+            if (GameSessionManager.Instance.RespawnPosition.HasValue)
+            {
+                transform.position = GameSessionManager.Instance.RespawnPosition.Value;
+            }
+
+            knightConfig = GameSessionManager.Instance.KnightData;
+
+            healthSystem = new(knightConfig.Health, knightConfig.Health);
 
             Rigidbody = Rigidbody != null ? Rigidbody : GetComponent<Rigidbody2D>();
 
@@ -153,14 +168,19 @@ namespace Coursework.LogicControllers.CharactersControllers
             _animator = _animator != null ? _animator : GetComponent<Animator>();
 
             observableSMBsHandler = new(_animator);
-            actionStateMachine = new(this, this, modifierSystem, healthSystem, observableSMBsHandler, _knightConfig);
-            actionExecutionSystem = new(this, this, this, ActionStateMachine, _knightConfig);
+            actionStateMachine = new(this, this, modifierSystem, healthSystem, observableSMBsHandler, knightConfig);
+            actionExecutionSystem = new(this, this, this, ActionStateMachine, knightConfig);
 
             animatorController = new (Rigidbody, _animator, ActionStateMachine, observableSMBsHandler);
+
+            isInitialized = true;
+            OnEnable();
         }
 
         private void OnEnable()
         {
+            if (!isInitialized || isSubscribed) return;
+
             inputSystemActions.Enable();
 
             inputSystemActions.Player.Move.performed += OnMove;
@@ -181,10 +201,17 @@ namespace Coursework.LogicControllers.CharactersControllers
             actionExecutionSystem.Subscribe();
             animatorController.Subscribe();
 
+            healthSystem.HealthChanged += OnDeath;
+
+            isSubscribed = true;
         }
 
         private void OnDisable()
         {
+            if (!isInitialized || !isSubscribed) return;
+
+            healthSystem.HealthChanged -= OnDeath;
+
             actionStateMachine.Unsubscribe();
             actionExecutionSystem.Unsubscribe();
             animatorController.Unsubscribe();
@@ -205,10 +232,22 @@ namespace Coursework.LogicControllers.CharactersControllers
 
 
             inputSystemActions.Disable();
+
+            isSubscribed = false;
+        }
+
+        private void OnDestroy()
+        {
+            if (G.Player == gameObject)
+            {
+                G.Player = null;
+            }
         }
 
         private void Update()
         {
+            if (!isInitialized) return;
+
             actionBuffer.Update(Time.deltaTime);
             UpdateFacingDirection();
             animatorController.Update();
@@ -216,6 +255,8 @@ namespace Coursework.LogicControllers.CharactersControllers
 
         private void FixedUpdate()
         {
+            if (!isInitialized) return;
+
             IsGrounded = CheckGrounded();
             IsCeilingAbove = CheckCeiling();
             UpdateSlopeDirection();
@@ -310,7 +351,7 @@ namespace Coursework.LogicControllers.CharactersControllers
             if (hit.normal == Vector2.zero)
             {
                 SlopeDirection = def;
-                SlopeAngle = 0;
+                SlopeAngle = 90;
                 return;
             }
 
@@ -338,6 +379,17 @@ namespace Coursework.LogicControllers.CharactersControllers
         private bool CheckCeiling()
         {
             return Physics2D.OverlapCircle(_ceilingCheck.position, _ceilingCheckRadius, _ceilingLayer) != null;
+        }
+
+        private void OnDeath(float health, float maxHealth, float delta)
+        {
+            if (health <= 0) StartCoroutine(Death());
+        }
+
+        private IEnumerator Death()
+        {
+            yield return death;
+            SceneLoader.Instance.ReloadCurrentScene();
         }
 
         #if UNITY_EDITOR

@@ -20,7 +20,7 @@ namespace Coursework.LogicControllers.CharactersControllers
 {
     [RequireComponent(typeof(Rigidbody2D))]
     [RequireComponent(typeof(Animator))]
-    public class SkeletonController : MonoBehaviour, IBaseController<SkeletonActions>, IMovementContext, IBaseEntityContext, ITransformComponent, IAttacker, IDamageable
+    public class SkeletonController : MonoBehaviour, IBaseController<SkeletonActions>, IMovementContext, IBaseEntityContext, ITransformComponent, IAttacker, IDamageable, ISceneInitializable
     {
         #region Public part
 
@@ -75,9 +75,12 @@ namespace Coursework.LogicControllers.CharactersControllers
         private ModifierSystem modifierSystem;
         private SkeletonAnimatorController animatorController;
         private HealthSystem healthSystem;
+
+        private bool isInitialized;
+        private bool isSubscribed;
         #endregion
 
-        private void Awake()
+        public void Initialize()
         {
             healthSystem = new(_skeletonConfig.Health, _skeletonConfig.Health);
 
@@ -93,35 +96,46 @@ namespace Coursework.LogicControllers.CharactersControllers
             actionExecutionSystem = new(this, this, ActionStateMachine, _skeletonConfig);
 
             animatorController = new(Rigidbody, _animator, ActionStateMachine, observableSMBsHandler);
+
+            isInitialized = true;
+
+            OnEnable();
         }
 
         private void OnEnable()
         {
-
+            if (!isInitialized || isSubscribed) return;
 
             actionStateMachine.Subscribe();
             actionExecutionSystem.Subscribe();
             animatorController.Subscribe();
+
+            isSubscribed = true;
         }
 
         private void OnDisable()
         {
+            if (!isInitialized || !isSubscribed) return;
+
             actionStateMachine.Unsubscribe();
             actionExecutionSystem.Unsubscribe();
             animatorController.Unsubscribe();
 
-
-
+            isSubscribed = false;
         }
 
         private void Update()
         {
+            if (!isInitialized) return;
+
             UpdateFacingDirection();
             animatorController.Update();
         }
 
         private void FixedUpdate()
         {
+            if (!isInitialized) return;
+
             IsGrounded = CheckGrounded();
             UpdateSlopeDirection();
 
@@ -159,7 +173,7 @@ namespace Coursework.LogicControllers.CharactersControllers
             if (hit.normal == Vector2.zero)
             {
                 SlopeDirection = def;
-                SlopeAngle = 0;
+                SlopeAngle = 90;
                 return;
             }
 

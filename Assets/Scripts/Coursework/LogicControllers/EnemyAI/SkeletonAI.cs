@@ -14,7 +14,7 @@ namespace Coursework.LogicControllers.EnemyAI
     }
 
     [RequireComponent(typeof(IBaseController<SkeletonActions>))]
-    public class SkeletonAI : MonoBehaviour
+    public class SkeletonAI : MonoBehaviour, ISceneInitializable
     {
         [SerializeField] private IBaseController<SkeletonActions> _controller;
         private AIState AIState;
@@ -34,6 +34,7 @@ namespace Coursework.LogicControllers.EnemyAI
         [SerializeField] private float _radiusDetection = 25f;
         [SerializeField] private LayerMask _obstacleLayer;
         [SerializeField] private LayerMask _enemiesLayer;
+        [SerializeField] private LayerMask _alliesLayer; // Сюда в инспекторе назначь только слой Enemy (скелеты)
         [SerializeField] private float _detectionInterval = 0.2f;
         [SerializeField] private float _targetLossTime = 2f;
         private ContactFilter2D filter;
@@ -57,39 +58,54 @@ namespace Coursework.LogicControllers.EnemyAI
         private float targetLossTimer;
         private readonly List<Collider2D> targets = new(5);
 
-        private void Awake()
+        private bool isInitialized;
+        private bool isSubscribed;
+
+        public void Initialize()
         {
             detectionWait = new(_detectionInterval);
 
             filter.useLayerMask = true;
             filter.layerMask = _enemiesLayer;
+
+            _controller ??= GetComponent<IBaseController<SkeletonActions>>();
+
+            isInitialized = true;
+
+            OnEnable();
         }
 
         private void OnEnable()
         {
+            if (!isInitialized || isSubscribed) return;
+
             detectionCorutine = StartCoroutine(DetectionCoritine());
+
+            isSubscribed = true;
         }
 
         private void OnDisable()
         {
+            if (!isInitialized || !isSubscribed) return;
+
             if (detectionCorutine != null)
             {
                 StopCoroutine(detectionCorutine);
                 detectionCorutine = null;
             }
-        }
+            target = null;
 
-        void Start()
-        {
-            _controller ??= GetComponent<IBaseController<SkeletonActions>>();
+            isSubscribed = false;
         }
 
         void FixedUpdate()
         {
+            if (!isInitialized) return;
+
             if (!_controller.IsAlive)
             {
                 _controller.MoveInput = Vector2.zero;
-                enabled = false; // Выключаем сам компонент ИИ, чтобы FixedUpdate больше не вызывался
+                enabled = false;
                 return;
             }
             CheckGroundAhead();
@@ -113,25 +129,39 @@ namespace Coursework.LogicControllers.EnemyAI
             float facingDirection = _controller.FacingSign;
             Vector2 rayDirection = Vector2.right * facingDirection;
 
+            // Объединяем статические препятствия и слой других скелетов
+            LayerMask combinedLayerMask = _obstacleLayer | _alliesLayer;
+
             foreach (Vector2 offset in _wallCheckOffsets)
             {
-                // Считаем стартовую точку для конкретного луча с учётом разворота
                 Vector2 rayOrigin = new(
                     _wallCheckOrigin.position.x + offset.x * facingDirection,
                     _wallCheckOrigin.position.y + offset.y
                 );
 
-                RaycastHit2D hit = Physics2D.Raycast(rayOrigin, rayDirection, _wallCheckDistance, _obstacleLayer);
+                RaycastHit2D hit = Physics2D.Raycast(rayOrigin, rayDirection, _wallCheckDistance, combinedLayerMask);
 
-                // Если луч никуда не попал, проверяем следующий
-                if (hit.normal == Vector2.zero)
+                if (hit.collider == null)
                 {
                     continue;
                 }
 
+                // Пропускаем, если луч попал в самого себя
+                if (hit.collider.gameObject == gameObject)
+                {
+                    continue;
+                }
+
+                // Если попали в объект на слое Enemy — это другой скелет, сразу считаем стеной
+                if (((1 << hit.collider.gameObject.layer) & _alliesLayer) != 0)
+                {
+                    HasWallAhead = true;
+                    return;
+                }
+
+                // Логика для статических препятствий (уклон поверхности)
                 float normalAngle = Vector2.Angle(Vector2.up, hit.normal);
 
-                // Если нашли препятствие круче, чем допустимый склон — это стена, останавливаем проверки
                 if (normalAngle > _controller.MaxSlopeAngle)
                 {
                     HasWallAhead = true;
@@ -139,7 +169,6 @@ namespace Coursework.LogicControllers.EnemyAI
                 }
             }
 
-            // Если ни один из лучей не зафиксировал стену
             HasWallAhead = false;
         }
 
@@ -225,7 +254,6 @@ namespace Coursework.LogicControllers.EnemyAI
                 _patrolDirection *= -1f;
                 _patrolWaitTimer = _patrolWaitTime;
 
-                // Передаем новое направление сразу, чтобы контроллер успел развернуть скелета
                 _controller.MoveInput = new Vector2(_patrolDirection, 0f);
                 return;
             }
@@ -240,7 +268,6 @@ namespace Coursework.LogicControllers.EnemyAI
             float distanceX = Mathf.Abs(currentDestination.x - transform.position.x);
             float directionX = Mathf.Sign(currentDestination.x - transform.position.x);
 
-            // 1. Проверка мёртвой зоны
             if (distanceX < _chaseStopDistanceX)
             {
                 _controller.MoveInput = Vector2.zero;
@@ -252,27 +279,23 @@ namespace Coursework.LogicControllers.EnemyAI
                 return;
             }
 
-            // 2. Проверка препятствий (стены и обрывы)
             if ((HasWallAhead || !HasGroundAhead) && _controller.FacingSign == directionX)
             {
                 _controller.MoveInput = Vector2.zero;
                 return;
             }
 
-            // 3. Блокировка движения, если тело ещё не развёрнуто в нужную сторону
             if (_controller.FacingSign != directionX)
             {
                 _controller.MoveInput = new Vector2(directionX, 0f);
                 return;
             }
 
-            // 4. Обычное движение преследования
             _controller.MoveInput = new Vector2(directionX, 0f);
         }
 
         private void HandleAttack()
         {
-            // Во время атаки продолжаем передавать направление на игрока в MoveInput.
             if (target != null)
             {
                 float directionX = Mathf.Sign(target.position.x - transform.position.x);
@@ -283,7 +306,6 @@ namespace Coursework.LogicControllers.EnemyAI
                 _controller.MoveInput = Vector2.zero;
             }
 
-            // Пытаемся нанести удар каждый физический кадр
             _controller.TryExecuteAction(SkeletonActions.Attack);
         }
 
@@ -313,11 +335,7 @@ namespace Coursework.LogicControllers.EnemyAI
             for (int i = 0; i < count; i++)
             {
                 var potentialTarget = targets[i];
-
-                // Считаем точку на теле цели (ноги + наш оффсет)
                 Vector3 targetBodyPosition = potentialTarget.transform.position + (Vector3)_targetOffset;
-
-                // Расстояние теперь считаем от глаз скелета до "тела" цели
                 float sqrDistance = (targetBodyPosition - eyePosition).sqrMagnitude;
 
                 if (sqrDistance >= minSqrDistance)
@@ -325,7 +343,6 @@ namespace Coursework.LogicControllers.EnemyAI
                     continue;
                 }
 
-                // Луч зрения пускаем из глаз скелета точно в смещенную точку на теле игрока
                 RaycastHit2D hit = Physics2D.Linecast(
                     eyePosition,
                     targetBodyPosition,
@@ -344,7 +361,6 @@ namespace Coursework.LogicControllers.EnemyAI
             if (closestTarget != null)
             {
                 target = closestTarget.transform;
-                // Запоминаем позицию ног для перемещения, но для проверок используем оффсет
                 lastKnowPosTarget = target.position;
             }
             else
@@ -354,7 +370,7 @@ namespace Coursework.LogicControllers.EnemyAI
         }
 
 #if UNITY_EDITOR
-        private void OnDrawGizmos()
+        private void OnDrawGizmosSelected()
         {
             Vector3 eyePosition = _visionOrigin != null ? _visionOrigin.position : transform.position;
 
@@ -381,9 +397,9 @@ namespace Coursework.LogicControllers.EnemyAI
                 Gizmos.DrawWireSphere(lastKnowBodyPos, 0.2f);
             }
 
-            if (_wallCheckOrigin != null && _wallCheckOffsets != null)
+            if (_wallCheckOrigin != null && _wallCheckOffsets != null && _controller != null)
             {
-                float facingDirection = transform.localScale.x;
+                float facingDirection = _controller.FacingSign;
                 Gizmos.color = HasWallAhead ? Color.red : Color.cyan;
                 Vector3 wallDirection = Vector2.right * (facingDirection * _wallCheckDistance);
 
