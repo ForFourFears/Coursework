@@ -2,6 +2,7 @@
 
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 
 namespace Coursework
 {
@@ -17,6 +18,9 @@ namespace Coursework
     public class Bootstrap : MonoBehaviour
     {
         [SerializeField] private List<GameObject> _objectsToInitialize;
+        
+        public UnityEvent onPostInitialize;
+        
 
         private void Awake()
         {
@@ -33,6 +37,8 @@ namespace Coursework
                     initializable.Initialize();
                 }
             }
+            
+            onPostInitialize?.Invoke();
         }
     }
 }

@@ -34,7 +34,7 @@ namespace Coursework.LogicControllers.EnemyAI
         [SerializeField] private float _radiusDetection = 25f;
         [SerializeField] private LayerMask _obstacleLayer;
         [SerializeField] private LayerMask _enemiesLayer;
-        [SerializeField] private LayerMask _alliesLayer; // Сюда в инспекторе назначь только слой Enemy (скелеты)
+        [SerializeField] private LayerMask _alliesLayer;
         [SerializeField] private float _detectionInterval = 0.2f;
         [SerializeField] private float _targetLossTime = 2f;
         private ContactFilter2D filter;

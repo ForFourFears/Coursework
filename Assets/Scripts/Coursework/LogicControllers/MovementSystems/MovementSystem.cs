@@ -48,7 +48,7 @@ namespace Coursework.LogicControllers.MovementSystems
         {
             if (modifierSystem.IgnoreMovementUpdates) return;
             float input = movementContext.MoveInput.x;
-            if (Mathf.Abs(input) > 0.01f && Mathf.Sign(input) != movementContext.FacingSign)
+            if (Mathf.Abs(input) > 0.01f && !Mathf.Approximately(Mathf.Sign(input), movementContext.FacingSign))
             {
                 input = 0f;
             }

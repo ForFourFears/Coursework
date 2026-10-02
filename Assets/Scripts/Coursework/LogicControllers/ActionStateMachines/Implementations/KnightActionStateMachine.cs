@@ -141,7 +141,7 @@ namespace Coursework.LogicControllers.ActionStateMachines.Implementations
                     }
                     break;
 
-                case KnightStates state when NonAutoTransitionalStates.Contains(state):
+                case var state when NonAutoTransitionalStates.Contains(state):
                     break;
 
                 default:
@@ -184,11 +184,6 @@ namespace Coursework.LogicControllers.ActionStateMachines.Implementations
                 return;
             }
             rigidbody.constraints = RigidbodyConstraints2D.FreezeRotation;
-        }
-
-        protected override void OnStateChanged(KnightStates currentState)
-        {
-            base.OnStateChanged(currentState);
         }
 
         public override bool TryExecuteAction(KnightActions action)

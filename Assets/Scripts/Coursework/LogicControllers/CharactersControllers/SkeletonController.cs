@@ -20,7 +20,7 @@ namespace Coursework.LogicControllers.CharactersControllers
 {
     [RequireComponent(typeof(Rigidbody2D))]
     [RequireComponent(typeof(Animator))]
-    public class SkeletonController : MonoBehaviour, IBaseController<SkeletonActions>, IMovementContext, IBaseEntityContext, ITransformComponent, IAttacker, IDamageable, ISceneInitializable
+    public class SkeletonController : MonoBehaviour, IBaseController<SkeletonActions>, IMovementContext, ITransformComponent, IAttacker, IDamageable, ISceneInitializable
     {
         #region Public part
 
@@ -151,7 +151,7 @@ namespace Coursework.LogicControllers.CharactersControllers
             if (MoveInput.x != 0)
             {
                 float moveDirection = Mathf.Sign(MoveInput.x);
-                if (moveDirection != FacingSign) actionStateMachine.TryExecuteAction(SkeletonActions.TurnAround);
+                if (!Mathf.Approximately(moveDirection, FacingSign)) actionStateMachine.TryExecuteAction(SkeletonActions.TurnAround);
             }
             if (transform.localScale.x != 0) FacingSign = Mathf.Sign(transform.localScale.x);
         }

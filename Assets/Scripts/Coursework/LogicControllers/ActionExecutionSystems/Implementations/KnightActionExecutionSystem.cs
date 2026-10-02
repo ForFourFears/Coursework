@@ -1,9 +1,7 @@
 ﻿using Coursework.EnumsCreatures.Knight;
-using Coursework.LogicControllers;
 using Coursework.LogicControllers.ActionExecutionSystems.Core;
 using Coursework.LogicControllers.ActionStateMachines.Core;
 using Coursework.LogicControllers.AttackSystems;
-using Coursework.LogicControllers.ModifierSystems;
 using Coursework.ScriptableObjects;
 using System.Collections.Generic;
 using UnityEngine;
@@ -105,11 +103,6 @@ namespace Coursework.LogicControllers.ActionExecutionSystems.Implementations
             actionStateMachine[KnightStates.Dash].OnEnter -= OnDash;
             actionStateMachine[KnightStates.Dash].OnUpdate -= OnDashStateUpdate;
             actionStateMachine[KnightStates.Dash].OnExit -= OnDash;
-        }
-
-        public override void Update()
-        {
-            base.Update();
         }
 
         private void OnTurnAround()

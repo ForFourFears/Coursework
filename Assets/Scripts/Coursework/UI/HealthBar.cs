@@ -13,7 +13,7 @@ namespace Coursework.UI
         private bool isInitialized;
         private bool isSubscribed;
 
-        private PlayerController player;
+        private KnightController player;
 
         private void OnValidate()
         {
@@ -32,9 +32,9 @@ namespace Coursework.UI
 
         public void Initialize()
         {
-            if (G.Player.TryGetComponent(out PlayerController playerController))
+            if (G.Player.TryGetComponent(out KnightController knightController))
             {
-                player = playerController;
+                player = knightController;
                 isInitialized = true;
             }
 
