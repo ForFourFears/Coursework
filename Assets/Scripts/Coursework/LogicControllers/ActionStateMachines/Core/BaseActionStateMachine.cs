@@ -14,15 +14,15 @@ namespace Coursework.LogicControllers.ActionStateMachines.Core
         protected readonly Dictionary<TState, StateEvents<TState>> stateEvents;
         protected readonly Dictionary<TAction, ActionEvent> actionEvents;
 
-        protected readonly ModifierSystem modifierSystem;
+        protected readonly IMutableModifierSystem modifierSystem;
 
         protected readonly IObservableSMBsHandler observableSMBsHandler;
 
         protected readonly IEntityDataHandler<TState, TAction> entityDataHandler;
         protected readonly ActionTimerRegistry<TAction> cooldownRegistry;
 
-        public BaseActionStateMachine(
-            ModifierSystem modifierSystem,
+        protected BaseActionStateMachine(
+            IMutableModifierSystem modifierSystem,
             IObservableSMBsHandler observableSMBsHandler, 
             IEntityDataHandler<TState, TAction> entityDataHandler
         )
@@ -34,9 +34,11 @@ namespace Coursework.LogicControllers.ActionStateMachines.Core
             actionEvents = new();
             cooldownRegistry = new();
         }
-
+        
+        private StateEvents<TState> _currentStateEvents;
+        
+        #region Fields from IActionStateMachine<TState, TAction>
         public TState CurrentState { get; protected set; }
-        protected StateEvents<TState> currentStateEvents;
         public IStateEvents<TState> this[TState state]
         {
             get
@@ -62,11 +64,12 @@ namespace Coursework.LogicControllers.ActionStateMachines.Core
                 return actionEvent;
             }
         }
+        #endregion
 
         public virtual void Update(float deltaTime)
         {
             cooldownRegistry.Update(deltaTime);
-            currentStateEvents?.UpdateInvoke();
+            _currentStateEvents?.UpdateInvoke();
         }
 
         public abstract void Subscribe();
@@ -77,14 +80,14 @@ namespace Coursework.LogicControllers.ActionStateMachines.Core
         {
             if (Equals(CurrentState, newState)) return;
 
-            currentStateEvents?.ExitInvoke(newState);
+            _currentStateEvents?.ExitInvoke(newState);
 
             TState previousState = CurrentState;
             CurrentState = newState;
 
             stateEvents.TryGetValue(CurrentState, out var newStateEvent);
 
-            currentStateEvents = newStateEvent;
+            _currentStateEvents = newStateEvent;
 
             OnStateChanged(CurrentState);
 

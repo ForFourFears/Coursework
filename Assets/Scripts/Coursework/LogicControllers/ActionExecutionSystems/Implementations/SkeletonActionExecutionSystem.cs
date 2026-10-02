@@ -17,7 +17,7 @@ namespace Coursework.LogicControllers.ActionExecutionSystems.Implementations
         private readonly HashSet<IDamageable> damagedTargets = new();
         private readonly Dictionary<AttackType, float> attacksDamage = new();
 
-        private readonly SkeletonAttackAction attackData;
+        private readonly SkeletonAttackActionData attackData;
 
         public SkeletonActionExecutionSystem(
             IMovementContext movementContext,
@@ -29,7 +29,7 @@ namespace Coursework.LogicControllers.ActionExecutionSystems.Implementations
             this.movementContext = movementContext;
             transform = transformHandler.Transform;
 
-            if (actionDataHandler[SkeletonActions.Attack] is SkeletonAttackAction attackConfig)
+            if (actionDataHandler[SkeletonActions.Attack] is SkeletonAttackActionData attackConfig)
             {
                 attackData = attackConfig;
             }

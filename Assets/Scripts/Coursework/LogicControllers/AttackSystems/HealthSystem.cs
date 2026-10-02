@@ -26,10 +26,7 @@ namespace Coursework.LogicControllers.AttackSystems
         private float health;
         public float Health
         {
-            get
-            {
-                return health;
-            }
+            get => health;
 
             set
             {

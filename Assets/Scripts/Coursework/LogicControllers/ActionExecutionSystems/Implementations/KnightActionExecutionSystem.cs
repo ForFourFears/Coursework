@@ -13,41 +13,41 @@ namespace Coursework.LogicControllers.ActionExecutionSystems.Implementations
     public class KnightActionExecutionSystem : BaseActionExecutionSystem<KnightStates, KnightActions>, IAttacker
     {
         private readonly IMovementContext movementContext;
-        private readonly IEntityContext entityContext;
+        private readonly ICrouchInfo _crouchInfo;
         private readonly Transform transform;
         private readonly HashSet<IDamageable> damagedTargets;
 
-        private readonly KnightJumpAction jumpData;
-        private readonly KnightAttackAction attackData;
-        private readonly KnightDashAction dashData;
+        private readonly KnightJumpActionData jumpData;
+        private readonly KnightAttackActionData attackData;
+        private readonly KnightDashActionData dashData;
 
         private readonly Dictionary<AttackType, float> attacksDamage;
 
         public KnightActionExecutionSystem(
             IMovementContext movementContext,
-            IEntityContext entityContext,
+            ICrouchInfo crouchInfo,
             ITransformComponent transformHandler,
             IActionStateMachine<KnightStates, KnightActions> actionStateMachine,
             IActionsDataHandler<KnightActions> actionDataHandler
         ) : base (actionStateMachine, actionDataHandler)
         {
             this.movementContext = movementContext;
-            this.entityContext = entityContext;
+            this._crouchInfo = crouchInfo;
             transform = transformHandler.Transform;
 
-            if (actionDataHandler[KnightActions.Jump] is KnightJumpAction jumpConfig)
+            if (actionDataHandler[KnightActions.Jump] is KnightJumpActionData jumpConfig)
             {
                 jumpData = jumpConfig;
             }
             else throw new System.NullReferenceException("No data for jumpData");
 
-            if (actionDataHandler[KnightActions.Attack] is KnightAttackAction attackConfig)
+            if (actionDataHandler[KnightActions.Attack] is KnightAttackActionData attackConfig)
             {
                 attackData = attackConfig;
             }
             else throw new System.NullReferenceException("No data for attackData");
 
-            if (actionDataHandler[KnightActions.Dash] is KnightDashAction dashConfig)
+            if (actionDataHandler[KnightActions.Dash] is KnightDashActionData dashConfig)
             {
                 dashData = dashConfig;
             }
@@ -120,16 +120,16 @@ namespace Coursework.LogicControllers.ActionExecutionSystems.Implementations
             movementContext.Rigidbody.AddForceY(mod, ForceMode2D.Impulse);
         }
 
-        private void OnDash(KnightStates contex)
+        private void OnDash(KnightStates context)
         {
             movementContext.Rigidbody.linearVelocity = Vector2.zero;
         }
 
         private void OnDashStateUpdate()
         {
-            float targetSpeed = dashData.SpeedModifier * entityContext.FacingSign;
+            float targetSpeed = dashData.SpeedModifier * _crouchInfo.FacingSign;
             Vector2 desiredVelocity = movementContext.SlopeDirection * targetSpeed;
-            if (entityContext.IsGrounded)
+            if (_crouchInfo.IsGrounded)
             {
                 movementContext.Rigidbody.linearVelocity = desiredVelocity;
             }

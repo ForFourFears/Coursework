@@ -24,14 +24,14 @@ using UnityEditor;
 namespace Coursework.LogicControllers.CharactersControllers
 {
     #region Interfaces
-    public interface IBaseEntityContext
+    public interface IEntityContext
     {
         public bool IsAlive { get; }
         public bool IsGrounded { get; }
         public float FacingSign { get; }
     }
 
-	public interface IEntityContext : IBaseEntityContext
+	public interface ICrouchInfo : IEntityContext
     {
         public bool IsCrouched { get; }
 		public bool IsCeilingAbove { get; }
@@ -56,16 +56,14 @@ namespace Coursework.LogicControllers.CharactersControllers
         public Transform Transform { get; }
     }
 
-    public interface IBaseController<in TAction> : IBaseEntityContext
+    public interface IController<in TAction> : IEntityContext
         where TAction : Enum
     {
-        public float MaxSlopeAngle { get; } //Типа не должен быть тут, надо придумать, как избавить от него тут
-
         public Vector2 MoveInput { get; set; }
         public bool TryExecuteAction(TAction action);
     }
 
-    public interface IKnightController : IBaseController<KnightActions>
+    public interface IKnightController : IController<KnightActions>
     {
         public bool IsCrouched { get; set; }
     }
@@ -78,7 +76,7 @@ namespace Coursework.LogicControllers.CharactersControllers
 
     [RequireComponent(typeof(Rigidbody2D))]
     [RequireComponent(typeof(Animator))]
-    public class KnightController : MonoBehaviour, IKnightController, IEntityContext, IMovementContext, ITransformComponent, IAttacker, IDamageable/*, IActionStateMachineProvider<KnightStates,  KnightActions>*/, ISceneInitializable
+    public class KnightController : MonoBehaviour, IKnightController, ICrouchInfo, IMovementContext, ITransformComponent, IAttacker, IDamageable/*, IActionStateMachineProvider<KnightStates,  KnightActions>*/, ISceneInitializable
     {
         #region Public part
         public bool IsAlive => actionStateMachine.CurrentState != KnightStates.Death;

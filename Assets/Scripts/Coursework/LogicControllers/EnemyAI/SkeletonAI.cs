@@ -13,10 +13,11 @@ namespace Coursework.LogicControllers.EnemyAI
         Attack
     }
 
-    [RequireComponent(typeof(IBaseController<SkeletonActions>))]
+    [RequireComponent(typeof(IController<SkeletonActions>))]
     public class SkeletonAI : MonoBehaviour, ISceneInitializable
     {
-        [SerializeField] private IBaseController<SkeletonActions> _controller;
+        [SerializeField] private IController<SkeletonActions> _controller;
+        [SerializeField] private IMovementContext _movementContext;
         private AIState AIState;
 
         [Header("Setting AI")]
@@ -68,7 +69,8 @@ namespace Coursework.LogicControllers.EnemyAI
             filter.useLayerMask = true;
             filter.layerMask = _enemiesLayer;
 
-            _controller ??= GetComponent<IBaseController<SkeletonActions>>();
+            _controller ??= GetComponent<IController<SkeletonActions>>();
+            _movementContext ??= GetComponent<IMovementContext>();
 
             isInitialized = true;
 
@@ -162,7 +164,7 @@ namespace Coursework.LogicControllers.EnemyAI
                 // Логика для статических препятствий (уклон поверхности)
                 float normalAngle = Vector2.Angle(Vector2.up, hit.normal);
 
-                if (normalAngle > _controller.MaxSlopeAngle)
+                if (normalAngle > _movementContext.MaxSlopeAngle)
                 {
                     HasWallAhead = true;
                     return;
@@ -190,7 +192,7 @@ namespace Coursework.LogicControllers.EnemyAI
             }
 
             float normalAngle = Vector2.Angle(Vector2.up, hit.normal);
-            HasGroundAhead = normalAngle <= _controller.MaxSlopeAngle;
+            HasGroundAhead = normalAngle <= _movementContext.MaxSlopeAngle;
         }
 
         private void UpdateAIState()

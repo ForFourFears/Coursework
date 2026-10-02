@@ -44,7 +44,7 @@ namespace Coursework.Managers
 
         public void AddDashCharge()
         {
-            if (knightRuntimeConfig[KnightActions.Dash] is KnightDashAction dashAction)
+            if (knightRuntimeConfig[KnightActions.Dash] is KnightDashActionData dashAction)
             {
                 dashAction.NumberOfDashCharges++;
                 Debug.Log($"Рыцарь прокачан! Макс. зарядов дэша: {dashAction.NumberOfDashCharges}");
@@ -53,7 +53,7 @@ namespace Coursework.Managers
 
         public void AddJumpCharge()
         {
-            if (knightRuntimeConfig[KnightActions.Jump] is KnightJumpAction jumpAction)
+            if (knightRuntimeConfig[KnightActions.Jump] is KnightJumpActionData jumpAction)
             {
                 jumpAction.NumberOfJumps++;
                 Debug.Log($"Рыцарь прокачан! Макс. зарядов прыжка: {jumpAction.NumberOfJumps}");

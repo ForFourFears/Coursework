@@ -886,6 +886,7 @@ GameObject:
   - component: {fileID: 3634762047803812361}
   - component: {fileID: 8777489756031953918}
   - component: {fileID: 4000798513363828567}
+  - component: {fileID: 6752858458498399068}
   m_Layer: 6
   m_Name: Player
   m_TagString: Player
@@ -914,7 +915,7 @@ Transform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!212 &3945432304482768795
 SpriteRenderer:
-  serializedVersion: 2
+  serializedVersion: 3
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -971,6 +972,7 @@ SpriteRenderer:
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
   m_SpriteSortPoint: 0
+  m_BlendShapeWeights: []
 --- !u!50 &3123689902239037365
 Rigidbody2D:
   serializedVersion: 5
@@ -1082,6 +1084,18 @@ MonoBehaviour:
   _animator: {fileID: 3634762047803812361}
   infoPosition: {fileID: 8230935702262189821}
   SlopeDirectionPosition: {fileID: 5796671832880515652}
+--- !u!114 &6752858458498399068
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7193471014151525286}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2e83e0cf6a934c4aba6132b6645513cb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Coursework.LogicControllers.InputProvider
 --- !u!1 &7293610564355220896
 GameObject:
   m_ObjectHideFlags: 0

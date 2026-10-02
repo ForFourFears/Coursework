@@ -24,15 +24,15 @@ namespace Coursework.ScriptableObjects
 
     #region StatesData
     [Serializable]
-    public class KnightState : StateData<KnightStates> { }
+    public class KnightStateData : StateData<KnightStates> { }
     #endregion
 
     #region ActionsData
     [Serializable]
-    public class KnightAction : ActionData<KnightActions> { }
+    public class KnightActionData : ActionData<KnightActions> { }
 
     [Serializable]
-    public class KnightJumpAction : BaseActionData<KnightActions>
+    public class KnightJumpActionData : BaseActionData<KnightActions>
     {
         public override KnightActions TargetAction
         {
@@ -55,7 +55,7 @@ namespace Coursework.ScriptableObjects
     }
 
     [Serializable]
-    public class KnightAttackAction : BaseActionData<KnightActions>
+    public class KnightAttackActionData : BaseActionData<KnightActions>
     {
         public override KnightActions TargetAction
         {
@@ -89,7 +89,7 @@ namespace Coursework.ScriptableObjects
     }
 
     [Serializable]
-    public class KnightDashAction : BaseActionData<KnightActions>
+    public class KnightDashActionData : BaseActionData<KnightActions>
     {
         public override KnightActions TargetAction
         {

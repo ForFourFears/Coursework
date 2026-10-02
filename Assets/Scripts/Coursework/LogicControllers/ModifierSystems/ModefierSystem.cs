@@ -1,30 +1,38 @@
-﻿using System;
-using System.Collections.Generic;
-
-namespace Coursework.LogicControllers.ModifierSystems
+﻿namespace Coursework.LogicControllers.ModifierSystems
 {
-    public class ModifierSystem
+    public interface IModifierSystem
     {
-        public bool IgnoreMovementUpdates;
-        public float StateModifier;
-        public List<float> EffectsModifiers;
+        public bool IgnoreMovementUpdates { get; }
+        public float StateModifier { get; }
 
-        public ModifierSystem()
-        {
-            StateModifier = 1;
-            EffectsModifiers = new();
-        }
+        public float ApplyModifiers();
+    }
+
+    public interface IMutableModifierSystem : IModifierSystem
+    {
+        new bool IgnoreMovementUpdates { get; set;  }
+        new float StateModifier { get; set; }
+
+    }
+
+    public class ModifierSystem : IMutableModifierSystem
+    {
+        public bool IgnoreMovementUpdates  { get; set; }
+        public float StateModifier  { get; set; } = 1;
+        //public List<float> EffectsModifiers  { get; set; }
+
+        //EffectsModifiers = new();
 
         public float ApplyModifiers()
         {
             float result = StateModifier;
-            if (EffectsModifiers.Count != 0)
-            {
-                foreach (float modifier in EffectsModifiers)
-                {
-                    result *= modifier;
-                }
-            }
+            // if (EffectsModifiers.Count != 0)
+            // {
+            //     foreach (float modifier in EffectsModifiers)
+            //     {
+            //         result *= modifier;
+            //     }
+            // }
             return result;
         }
 

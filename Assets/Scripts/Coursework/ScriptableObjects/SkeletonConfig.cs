@@ -22,15 +22,15 @@ namespace Coursework.ScriptableObjects
 
     #region StatesData
     [Serializable]
-    public class SkeletonState : StateData<SkeletonStates> { }
+    public class SkeletonStateData : StateData<SkeletonStates> { }
     #endregion
 
     #region ActionsData
     [Serializable]
-    public class SkeletonAction : ActionData<SkeletonActions> { }
+    public class SkeletonActionData : ActionData<SkeletonActions> { }
 
     [Serializable]
-    public class SkeletonAttackAction : BaseActionData<SkeletonActions>
+    public class SkeletonAttackActionData : BaseActionData<SkeletonActions>
     {
         public override SkeletonActions TargetAction
         {

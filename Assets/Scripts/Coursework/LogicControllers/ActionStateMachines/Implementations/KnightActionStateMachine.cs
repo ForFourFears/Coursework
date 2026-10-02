@@ -12,7 +12,7 @@ namespace Coursework.LogicControllers.ActionStateMachines.Implementations
 {
     public class KnightActionStateMachine : BaseActionStateMachine<KnightStates, KnightActions>, IDamageable
     {
-        private readonly IEntityContext entityContext;
+        private readonly ICrouchInfo _crouchInfo;
         private readonly IMovementContext movementContext;
         private readonly Rigidbody2D rigidbody;
         private readonly float baseGravityScale;
@@ -36,22 +36,22 @@ namespace Coursework.LogicControllers.ActionStateMachines.Implementations
             KnightStates.Dash
         };
 
-        private readonly KnightJumpAction jumpData;
+        private readonly KnightJumpActionData jumpData;
         private int jumpCounter;
-        private readonly KnightAttackAction attackData;
-        private readonly KnightDashAction dashData;
+        private readonly KnightAttackActionData attackData;
+        private readonly KnightDashActionData dashData;
         private int dashCounter;
 
         public KnightActionStateMachine(
-            IEntityContext entityContext,
+            ICrouchInfo crouchInfo,
             IMovementContext movementContext,
-            ModifierSystem modifierSystem,
+            IMutableModifierSystem modifierSystem,
             IMutableHealth healthSystem,
             IObservableSMBsHandler observableSMBsHandler,
             IEntityDataHandler<KnightStates, KnightActions> entityDataHandler)
             : base(modifierSystem, observableSMBsHandler, entityDataHandler)
         {
-            this.entityContext = entityContext;
+            this._crouchInfo = crouchInfo;
             this.movementContext = movementContext;
             rigidbody = movementContext.Rigidbody;
             baseGravityScale = rigidbody.gravityScale;
@@ -61,19 +61,19 @@ namespace Coursework.LogicControllers.ActionStateMachines.Implementations
             actionWindowsTimer = new();
             dashTimers = new();
 
-            if (entityDataHandler[KnightActions.Jump] is KnightJumpAction jumpConfig)
+            if (entityDataHandler[KnightActions.Jump] is KnightJumpActionData jumpConfig)
             {
                 jumpData = jumpConfig;
             }
             else throw new System.NullReferenceException("No data for jumpData");
 
-            if (entityDataHandler[KnightActions.Attack] is KnightAttackAction attackConfig)
+            if (entityDataHandler[KnightActions.Attack] is KnightAttackActionData attackConfig)
             {
                 attackData = attackConfig;
             }
             else throw new System.NullReferenceException("No data for attackData");
 
-            if (entityDataHandler[KnightActions.Dash] is KnightDashAction dashConfig)
+            if (entityDataHandler[KnightActions.Dash] is KnightDashActionData dashConfig)
             {
                 dashData = dashConfig;
             }
@@ -121,7 +121,7 @@ namespace Coursework.LogicControllers.ActionStateMachines.Implementations
 
             CheckReturnDashCharge();
 
-            if (entityContext.IsGrounded)
+            if (_crouchInfo.IsGrounded)
             {
                 actionWindowsTimer[ActionWindows.CoyoteJump] = jumpData.CoyoteTime;
                 jumpCounter = jumpData.NumberOfJumps;
@@ -156,17 +156,17 @@ namespace Coursework.LogicControllers.ActionStateMachines.Implementations
         {
             if (CurrentState == KnightStates.Death) return;
 
-            if (!entityContext.IsGrounded && Mathf.Abs(rigidbody.linearVelocityY) != 0)
+            if (!_crouchInfo.IsGrounded && Mathf.Abs(rigidbody.linearVelocityY) != 0)
             {
                 ChangeState(KnightStates.Air);
             }
             else
             {
-                if (entityContext.IsCrouched)
+                if (_crouchInfo.IsCrouched)
                 {
                     ChangeState(KnightStates.Crouch);
                 }
-                else if (!(entityContext.IsCrouched || entityContext.IsCeilingAbove))
+                else if (!(_crouchInfo.IsCrouched || _crouchInfo.IsCeilingAbove))
                 {
                     ChangeState(KnightStates.Locomotion);
                 }
@@ -175,7 +175,7 @@ namespace Coursework.LogicControllers.ActionStateMachines.Implementations
 
         private void UpdateConstraints()
         {
-            if (entityContext.IsGrounded && movementContext.MoveInput.x == 0 && 
+            if (_crouchInfo.IsGrounded && movementContext.MoveInput.x == 0 && 
                 movementContext.SlopeAngle <= movementContext.MaxSlopeAngle &&
                 (CurrentState == KnightStates.Locomotion || CurrentState == KnightStates.Crouch)
             )
@@ -256,7 +256,7 @@ namespace Coursework.LogicControllers.ActionStateMachines.Implementations
 
         private bool TryJump(KnightActions action)
         {
-            if (jumpCounter > 0 && !entityContext.IsCeilingAbove)
+            if (jumpCounter > 0 && !_crouchInfo.IsCeilingAbove)
             {
                 bool isCompleted = TryChangeState(KnightStates.Air, action);
                 if (isCompleted)
@@ -282,7 +282,7 @@ namespace Coursework.LogicControllers.ActionStateMachines.Implementations
 
         private bool TryDash(KnightActions actions)
         {
-            if (!entityContext.IsCeilingAbove && dashCounter > 0)
+            if (!_crouchInfo.IsCeilingAbove && dashCounter > 0)
             {
                 bool isCompleted = TryChangeState(KnightStates.Dash, actions);
 

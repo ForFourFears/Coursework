@@ -15,7 +15,7 @@ namespace Coursework.LogicControllers.ActionStateMachines.Implementations
     {
         private readonly IMovementContext movementContext;
         private readonly Rigidbody2D rigidbody;
-        private readonly IBaseEntityContext entityContext;
+        private readonly IEntityContext entityContext;
 
         private readonly IMutableHealth healthSystem;
 
@@ -27,8 +27,8 @@ namespace Coursework.LogicControllers.ActionStateMachines.Implementations
 
         public SkeletonActionStateMachine(
             IMovementContext movementContext,
-            IBaseEntityContext entityContext,
-            ModifierSystem modifierSystem,
+            IEntityContext entityContext,
+            IMutableModifierSystem modifierSystem,
             IMutableHealth healthSystem,
             IObservableSMBsHandler observableSMBsHandler,
             IEntityDataHandler<SkeletonStates, SkeletonActions> entityDataHandler)
