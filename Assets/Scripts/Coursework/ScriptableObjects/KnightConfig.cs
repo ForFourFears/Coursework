@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 using Coursework.LogicControllers.AttackSystems;
-using Unity.VisualScripting;
+using UnityEngine.Scripting.APIUpdating;
 
 namespace Coursework.ScriptableObjects
 {
@@ -22,94 +22,126 @@ namespace Coursework.ScriptableObjects
         
     }
 
-    #region StatesData
-    [Serializable]
-    public class KnightStateData : StateData<KnightStates> { }
-    #endregion
+#region StatesData
 
-    #region ActionsData
-    [Serializable]
-    public class KnightActionData : ActionData<KnightActions> { }
+[Serializable]
+[MovedFrom(
+    autoUpdateAPI: false,
+    sourceNamespace: "Coursework.ScriptableObjects",
+    sourceAssembly: "Assembly-CSharp",
+    sourceClassName: "KnightState"
+)]
+public class KnightStateData : StateData<KnightStates> { }
 
-    [Serializable]
-    public class KnightJumpActionData : BaseActionData<KnightActions>
+#endregion
+
+#region ActionsData
+
+[Serializable]
+[MovedFrom(
+    autoUpdateAPI: false,
+    sourceNamespace: "Coursework.ScriptableObjects",
+    sourceAssembly: "Assembly-CSharp",
+    sourceClassName: "KnightAction"
+)]
+public class KnightActionData : ActionData<KnightActions> { }
+
+[Serializable]
+[MovedFrom(
+    autoUpdateAPI: false,
+    sourceNamespace: "Coursework.ScriptableObjects",
+    sourceAssembly: "Assembly-CSharp",
+    sourceClassName: "KnightJumpAction"
+)]
+public class KnightJumpActionData : BaseActionData<KnightActions>
+{
+    public override KnightActions TargetAction
     {
-        public override KnightActions TargetAction
-        {
-            get => KnightActions.Jump;
-            protected set { }
-        }
-
-        [Header("Jump Settings")]
-        [field: Min(0)]
-        [field: SerializeField] public float JumpModifier { get; private set; } = 10f;
-
-        [field: Min(0)]
-        [field: SerializeField] public float CoyoteTime { get; private set; } = 0.15f;
-
-        [field: Min(1)]
-        [field: SerializeField] public int NumberOfJumps { get; set; } = 1;
-
-
-        public override void OnValidateAction() { }
+        get => KnightActions.Jump;
+        protected set { }
     }
 
-    [Serializable]
-    public class KnightAttackActionData : BaseActionData<KnightActions>
+    [Header("Jump Settings")]
+    [field: Min(0)]
+    [field: SerializeField] public float JumpModifier { get; private set; } = 10f;
+
+    [field: Min(0)]
+    [field: SerializeField] public float CoyoteTime { get; private set; } = 0.15f;
+
+    [field: Min(1)]
+    [field: SerializeField] public int NumberOfJumps { get; set; } = 1;
+
+    public override void OnValidateAction() { }
+}
+
+[Serializable]
+[MovedFrom(
+    autoUpdateAPI: false,
+    sourceNamespace: "Coursework.ScriptableObjects",
+    sourceAssembly: "Assembly-CSharp",
+    sourceClassName: "KnightAttackAction"
+)]
+public class KnightAttackActionData : BaseActionData<KnightActions>
+{
+    public override KnightActions TargetAction
     {
-        public override KnightActions TargetAction
+        get => KnightActions.Attack;
+        protected set { }
+    }
+
+    [Header("Attack Settings")]
+    [field: Min(0)]
+    [field: SerializeField] public float CombateTime { get; private set; } = 0.3f;
+
+    [SerializeField] private List<AttackInfo> _attacksInfo = new();
+    public List<AttackInfo> AttacksInfo => _attacksInfo;
+
+    public override void OnValidateAction()
+    {
+        if (_attacksInfo != null)
         {
-            get => KnightActions.Attack;
-            protected set { }
-        }
+            HashSet<AttackType> attacks = new();
 
-        [Header("Attack Settings")]
-        [field: Min(0)]
-        [field: SerializeField] public float CombateTime { get; private set; } = 0.3f;
-
-        [SerializeField] private List<AttackInfo> _attacksInfo = new();
-
-        public List<AttackInfo> AttacksInfo => _attacksInfo;
-
-        public override void OnValidateAction()
-        {
-            if (_attacksInfo != null)
+            for (int i = 0; i < _attacksInfo.Count; i++)
             {
-                HashSet<AttackType> attacks = new();
-                for (int i = 0; i < _attacksInfo.Count; i++)
+                if (_attacksInfo[i].AttackType != AttackType.None &&
+                    !attacks.Add(_attacksInfo[i].AttackType))
                 {
-                    if (_attacksInfo[i].AttackType != AttackType.None && !attacks.Add(_attacksInfo[i].AttackType))
-                    {
-                        _attacksInfo[i] = new();
-                    }
-
+                    _attacksInfo[i] = new();
                 }
             }
         }
     }
+}
 
-    [Serializable]
-    public class KnightDashActionData : BaseActionData<KnightActions>
+[Serializable]
+[MovedFrom(
+    autoUpdateAPI: false,
+    sourceNamespace: "Coursework.ScriptableObjects",
+    sourceAssembly: "Assembly-CSharp",
+    sourceClassName: "KnightDashAction"
+)]
+public class KnightDashActionData : BaseActionData<KnightActions>
+{
+    public override KnightActions TargetAction
     {
-        public override KnightActions TargetAction
-        {
-            get => KnightActions.Dash;
-            protected set { }
-        }
-
-        [Header("Dash Settings")]
-        [field: SerializeField, Min(0)] public float SpeedModifier { get; private set; } = 15f;
-        [field: SerializeField, Min(0)] public float Duration { get; private set; } = 0.1f;
-        [SerializeField] private float _distance;
-
-        [field: SerializeField] public int NumberOfDashCharges { get; set; } = 1;
-        [field: SerializeField, Min(0)] public float DashChargeCooldown { get; set; } = 2f;
-
-
-        public override void OnValidateAction() 
-        {
-            _distance = SpeedModifier * Duration;
-        }
+        get => KnightActions.Dash;
+        protected set { }
     }
-    #endregion
+
+    [Header("Dash Settings")]
+    [field: SerializeField, Min(0)] public float SpeedModifier { get; private set; } = 15f;
+    [field: SerializeField, Min(0)] public float Duration { get; private set; } = 0.1f;
+    [SerializeField] private float _distance;
+
+    [field: SerializeField] public int NumberOfDashCharges { get; set; } = 1;
+    [field: SerializeField, Min(0)] public float DashChargeCooldown { get; set; } = 2f;
+
+    public override void OnValidateAction()
+    {
+        _distance = SpeedModifier * Duration;
+    }
+}
+
+#endregion
 }
