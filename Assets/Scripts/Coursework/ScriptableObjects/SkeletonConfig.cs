@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Scripting.APIUpdating;
 
 namespace Coursework.ScriptableObjects
 {
@@ -19,17 +20,37 @@ namespace Coursework.ScriptableObjects
 
 
     }
-
     #region StatesData
+
     [Serializable]
+    [MovedFrom(
+        autoUpdateAPI: false,
+        sourceNamespace: "Coursework.ScriptableObjects",
+        sourceAssembly: "Assembly-CSharp",
+        sourceClassName: "SkeletonState"
+    )]
     public class SkeletonStateData : StateData<SkeletonStates> { }
+
     #endregion
 
     #region ActionsData
+
     [Serializable]
+    [MovedFrom(
+        autoUpdateAPI: false,
+        sourceNamespace: "Coursework.ScriptableObjects",
+        sourceAssembly: "Assembly-CSharp",
+        sourceClassName: "SkeletonAction"
+    )]
     public class SkeletonActionData : ActionData<SkeletonActions> { }
 
     [Serializable]
+    [MovedFrom(
+        autoUpdateAPI: false,
+        sourceNamespace: "Coursework.ScriptableObjects",
+        sourceAssembly: "Assembly-CSharp",
+        sourceClassName: "SkeletonAttackAction"
+    )]
     public class SkeletonAttackActionData : BaseActionData<SkeletonActions>
     {
         public override SkeletonActions TargetAction
@@ -39,12 +60,13 @@ namespace Coursework.ScriptableObjects
         }
 
         [SerializeField] private AttackInfo attacksInfo;
+
         public AttackInfo AttackInfo => attacksInfo;
 
         public override void OnValidateAction()
         {
-
         }
     }
+
     #endregion
 }
