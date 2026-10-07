@@ -4,7 +4,7 @@ using UnityEngine.UI;
 
 namespace Coursework.UI
 {
-    public class HealthBar : MonoBehaviour, ISceneInitializable
+    public class HealthBar : MonoBehaviour
     {
         [SerializeField] private Image _fillBar;
         [SerializeField, Range(0, 1)] private float _minFill;

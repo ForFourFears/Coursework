@@ -20,7 +20,7 @@ namespace Coursework.LogicControllers.CharactersControllers
 {
     [RequireComponent(typeof(Rigidbody2D))]
     [RequireComponent(typeof(Animator))]
-    public class SkeletonController : MonoBehaviour, IController<SkeletonActions>, IMovementContext, ITransformComponent, IAttacker, IDamageable, ISceneInitializable
+    public class SkeletonController : MonoBehaviour, IController<SkeletonActions>, IMovementContext, ITransformComponent, IAttacker, IDamageable
     {
         #region Public part
 

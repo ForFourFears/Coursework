@@ -14,7 +14,7 @@ namespace Coursework.LogicControllers.EnemyAI
     }
 
     [RequireComponent(typeof(IController<SkeletonActions>))]
-    public class SkeletonAI : MonoBehaviour, ISceneInitializable
+    public class SkeletonAI : MonoBehaviour
     {
         [SerializeField] private IController<SkeletonActions> _controller;
         [SerializeField] private IMovementContext _movementContext;

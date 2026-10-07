@@ -4,7 +4,7 @@ using Coursework.EnumsCreatures.Knight;
 
 namespace Coursework.Managers
 {
-    public class GameSessionManager : MonoBehaviour, ISceneInitializable
+    public class GameSessionManager : MonoBehaviour
     {
         public static GameSessionManager Instance { get; private set; }
 

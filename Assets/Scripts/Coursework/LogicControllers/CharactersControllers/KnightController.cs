@@ -76,7 +76,7 @@ namespace Coursework.LogicControllers.CharactersControllers
 
     [RequireComponent(typeof(Rigidbody2D))]
     [RequireComponent(typeof(Animator))]
-    public class KnightController : MonoBehaviour, IKnightController, ICrouchInfo, IMovementContext, ITransformComponent, IAttacker, IDamageable/*, IActionStateMachineProvider<KnightStates,  KnightActions>*/, ISceneInitializable
+    public class KnightController : MonoBehaviour, IKnightController, ICrouchInfo, IMovementContext, ITransformComponent, IAttacker, IDamageable/*, IActionStateMachineProvider<KnightStates,  KnightActions>*/
     {
         #region Public part
         public bool IsAlive => actionStateMachine.CurrentState != KnightStates.Death;

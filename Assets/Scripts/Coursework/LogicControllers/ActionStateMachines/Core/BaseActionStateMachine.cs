@@ -7,7 +7,7 @@ using Coursework.ScriptableObjects;
 
 namespace Coursework.LogicControllers.ActionStateMachines.Core
 {
-    public abstract class BaseActionStateMachine<TState, TAction> : IActionStateMachine<TState, TAction>
+    public abstract class BaseActionStateMachine<TState, TAction> : IActionStateMachineController<TState, TAction>
         where TState : Enum
         where TAction : Enum
     {

@@ -1,10 +1,10 @@
-﻿using Coursework.ScriptableObjects;
+﻿using Coursework;
 using System;
 using System.Linq;
 using UnityEditor;
 using UnityEngine;
 
-namespace Coursework.Editor
+namespace Editor
 {
     [CustomPropertyDrawer(typeof(SelectSubclassDataAttribute))]
     public class SerializeReferenceDrawer : PropertyDrawer
@@ -39,9 +39,8 @@ namespace Coursework.Editor
                 GenericMenu menu = new();
                 var fieldType = GetFieldType();
 
-                var types = AppDomain.CurrentDomain.GetAssemblies()
-                    .SelectMany(assembly => assembly.GetTypes())
-                    .Where(t => fieldType.IsAssignableFrom(t) && !t.IsAbstract && !t.IsInterface);
+                var types = TypeCache.GetTypesDerivedFrom(fieldType)
+                    .Where(t => !t.IsAbstract && !t.IsInterface && !t.IsGenericType);
 
                 menu.AddItem(new GUIContent("Null"), property.managedReferenceValue == null, () =>
                 {

@@ -2,7 +2,7 @@
 
 namespace Coursework.UI 
 {
-    public class ParallaxLayer : MonoBehaviour, ISceneInitializable
+    public class ParallaxLayer : MonoBehaviour
     {
         
         [SerializeField, Range(0, 1f)] private float _parallaxCoefficient;

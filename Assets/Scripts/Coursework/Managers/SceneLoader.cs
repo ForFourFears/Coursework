@@ -5,7 +5,7 @@ using UnityEngine.Events;
 
 namespace Coursework.Managers
 {
-    public class SceneLoader : MonoBehaviour, ISceneInitializable
+    public class SceneLoader : MonoBehaviour
     {
         public UnityEvent OnExit;
         public UnityEvent OnEnter;
